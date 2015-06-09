@@ -1,24 +1,25 @@
 
-module tb_uart;
+module uart_autobaud_tb;
    parameter CLK_PERIOD = 20;          // 50MHz clock - 20ns period  
    parameter BAUD_PERIOD = 8700;
 
-   reg         clk;
-   reg         nRst;
-   reg         tx;
-   wire        rx;
-   wire        recieved;
-   wire        busy_rx;
-   wire        busy_tx;
-   wire [7:0]       data_tx;
-   wire  [7:0]      data_rx;
+   reg            clk;
+   reg            nRst;
+   reg            tx;
+   wire           rx;
+   wire           recieved;
+   wire           busy_rx;
+   wire           busy_tx;
+   wire  [7:0]    data_tx;
+   wire  [7:0]    data_rx;
 
    integer i,j;
 
    reg sample_rx;
    reg sample_tx;
 
-   uart uart(
+
+   uart_autobaud uart_autobaud(
       .clk        (clk        ),
       .nRst       (nRst       ),
       .transmit   (recieved   ),
@@ -39,8 +40,8 @@ module tb_uart;
 	end
 
 	initial begin
-      $dumpfile("uart.vcd");
-      $dumpvars(0,tb_uart);
+      $dumpfile("uart_autobaud.vcd");
+      $dumpvars(0,uart_autobaud_tb);
    end
 
    task uart_send;
@@ -77,7 +78,7 @@ module tb_uart;
       #100     nRst = 0;
       #100     nRst = 1;
 
-      for(i=0;i<256;i=i+1) begin
+      for(i=0;i<1;i=i+1) begin
          #100000     uart_send(i);
                      uart_get(j);
       end

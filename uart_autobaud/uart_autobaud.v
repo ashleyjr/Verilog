@@ -1,4 +1,4 @@
-module uart(
+module uart_autobaud(
    input             clk,
    input             nRst,
    input             transmit,   // Raise to trasmit
@@ -51,7 +51,26 @@ module uart(
    reg [19:0]   count_tx;
    reg [7:0]   shift_tx;
  
-
+   
+   reg            delay_1;
+   reg            delay_2;
+   reg [31:0]     baud;
+   
+   always @(posedge clk or negedge nRst) begin
+      if(!nRst) begin
+         baud     <= 32'd0;
+         delay_1  <= 1'b0;
+         delay_2  <= 1'b0;
+      end else begin
+         delay_1  <= rx;
+         delay_2  <= delay_1;
+         if((delay_2 == delay_1) && (baud != 32'hFFFFFFFF)) begin
+            baud <= baud + 1'b0;
+         end else begin
+            baud <= 0'b0;
+         end
+      end
+   end
      
    // Serial clock generation - 115200 baud = 50MHz/5208
    always @(posedge clk or negedge nRst) begin
