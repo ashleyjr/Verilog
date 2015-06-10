@@ -13,11 +13,7 @@ module uart_autobaud(
 
 
    // Params
-   parameter   BAUD = 20'd215,      // 8.6us count, 115200 baud 
-               BAUD_05 = BAUD / 2,
-               
-
-               RX_IDLE  = 4'h0,
+   parameter   RX_IDLE  = 4'h0,
                RX_START = 4'h1,
                RX_1     = 4'h2,
                RX_2     = 4'h3,
@@ -44,41 +40,24 @@ module uart_autobaud(
                TX_BUSY  = 4'hB;
 
    // Internal Regs
-   reg [3:0]   state_rx;
-   reg [19:0]   count_rx;
+   reg [3:0]      state_rx;
+   reg [31:0]     count_rx;
 
-   reg [3:0]   state_tx;
-   reg [19:0]   count_tx;
-   reg [7:0]   shift_tx;
+   reg [3:0]      state_tx;
+   reg [31:0]     count_tx;
+   reg [7:0]      shift_tx;
  
-   
    reg            delay_1;
    reg            delay_2;
+   reg [31:0]     timer;
    reg [31:0]     baud;
-   
-   always @(posedge clk or negedge nRst) begin
-      if(!nRst) begin
-         baud     <= 32'd0;
-         delay_1  <= 1'b0;
-         delay_2  <= 1'b0;
-      end else begin
-         delay_1  <= rx;
-         delay_2  <= delay_1;
-         if((delay_2 == delay_1) && (baud != 32'hFFFFFFFF)) begin
-            baud <= baud + 1'b0;
-         end else begin
-            baud <= 0'b0;
-         end
-      end
-   end
-     
-   // Serial clock generation - 115200 baud = 50MHz/5208
+      
    always @(posedge clk or negedge nRst) begin
       if(!nRst) begin
 
          // RX
          count_rx    <= 0;
-         data_rx    <= 0;
+         data_rx     <= 0;
          busy_rx     <= 0;
          state_rx    <= RX_IDLE;
 
@@ -89,10 +68,34 @@ module uart_autobaud(
          state_tx    <= TX_IDLE;
          tx          <= 1;
 
+         // Autobaud
+         baud        <= 32'hFFFFFFFF;
+         timer       <= 32'h0;
+         delay_1     <= 1'b0;
+         delay_2     <= 1'b0;
+
       end else begin
+         // Default to count
+         count_rx <= count_rx + 1'b1;
+         count_tx <= count_tx + 1'b1;
+
+         
+         // Autobaud 
+         delay_1     <= rx;
+         delay_2     <= delay_1;
+         if( (delay_2 == delay_1) && (timer != 32'hFFFFFFFF)) begin
+            timer    <= timer + 1'b1; 
+         end else begin
+            timer    <= 0'b0;
+            if((timer < baud) && (timer > 32'd1)) begin
+               baud <= timer;
+               count_rx <= 1'b0;
+               count_tx <= 1'b0;
+            end 
+         end
+
 
          // RX state machine
-         count_rx <= count_rx + 1'b1;
          case(state_rx)
             RX_IDLE:    begin                                     // Wait for incoming
                            count_rx    <= 0;
@@ -102,7 +105,7 @@ module uart_autobaud(
                               busy_rx  <= 1; 
                            end
                         end
-            RX_START:   if(count_rx == BAUD_05) begin             // Half sample
+            RX_START:   if(count_rx == (baud >> 1)) begin             // Half sample
                            state_rx    <= RX_1;
                            count_rx    <= 0;
                         end
@@ -112,12 +115,12 @@ module uart_autobaud(
             RX_4, 
             RX_5, 
             RX_6, 
-            RX_7:       if(count_rx == BAUD) begin                // Shift in bits
+            RX_7:       if(count_rx == baud) begin                // Shift in bits
                            data_rx    <= {rx,data_rx[7:1]};
                            count_rx    <= 0;
                            state_rx <= state_rx + 1'b1;
                         end
-            RX_8:       if(count_rx == BAUD) begin                // Last bit
+            RX_8:       if(count_rx == baud) begin                // Last bit
                            data_rx     <= {rx,data_rx[7:1]};
                            count_rx    <= 0;
                            state_rx    <= RX_WAIT;
@@ -135,9 +138,7 @@ module uart_autobaud(
          endcase
 
 
-
          // TX state machine
-         count_tx <= count_tx + 1'b1;
          case(state_tx)
             TX_IDLE:    begin                                     // When told to transmit take line low
                            count_tx    <= 0;
@@ -155,18 +156,18 @@ module uart_autobaud(
             TX_5, 
             TX_6, 
             TX_7,
-            TX_8:       if(count_tx == BAUD) begin                // Shift out bits
+            TX_8:       if(count_tx == baud) begin                // Shift out bits
                            tx          <= shift_tx[0];
                            shift_tx    <= shift_tx >> 1;
                            count_tx    <= 0;
                            state_tx <= state_tx + 1'b1;
                         end
-            TX_WAIT:    if(count_tx == BAUD) begin                // Return line high and wait
+            TX_WAIT:    if(count_tx == baud) begin                // Return line high and wait
                            state_tx    <= TX_BUSY;
                            tx          <= 1;
                            count_tx    <= 0;
                         end
-            TX_BUSY:    if(count_tx == BAUD) begin                // Keep the line high for one baud period
+            TX_BUSY:    if(count_tx == baud) begin                // Keep the line high for one baud period
                            state_tx    <= TX_IDLE;
                            busy_tx     <= 0; 
                         end

@@ -1,7 +1,8 @@
 
 module uart_autobaud_tb;
    parameter CLK_PERIOD = 20;          // 50MHz clock - 20ns period  
-   parameter BAUD_PERIOD = 8700;
+   parameter BAUD_PERIOD_1 = 8700;
+   parameter BAUD_PERIOD_2 = 100;
 
    reg            clk;
    reg            nRst;
@@ -44,31 +45,35 @@ module uart_autobaud_tb;
       $dumpvars(0,uart_autobaud_tb);
    end
 
-   task uart_send;
+   task uart_send_1;
       input [7:0] send;
       integer i;
       begin
          tx = 0;
          for(i=0;i<=7;i=i+1) begin   
             sample_tx = !sample_tx;
-            #BAUD_PERIOD tx = send[i];
+            #BAUD_PERIOD_1 tx = send[i];
          end
          sample_tx = !sample_tx;
-         #BAUD_PERIOD tx = 1;
+         #BAUD_PERIOD_1 tx = 1;
       end
    endtask
 
-   task uart_get;
-      output [7:0] get;
+   task uart_send_2;
+      input [7:0] send;
       integer i;
       begin
-         sample_rx = !sample_rx;
+         tx = 0;
          for(i=0;i<=7;i=i+1) begin   
-            #BAUD_PERIOD  get[i] = rx;
-            sample_rx = !sample_rx;
+            sample_tx = !sample_tx;
+            #BAUD_PERIOD_2 tx = send[i];
          end
+         sample_tx = !sample_tx;
+         #BAUD_PERIOD_2 tx = 1;
       end
    endtask
+
+
 	
    initial begin
                sample_tx = 0;
@@ -76,12 +81,48 @@ module uart_autobaud_tb;
       #100     nRst = 1;
                tx = 1;
       #100     nRst = 0;
-      #100     nRst = 1;
+      #50     nRst = 1;
 
-      for(i=0;i<1;i=i+1) begin
-         #100000     uart_send(i);
-                     uart_get(j);
-      end
+      //for(i=1000;i>0;i=i-1) begin
+      //   for(j=0;j<i;j=j+1) begin
+      //      #1 tx = 1;
+      //   end
+      //
+      //for(j=0;j<i;j=j+1) begin
+      //      #1 tx = 0;
+      //   end
+      //end
+      #100000
+      uart_send_1(8'h11);
+      #100000
+      uart_send_1(8'hAA);
+      #100000
+      uart_send_1(8'h11);
+      #100000
+      uart_send_1(8'hAA);
+
+
+      #100000
+      uart_send_2(8'h11);
+      #100000
+      uart_send_2(8'hAA);
+      #100000
+      uart_send_2(8'h11);
+      #100000
+      uart_send_2(8'hAA);
+
+      
+      #100000
+      uart_send_1(8'h11);
+      #100000
+      uart_send_1(8'hAA);
+      #100000
+      uart_send_1(8'h11);
+      #100000
+      uart_send_1(8'hAA);
+
+
+
 
       #300000
 	   $finish;
