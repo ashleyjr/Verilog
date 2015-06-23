@@ -46,5 +46,6 @@ if "__main__" == __name__:
         print "     Cmd: " + cmd
         os.system(cmd)
 
+    print
     print "DONE"
     print
