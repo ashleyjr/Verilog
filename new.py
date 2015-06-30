@@ -19,40 +19,68 @@ if "__main__" == __name__:
     print "--- new_module.py ---"
     print "  Module: " + sim
 
+    if(options.name):
+        if(os.path.isdir(sim) == False):
+            print "    Move: " + move + "/"
+            os.mkdir(sim)
+            os.chdir(sim)
 
-    if(os.path.isdir(sim) == False):
-        print "    Move: " + move + "/"
-        os.mkdir(sim)
-        os.chdir(sim)
-
-        txt_name = sim + ".txt"
-        v_name = sim + ".v"
-        tb_name = sim + "_tb.v"
-
-
-        txt = open(txt_name, "wb")
-        txt.write(v_name + "\n")
-        txt.write(tb_name + "\n")
-        txt.close()
-
-        v = open(v_name, "wb")
-        v.write("module " + sim + "(\n" )
-        v.write("\tinput\tclk,\n")
-        v.write("\tinput\tnRst,\n")
-        v.write(");"+ "\n")
-        v.close()
-
-        tb = open(tb_name, "wb")
-        tb.write(v_name + "\n")
-        tb.write(tb_name + "\n")
-        tb.close()
+            txt_name = sim + ".txt"
+            v_name = sim + ".v"
+            tb_name = sim + "_tb.v"
 
 
+            txt = open(txt_name, "wb")
+            txt.write(v_name + "\n")
+            txt.write(tb_name + "\n")
+            txt.close()
 
+            v = open(v_name, "wb")
+            v.write("module " + sim + "(\n" )
+            v.write("\tinput\tclk,\n")
+            v.write("\tinput\tnRst,\n")
+            v.write(");"+ "\n")
+            v.write("\n")
+            v.write("endmodule\n")
+            v.close()
+
+            tb = open(tb_name, "wb")
+            tb.write("module " + sim + "_tb;\n")
+            tb.write("\n")
+            tb.write("\tparameter CLK_PERIOD = 20;\n")
+            tb.write("\n")
+            tb.write("\treg clk\n")
+            tb.write("\treg nRst\n")
+            tb.write("\n")
+            tb.write("\t" + sim + " " + sim + "(\n")
+            tb.write("\t\t.clk\t(clk)\n")
+            tb.write("\t\t.nRst\t(nRst)\n")
+            tb.write("\t);"+ "\n")
+            tb.write("\n")
+            tb.write("\tinitial begin\n")
+            tb.write("\t\twhile(1) begin\n")
+            tb.write("\t\t\t#(CLK_PERIOD/2) clk = 0;\n")
+            tb.write("\t\t\t#(CLK_PERIOD/2) clk = 1;\n")
+            tb.write("\t\tend")
+            tb.write("\tend\n")
+            tb.write("\n")
+            tb.write("\tinitial begin\n")
+            tb.write("\t\t$dumpfile(" + sim + ".vcd)\n")
+            tb.write("\t\t$dumpvars(0," + tb_name + ")\n")
+            tb.write("\tend\n")
+            tb.write("endmodule\n")
+            tb.close()
+
+
+
+
+
+
+        else:
+            print "   Error: Module already exists!"
 
     else:
-        print "   Error: Module already exists!"
-
+        print "   Error: Must define name"
     print
     print "DONE"
     print
