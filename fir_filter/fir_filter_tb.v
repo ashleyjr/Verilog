@@ -35,7 +35,8 @@ module fir_filter_tb;
       #50      nRst  = 1;
       #300     in    = 32'd101;
       #300     in    = 32'd102;
-	   $finish;
+	   #1000
+      $finish;
 	end
 
 
