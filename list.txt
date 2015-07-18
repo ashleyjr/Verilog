@@ -2,9 +2,7 @@ uart_autobaud/uart_autobaud_filelist.txt
 uart_autobaud/uart_autobaud_tb.v
 uart_autobaud/uart_autobaud.v
 fir_filter/fir_filter_filelist.txt
-fir_filter/fir_filter.dat
 fir_filter/fir_filter.v
-fir_filter/fir_filter.vcd
 fir_filter/fir_filter_gen.py
 fir_filter/fir_filter_tb.v
 fir_filter/coeffcients.csv
