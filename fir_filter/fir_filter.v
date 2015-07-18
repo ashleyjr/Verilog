@@ -1,34 +1,30 @@
 module fir_filter(
-   input                clk,
-   input                nRst,
-   input       [31:0]   in,      // Data in to filter
-   output      [31:0]   out      // Data out of filter
+   input                      clk,
+   input                      nRst,
+   input                      sample,  // Take a sample
+   input    signed   [31:0]   in,      // Data in to filter
+   output   signed   [31:0]   out      // Data out of filter
 );
-   
+  
    parameter LENGTH = 4;
+  
+   reg signed [31:0] delay [LENGTH-1:0];
 
-   parameter M0   = 32'd0;
-   parameter M1   = 32'd1;
-   parameter M2   = 32'd2;
-   parameter M3   = 32'd3;
-   parameter M4   = 32'd4;
-   
-   //reg [31:0] multi [LENGTH:0]   
-   //   =  {
-   //         32'd0,
-   //         32'd1,
-   //         32'd2,
-   //         32'd3,
-   //         32'd4
-   //      };
-   //
-      reg [31:0] delay [LENGTH-1:0];
+   assign
+      out = in       * 32'd1 + 
+            delay[0] * 32'd2 +
+            delay[1] * 32'd3 +
+            delay[2] * 32'd4 +
+            delay[3] * 32'd5 ;
+
 
    always @(posedge clk or negedge nRst) begin
       if(!nRst) begin
          delay[0] <= 32'b0;
-      end else begin      
-         delay[0] <= in;
+      end else begin     
+         if(sample)
+            delay[0] <= in;
+         end
       end
    end
 
@@ -44,8 +40,5 @@ module fir_filter(
          end
       end
    endgenerate
- 
-   assign out = in*M0 + delay[0]*M1 + delay[1]*M2 + delay[2]*M3 + delay[3]*M4; 
-   
 
 endmodule
