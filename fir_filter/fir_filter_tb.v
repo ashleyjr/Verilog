@@ -8,12 +8,14 @@ module fir_filter_tb;
    reg            nRst;
    reg   [31:0]   in;
    wire  [31:0]   out;
+   reg            sample;
       
    fir_filter fir_filter(
       .clk        (clk        ),
       .nRst       (nRst       ),
       .in         (in         ),
-      .out        (out        )
+      .out        (out        ),
+      .sample     (sample     )
    );
 
 	initial begin
@@ -29,13 +31,16 @@ module fir_filter_tb;
    end
 	
    initial begin
-               in    = 32'd100;
-      #100     nRst  = 1;
-      #100     nRst  = 0;
-      #50      nRst  = 1;
-      #300     in    = 32'd101;
-      #300     in    = 32'd102;
-	   #1000
+               in       = 32'd100;
+               sample   = 1;
+      #100     nRst     = 1;
+      #100     nRst     = 0;
+      #50      nRst     = 1;
+      #300     in       = 32'd101;
+      #300     in       = 32'd102;
+	   #300     in       = 32'd101;
+      #300     in       = 32'd102;
+      #1000
       $finish;
 	end
 
