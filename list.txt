@@ -13,3 +13,10 @@ watchdog/watchdog.v
 watchdog/watchdog.dat
 watchdog/watchdog_filelist.txt
 watchdog/watchdog_tb.v
+adc/adc.vcd
+adc/adc_tb.v
+adc/adc_tb
+adc/adc_tb_gen.py
+adc/adc.v
+adc/adc.dat
+adc/adc_filelist.txt
