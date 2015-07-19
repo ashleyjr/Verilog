@@ -2,9 +2,11 @@ module watchdog_tb;
 
 	parameter CLK_PERIOD = 20;
 
-	reg   clk;
+
+   integer i;
+
+   reg   clk;
 	reg   nRst;
-   reg   sleep;
    reg   sclk;
    reg   in;
    reg   sel;
@@ -13,7 +15,6 @@ module watchdog_tb;
 	watchdog watchdog(
 		.clk	   (clk),
 		.nRst	   (nRst),
-      .sleep   (sleep),
       .sclk    (sclk),
       .in      (in),
       .sel     (sel),
@@ -30,29 +31,36 @@ module watchdog_tb;
 		$dumpfile("watchdog.vcd");
 		$dumpvars(0,watchdog_tb);
 	end
-
-   initial begin
-      while(1) begin
-         #100  sclk = 0;
-         #100  sclk = 1;
+   
+   task clock_in_top;
+      input [31:0] top;
+      begin
+         sel = 1; 
+         for(i=31;i>=0;i=i-1) begin
+            #50   sclk  = 0;
+            #50   in    = top[i];
+            #50   sclk  = 1;
+         end
+         #50 sel = 0;
       end
-   end
+   endtask
+   
+   
    initial begin
             nRst  = 1;
-            sleep = 0;
             in    = 0;
+            sel   = 0;
+            sclk  = 1;
+
       #100  nRst  = 0;
       #100  nRst  = 1;
-      #100  sel   = 1;
-      #400  in    = 1;
-      #100  in    = 0;
-      #20   sel   = 0;
-      
-      #100  nRst = 1;
-      #100  nRst = 0;
-      #100  nRst = 1;
-      
-      #3000
+
+      clock_in_top(32'd100);   
+      #30000
+      clock_in_top(32'd1234);   
+      #30000
+      clock_in_top(32'd1000);   
+      #30000
       $finish;
    end
 endmodule
