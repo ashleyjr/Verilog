@@ -50,9 +50,9 @@ if "__main__" == __name__:
     tb.write("\t\t#100\t\tnRst = 0;\n")
     tb.write("\t\t#100\t\tnRst = 1;\n")
 
-    for i in range(1,1000):
-        val = 10000 + 10000*sin(float(i)/100)
-        tb.write("\t\t#100\t\tread = 32'd%0.0f;\n" % val)
+    for i in range(1,10000):
+        val =  2147483648 + 2147483648*sin(float(i)/100)
+        tb.write("\t\t#1\t\tread = 32'd%0.0f;\n" % val)
         print val
 
     tb.write("\t\t#10000\n")
