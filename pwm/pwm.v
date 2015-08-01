@@ -1,18 +1,30 @@
 module pwm(
-	input	clk,
-	input	nRst
+	input	      clk,
+	input	      nRst,
+   input       sclk,
+   input       sin,
+   input       sen,
+   output reg  out
 );
 
    reg [31:0]  count;
+   reg [31:0]  new_period;
    reg [31:0]  period;
+   reg [31:0]  new_duty;
    reg [31:0]  duty;
-   reg         out;
+   
+   always @(posedge sclk or negedge nRst) begin
+      if(sen) begin
+         {new_period,new_duty} <= {new_period[30:0],new_duty,sin};
+      end else begin
+         period <= new_period;
+         duty <= new_duty;
+      end
+   end
 
    always @(posedge clk or negedge nRst) begin
-      if(!nRst) begin
+      if(!nRst | sen) begin
          out      <= 1'b0;
-         duty     <= 32'd1000;
-         period   <= 32'd2000;
          count    <= 32'd0;
       end else begin
          if(count == period) begin
