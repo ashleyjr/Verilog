@@ -9,6 +9,7 @@ module pwm_tb;
    reg   sen;
    wire  out;
 	
+   integer j,k;
    
    pwm pwm(
 		.clk	(clk),
@@ -40,13 +41,13 @@ module pwm_tb;
          sclk = 0;
          for(i=31;i>=0;i=i-1) begin
                   sin = period[i];
-            #30   sclk = 1;
-            #30   sclk = 0;
+            #3   sclk = 1;
+            #3   sclk = 0;
          end
          for(i=31;i>=0;i=i-1) begin
                   sin = duty[i];
-            #30   sclk = 1;
-            #30   sclk = 0;     
+            #3   sclk = 1;
+            #3   sclk = 0;     
          end
          sen = 0;
       end
@@ -60,12 +61,13 @@ module pwm_tb;
 		
       #100		nRst  = 0;
 		#100		nRst  = 1;
-		
-      set(32'h00000010,32'h00000008); 
-      #100000
-		set(32'h00000100,32'h00000080); 
-      #100000
-      set(32'h00001000,32'h00000800); 
+	
+
+      for(j=100;j<120;j=j+1) begin
+         for(k=0;k<j;k=k+1) begin
+            #1000 set(j,k);
+         end
+      end
       #100000
 
       

@@ -12,29 +12,47 @@ module pwm(
    reg [31:0]  period;
    reg [31:0]  new_duty;
    reg [31:0]  duty;
-   
+   reg         update;
+
    always @(posedge sclk or negedge nRst) begin
-      if(sen) begin
-         {new_period,new_duty} <= {new_period[30:0],new_duty,sin};
+      if(!nRst) begin
+         new_period  <= 32'd0;
+         new_duty    <= 32'd0;
       end else begin
-         period <= new_period;
-         duty <= new_duty;
+         if(sen) begin
+            {new_period,new_duty} <= {new_period[30:0],new_duty,sin};
+         end 
       end
    end
 
    always @(posedge clk or negedge nRst) begin
-      if(!nRst | sen) begin
+      if(!nRst) begin
          out      <= 1'b0;
+         period   <= 32'd0;
+         duty     <= 32'd1;
          count    <= 32'd0;
       end else begin
-         if(count == period) begin
-            count <= 32'd0;
-            out   <= !out;
-         end else begin
-            if(count == duty) begin
-               out <= !out;
+         if(   (duty > period)   |
+               (period == 32'd0) ) begin
+            out <= 1'b0;
+            if(!sen) begin
+               period   <= new_period;
+               duty     <= new_duty;
             end
-            count <= count + 1;
+         end else begin
+            if(count == period) begin
+               count <= 32'd0;
+               out   <= !out;
+               if(!sen) begin
+                  period   <= new_period;
+                  duty     <= new_duty;
+               end
+            end else begin
+               if(count == duty) begin
+                  out <= !out;
+               end
+               count <= count + 1;
+            end
          end
       end
    end
