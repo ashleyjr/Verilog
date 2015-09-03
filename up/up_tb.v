@@ -35,10 +35,53 @@ module up_tb;
 	end
 
 	initial begin
-					nRst = 1;
-		#100		nRst = 0;
-		#100		nRst = 1;
-		#10000
+					nRst        = 1;
+               sel_out_a   = 0;
+               sel_out_b   = 0;
+               sel_write   = 0;
+               data_in     = 0;
+
+
+		#100		nRst        = 0;
+		#100		nRst        = 1;
+
+      // Write all regs
+      #50      data_in     = 8'hAA;
+               sel_write   = 3'b100;
+
+      // Write individual regs
+      #50      data_in     = 8'hBB;
+               sel_write   = 3'b000;
+      
+      #50      data_in     = 8'hCC;
+               sel_write   = 3'b001;
+
+      #50      data_in     = 8'hDD;
+               sel_write   = 3'b010;
+
+      #50      data_in     = 8'hEE;
+               sel_write   = 3'b011;
+
+      // scan the outputs
+      #50      sel_out_a   = 2'b00;
+      #50      sel_out_a   = 2'b01;
+      #50      sel_out_a   = 2'b10;
+      #50      sel_out_a   = 2'b11;
+
+	
+      #50      sel_out_b   = 2'b00;
+      #50      sel_out_b   = 2'b01;
+      #50      sel_out_b   = 2'b10;
+      #50      sel_out_b   = 2'b11;
+
+
+
+
+
+      #100     nRst        = 0;
+      #100     nRst        = 1;
+      
+      #10000
 		$finish;
 	end
 
