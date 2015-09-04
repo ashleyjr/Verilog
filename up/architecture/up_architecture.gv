@@ -1,7 +1,17 @@
-digraph G {
-node [shape=record];
-	regs [shape=record,label=" {R0|R1|R2|R3}"];
-	mux_
-	alu[shape=record,label="alu"] 
-
+digraph {
+   splines=false;
+      
+   subgraph[shape=box] clusterX{
+      A;
+      B;
+   }
+   
+   subgraph clusterY {
+      C;
+      D;
+   } 
+   
+   A -> B;
+   B -> C [constraint=false];
+   C -> D [label=yadda];
 }
