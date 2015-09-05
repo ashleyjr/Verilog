@@ -1,0 +1,3 @@
+up_datapath.v
+../up_reg_block/up_reg_block.v
+up_datapath_tb.v
