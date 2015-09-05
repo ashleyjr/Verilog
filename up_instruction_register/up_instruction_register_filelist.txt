@@ -1,0 +1,2 @@
+up_instruction_register.v
+up_instruction_register_tb.v
