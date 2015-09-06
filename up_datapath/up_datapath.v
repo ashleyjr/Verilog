@@ -3,6 +3,7 @@ module up_datapath(
 	input	   wire        clk,
 	input	   wire        nRst,
    input    wire  [7:0] data_in,
+   input    wire        sel_rb_data_in_a,
    // up_alu
    input    wire        a_sel_in_a,
    input    wire        a_sel_in_b,
@@ -42,9 +43,8 @@ module up_datapath(
    wire  [7:0] rb_data_in_a;
    wire  [7:0] rb_data_in_b;
 
-
    // mux on input to reg_block
-   assign   rb_data_in_a   = (sel_rb_data_in_a) ? a_data_out_a : data_in;
+   assign   rb_data_in_a   = (sel_rb_data_in_a) ? a_data_out_a : data_out;
    assign   a_data_in_b1   = pc_out >> 1;
 
    up_alu up_alu(

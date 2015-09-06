@@ -17,7 +17,7 @@ module up_alu(
 				   DIV 	   = 3'b011,
 				   NAND 	   = 3'b100,
 				   NOR 	   = 3'b101,
-				   A 		   = 3'b110,
+				   XOR 	   = 3'b110,
 				   B 		   = 3'b111;
 
 	assign data_out_a = (sel_in_a) ? data_in_a1 : data_in_a0;
@@ -30,6 +30,6 @@ module up_alu(
 			(op == DIV	) ? data_out_a / data_out_b 	   :
 			(op == NAND	) ? data_out_a ~& data_out_b 	   :
 			(op == NOR	) ? data_out_a ~| data_out_b 	   :
-			(op == A 	) ? data_out_a   				      : data_out_b;
+			(op == XOR 	) ? data_out_a ^ data_out_b      : data_out_b;
 
 endmodule

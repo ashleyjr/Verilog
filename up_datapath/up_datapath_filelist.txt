@@ -1,7 +1,7 @@
 up_datapath.v
 ../up_alu/up_alu.v
 ../up_instruction_register/up_instruction_register.v
-../up_program_counter/up_porgram_counter.v
+../up_program_counter/up_program_counter.v
 ../up_reg_block/up_reg_block.v
 ../up_stack_pointer/up_stack_pointer.v
 up_datapath_tb.v
