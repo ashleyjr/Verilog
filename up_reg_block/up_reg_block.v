@@ -3,12 +3,9 @@ module up_reg_block(
 	input	   wire        nRst,
    input    wire [1:0]  sel_out_a,
    input    wire [1:0]  sel_out_b,
-   input    wire [1:0]  sel_write_a,
-   input    wire [1:0]  sel_write_b,
-   input    wire        we_a,
-   input    wire        we_b,
-   input    wire [7:0]  data_in_a,
-   input    wire [7:0]  data_in_b,
+   input    wire [1:0]  sel_in,
+   input    wire [7:0]  data_in,
+   input    wire        we,
    output   wire [7:0]  data_out_a,
    output   wire [7:0]  data_out_b
 
@@ -47,44 +44,12 @@ module up_reg_block(
          r2 <= REG_ON_RES_2;
          r3 <= REG_ON_RES_3;
       end else begin
-         if(we_a) 
-            case(sel_write_a) 
-               SEL_0:   begin
-                           r0 <= data_in_a;
-                           if(we_b)
-                              case(sel_write_b)
-                                 SEL_1:   r1 <= data_in_b;
-                                 SEL_2:   r2 <= data_in_b;
-                                 SEL_3:   r3 <= data_in_b;
-                              endcase
-                        end    
-               SEL_1:   begin
-                           r1 <= data_in_a;
-                           if(we_b)
-                              case(sel_write_b)
-                                 SEL_0:   r0 <= data_in_b;
-                                 SEL_2:   r2 <= data_in_b;
-                                 SEL_3:   r3 <= data_in_b;
-                              endcase
-                        end   
-               SEL_2:   begin
-                           r2 <= data_in_a;
-                           if(we_b)
-                              case(sel_write_b)
-                                 SEL_0:   r0 <= data_in_b;
-                                 SEL_1:   r1 <= data_in_b;
-                                 SEL_3:   r3 <= data_in_b;
-                              endcase
-                        end   
-               SEL_3:   begin
-                           r3 <= data_in_a;
-                           if(we_b)
-                              case(sel_write_b)
-                                 SEL_0:   r0 <= data_in_b;
-                                 SEL_1:   r1 <= data_in_b;
-                                 SEL_2:   r2 <= data_in_b;
-                              endcase
-                        end   
+         if(we) 
+            case(sel_in) 
+               SEL_0:   r0 <= data_in;  
+               SEL_1:   r1 <= data_in;
+               SEL_2:   r2 <= data_in;
+               SEL_3:   r3 <= data_in;
             endcase
       end
    end     
