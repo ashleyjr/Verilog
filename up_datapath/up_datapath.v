@@ -11,7 +11,7 @@ module up_datapath(
    // up_instruction_register
    input    wire        ir_we,
    // up_program_counter
-   input    wire  [1:0] pc_op,
+   input    wire        we_pc,
    // up_reg_block
    input    wire  [1:0] rb_sel_out_a,
    input    wire  [1:0] rb_sel_out_b,
@@ -20,8 +20,7 @@ module up_datapath(
    input    wire        rb_we_a,
    input    wire        rb_we_b,
    // up_stack_pointer
-   input    wire        sp_add,
-   input    wire        sp_sub,
+   input    wire        we_sp,
    // outputs
    output   wire  [7:0] data_out,
    output   wire  [3:0] ir
@@ -43,10 +42,24 @@ module up_datapath(
    wire  [7:0] rb_data_in_a;
    wire  [7:0] rb_data_in_b;
 
-   // mux on input to reg_block
-   assign   rb_data_in_a   = (sel_rb_data_in_a) ? a_data_out_a : data_out;
-   assign   a_data_in_b1   = pc_out >> 1;
 
+   // internal   
+   
+   reg   [7:0] sp;
+   reg   [7:0] pc;
+   
+   always@(posedge clk or negedge nRst) begin
+      if(!nRst) begin
+         pc <= 8'h00;
+         sp <= 8'hFF;
+      end else begin
+         if(we_sp)   sp <= data_out;
+         if(we_pc)   pc <= data_out;
+      end
+   end
+   
+   
+   
    up_alu up_alu(
       .data_in_a0    (a_data_in_a0     ),
       .data_in_a1    (a_data_in_a1     ),
@@ -69,37 +82,17 @@ module up_datapath(
       .ir            (ir               )
    );
 
-   up_program_counter up_program_counter(
-      .clk           (clk              ),
-      .nRst          (nRst             ),
-      .op            (pc_op            ),
-      .in            (data_in          ),
-      .pc            (pc_out           )
-   );
-
    up_reg_block up_reg_block(
       .clk           (clk              ),
       .nRst          (nRst             ),
       .sel_out_a     (rb_sel_out_a     ),
       .sel_out_b     (rb_sel_out_b     ),
-      .sel_write_a   (rb_sel_write_a   ),
-      .sel_write_b   (rb_sel_write_b   ),
-      .we_a          (rb_we_a          ),
-      .we_b          (rb_we_b          ),
-      .data_in_a     (rb_data_in_a     ),
-      .data_in_b     (rb_data_in_b     ),
+      .sel_in        (                 ),
+      .data_in       (rb_data_in_b     ),
+      .we            (                 ),
       .data_out_a    (a_data_in_a0     ),
       .data_out_b    (a_data_in_b0     )
    );
-
-   up_stack_pointer up_stack_pointer(
-      .clk           (clk              ),
-      .nRst          (nRst             ),
-      .add           (sp_add           ),
-      .sub           (sp_sub           ),
-      .sp            (a_data_in_a1     )
-   );
-
 
 
 endmodule
