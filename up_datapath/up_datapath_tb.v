@@ -4,15 +4,10 @@ module up_datapath_tb;
 
 	reg         clk;
 	reg         nRst;
-   reg   [7:0] data_in;
-   reg         rb_sel_data_in;
-   reg         a_sel_in_a;
-   reg         a_sel_in_b;
-   reg   [3:0] a_op;
+   reg   [7:0] data_in; 
+   reg   [4:0] op;
    reg         ir_we;
    reg         pc_we;
-   reg   [1:0] rb_sel_out_a;
-   reg   [1:0] rb_sel_out_b;
    reg   [2:0] rb_sel_in;
    reg         rb_we;
    reg         sp_we;
@@ -23,14 +18,10 @@ module up_datapath_tb;
 	up_datapath up_datapath(
 		.clk	               (clk              ),
 		.nRst	               (nRst             ),
-      .data_in             (data_in          ),
-      .a_sel_in_a          (a_sel_in_a       ),
-      .a_sel_in_b          (a_sel_in_b       ),
-      .a_op                (a_op             ),
+      .data_in             (data_in          ), 
+      .op                  (op               ),
       .ir_we               (ir_we            ),
       .pc_we               (pc_we            ),
-      .rb_sel_out_a        (rb_sel_out_a     ),
-      .rb_sel_out_b        (rb_sel_out_b     ),
       .rb_sel_in           (rb_sel_in        ), 
       .rb_we               (rb_we            ),
       .sp_we               (sp_we            ),
@@ -50,28 +41,156 @@ module up_datapath_tb;
 	end
 
 	initial begin
-					nRst                 = 1;
+					nRst        = 1;
         
-               // Default setup 
-               data_in              = 8'h00;
-               rb_sel_data_in       = 1'b0;
-               a_sel_in_a           = 1'b0;
-               a_sel_in_b           = 1'b0;
-               a_op                 = 3'b000;
-               ir_we                = 1'b0;
-               pc_we                = 1'b0;
-               rb_sel_out_a         = 2'b00;
-               rb_sel_out_b         = 2'b00;
-               rb_sel_in            = 2'b00;
-               rb_we                = 1'b0;
-               sp_we                = 1'b0;
+               // Default 
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
+
+
+		#100		nRst        = 0;
+		#100		nRst        = 1;
+
+
+               // ADD
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
+
+              
+               // SUB
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00001;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
 
 
 
-		#100		nRst                 = 0;
-		#100		nRst                 = 1;
+               // MUL
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00010;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
 
 
+
+               // DIV
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00011;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
+
+
+               // NAND
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00100;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
+
+
+              
+               // XOR_01
+               #50
+               data_in     = 8'h00; 
+               op          = 5'b00101;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #CLK_PERIOD
+               data_in     = 8'h00; 
+               op          = 5'b00101;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b101;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #CLK_PERIOD
+               data_in     = 8'h00; 
+               op          = 5'b00101;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b100;
+               rb_we       = 1'b1;
+               sp_we       = 1'b0;
+               #CLK_PERIOD
+               data_in     = 8'h00; 
+               op          = 5'b00000;
+               ir_we       = 1'b0;
+               pc_we       = 1'b0;
+               rb_sel_in   = 3'b000;
+               rb_we       = 1'b0;
+               sp_we       = 1'b0;
+
+
+         
       #10000
 		$finish;
 	end
