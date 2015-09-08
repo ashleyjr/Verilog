@@ -25,6 +25,28 @@ module up_datapath(
    
 );
       
+   // Parameters
+   parameter   REG_ON_RES_0   = 8'h01,
+               REG_ON_RES_1   = 8'h02,
+               REG_ON_RES_2   = 8'h03,
+               REG_ON_RES_3   = 8'h04;
+
+   parameter   SEL_0          = 2'b00,
+               SEL_1          = 2'b01,
+               SEL_2          = 2'b10,
+               SEL_3          = 2'b11;
+
+   parameter   ADD            = 4'h0,
+               SUB            = 4'h1,
+               MUL            = 4'h2,
+               DIV            = 4'h3,
+               NAND           = 4'h4,
+               NOR            = 4'h5,
+               XOR            = 4'h6,
+               B              = 4'h7;
+
+   parameter   TOP            = 1'b1,
+               BOTTOM         = 1'b0;
 
    // up_alu
    wire  [7:0] a_data_in_a0;
@@ -33,54 +55,68 @@ module up_datapath(
    wire  [7:0] a_data_in_b1; 
    wire  [7:0] rb_data_in;
 
-   // internal    
-   reg   [7:0] sp;
-   reg   [7:0] pc;
+
+   reg   [7:0]    sp;
+   reg   [7:0]    pc;
+   reg   [3:0]    ir;
+   reg   [7:0]    r0;
+   reg   [7:0]    r1;
+   reg   [7:0]    r2;
+   reg   [7:0]    r3;  
    
+   wire  [7:0]    rb_data_out_a;
+   wire  [7:0]    rb_data_out_b;
+
+   assign   rb_data_in = 
+               (rb_sel_data_in)           ? data_in : data_out;
+
+   assign   rb_data_out_a = 
+               (rb_sel_out_a == SEL_0)    ? r0:
+               (rb_sel_out_a == SEL_1)    ? r1:
+               (rb_sel_out_a == SEL_2)    ? r2: r3;
+
+   assign   rb_data_out_b = 
+               (rb_sel_out_b == SEL_0)    ? r0:
+               (rb_sel_out_b == SEL_1)    ? r1:
+               (rb_sel_out_b == SEL_2)    ? r2: r3;
+
+   assign   data_out =
+               (op == ADD  )              ? rb_data_out_a +  rb_data_out_b  :
+               (op == SUB  )              ? rb_data_out_a -  rb_data_out_b  :
+               (op == MUL  )              ? rb_data_out_a *  rb_data_out_b  :
+               (op == DIV  )              ? rb_data_out_a /  rb_data_out_b  :
+               (op == NAND )              ? rb_data_out_a ~& rb_data_out_b  :
+               (op == NOR  )              ? rb_data_out_a ~| rb_data_out_b  :
+               (op == XOR  )              ? rb_data_out_a ^  rb_data_out_b  : data_out_b;
+
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
          pc <= 8'h00;
          sp <= 8'hFF;
+         ir <= 4'h0;
+         r0 <= REG_ON_RES_0;
+         r1 <= REG_ON_RES_1;
+         r2 <= REG_ON_RES_2;
+         r3 <= REG_ON_RES_3;  
       end else begin
          if(sp_we)   sp <= data_out;
          if(pc_we)   pc <= data_out;
+         if(rb_we) 
+            case(rb_sel_in) 
+               SEL_0:   r0 <= rb_data_in;  
+               SEL_1:   r1 <= rb_data_in;
+               SEL_2:   r2 <= rb_data_in;
+               SEL_3:   r3 <= rb_data_in;
+            endcase
+         if(ir_we)
+            if(pc[0])
+               ir <= data_in[7:4];
+            else
+               ir <= data_in[3:0];
       end
    end
   
    assign rb_data_in = (rb_sel_data_in) ? data_in : data_out;
    
-   
-   up_alu up_alu(
-      .data_in_a0    (a_data_in_a0     ),
-      .data_in_a1    (a_data_in_a1     ),
-      .data_in_b0    (a_data_in_b0     ),
-      .data_in_b1    (a_data_in_b1     ),
-      .sel_in_a      (a_sel_in_a       ),
-      .sel_in_b      (a_sel_in_b       ),
-      .op            (a_op             ),
-      .data_out      (data_out         )
-   );
-
-   up_instruction_register up_instruction_register(
-      .clk           (clk              ),
-      .nRst          (nRst             ),
-      .we            (ir_we            ),
-      .sel           (pc[0]            ),
-      .in            (data_in          ),
-      .ir            (ir               )
-   );
-
-   up_reg_block up_reg_block(
-      .clk           (clk              ),
-      .nRst          (nRst             ),
-      .sel_out_a     (rb_sel_out_a     ),
-      .sel_out_b     (rb_sel_out_b     ),
-      .sel_in        (rb_sel_in        ),
-      .data_in       (rb_data_in       ),
-      .we            (rb_we            ),
-      .data_out_a    (a_data_in_a0     ),
-      .data_out_b    (a_data_in_b0     )
-   );
-
 
 endmodule
