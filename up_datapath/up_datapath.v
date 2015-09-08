@@ -14,8 +14,7 @@ module up_datapath(
    // up_reg_block
    input    wire  [1:0] rb_sel_out_a,
    input    wire  [1:0] rb_sel_out_b,
-   input    wire  [1:0] rb_sel_in,
-   input    wire        rb_sel_data_in,
+   input    wire  [2:0] rb_sel_in,
    input    wire        rb_we,
    // up_stack_pointer
    input    wire        sp_we,
@@ -31,10 +30,14 @@ module up_datapath(
                REG_ON_RES_2   = 8'h03,
                REG_ON_RES_3   = 8'h04;
 
-   parameter   SEL_0          = 2'b00,
-               SEL_1          = 2'b01,
-               SEL_2          = 2'b10,
-               SEL_3          = 2'b11;
+   parameter   SEL_I0         = 3'b000,
+               SEL_I1         = 3'b001,
+               SEL_I2         = 3'b010,
+               SEL_I3         = 3'b011;
+               SEL_O0         = 3'b100,
+               SEL_O1         = 3'b101,
+               SEL_O2         = 3'b110,
+               SEL_O3         = 3'b111;
 
    parameter   ADD            = 4'h0,
                SUB            = 4'h1,
@@ -62,10 +65,6 @@ module up_datapath(
    
    wire  [7:0]    rb_data_out_a;
    wire  [7:0]    rb_data_out_b;
-   wire  [7:0]    rb_data_in;
-
-   assign   rb_data_in = 
-               (rb_sel_data_in)           ? data_in : data_out;
 
    assign   rb_data_out_a = 
                (rb_sel_out_a == SEL_0)    ? r0:
@@ -103,20 +102,22 @@ module up_datapath(
          r2 <= REG_ON_RES_2;
          r3 <= REG_ON_RES_3;  
       end else begin
-         if(sp_we)   sp <= data_out;
-         if(pc_we)   pc <= data_out;
+         if(ir_we)
+            if(pc[0])   ir <= data_in[7:4];
+            else        ir <= data_in[3:0];
+         if(sp_we)      sp <= data_out;
+         if(pc_we)      pc <= data_out;
          if(rb_we) 
             case(rb_sel_in) 
-               SEL_0:   r0 <= rb_data_in;  
-               SEL_1:   r1 <= rb_data_in;
-               SEL_2:   r2 <= rb_data_in;
-               SEL_3:   r3 <= rb_data_in;
+               SEL_I0:  r0 <= data_in;  
+               SEL_I1:  r1 <= data_in;
+               SEL_I2:  r2 <= data_in;
+               SEL_I3:  r3 <= data_in;
+               SEL_O0:  r0 <= data_out;  
+               SEL_O1:  r1 <= data_out;
+               SEL_O2:  r2 <= data_out;
+               SEL_O3:  r3 <= data_out;
             endcase
-         if(ir_we)
-            if(pc[0])
-               ir <= data_in[7:4];
-            else
-               ir <= data_in[3:0];
       end
    end
 endmodule
