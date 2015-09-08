@@ -3,11 +3,10 @@ module up_datapath(
 	input	   wire        clk,
 	input	   wire        nRst,
    input    wire  [7:0] data_in,
-   input    wire        rb_sel_data_in,
    // up_alu
    input    wire        a_sel_in_a,
    input    wire        a_sel_in_b,
-   input    wire  [2:0] a_op,
+   input    wire  [3:0] a_op,
    // up_instruction_register
    input    wire        ir_we,
    // up_program_counter
@@ -16,12 +15,13 @@ module up_datapath(
    input    wire  [1:0] rb_sel_out_a,
    input    wire  [1:0] rb_sel_out_b,
    input    wire  [1:0] rb_sel_in,
+   input    wire        rb_sel_data_in,
    input    wire        rb_we,
    // up_stack_pointer
    input    wire        sp_we,
    // outputs
    output   wire  [7:0] data_out,
-   output   wire  [3:0] ir
+   output   reg   [3:0] ir
    
 );
       
@@ -48,24 +48,21 @@ module up_datapath(
    parameter   TOP            = 1'b1,
                BOTTOM         = 1'b0;
 
-   // up_alu
-   wire  [7:0] a_data_in_a0;
-   wire  [7:0] a_data_in_a1;
-   wire  [7:0] a_data_in_b0;
-   wire  [7:0] a_data_in_b1; 
-   wire  [7:0] rb_data_in;
-
 
    reg   [7:0]    sp;
    reg   [7:0]    pc;
-   reg   [3:0]    ir;
    reg   [7:0]    r0;
    reg   [7:0]    r1;
    reg   [7:0]    r2;
    reg   [7:0]    r3;  
+
+
+   wire  [7:0]    a_data_in_a;
+   wire  [7:0]    a_data_in_b;
    
    wire  [7:0]    rb_data_out_a;
    wire  [7:0]    rb_data_out_b;
+   wire  [7:0]    rb_data_in;
 
    assign   rb_data_in = 
                (rb_sel_data_in)           ? data_in : data_out;
@@ -80,14 +77,21 @@ module up_datapath(
                (rb_sel_out_b == SEL_1)    ? r1:
                (rb_sel_out_b == SEL_2)    ? r2: r3;
 
+   assign   a_data_in_a = 
+               (a_sel_in_a)               ? rb_data_out_a : sp;
+
+   assign   a_data_in_b = 
+               (a_sel_in_b)               ? rb_data_out_b : pc;      
+
    assign   data_out =
-               (op == ADD  )              ? rb_data_out_a +  rb_data_out_b  :
-               (op == SUB  )              ? rb_data_out_a -  rb_data_out_b  :
-               (op == MUL  )              ? rb_data_out_a *  rb_data_out_b  :
-               (op == DIV  )              ? rb_data_out_a /  rb_data_out_b  :
-               (op == NAND )              ? rb_data_out_a ~& rb_data_out_b  :
-               (op == NOR  )              ? rb_data_out_a ~| rb_data_out_b  :
-               (op == XOR  )              ? rb_data_out_a ^  rb_data_out_b  : data_out_b;
+               (op == ADD  )              ? a_data_in_a +  a_data_in_b  :
+               (op == SUB  )              ? a_data_in_a -  a_data_in_b  :
+               (op == MUL  )              ? a_data_in_a *  a_data_in_b  :
+               (op == DIV  )              ? a_data_in_a /  a_data_in_b  :
+               (op == NAND )              ? a_data_in_a ~& a_data_in_b  :
+               (op == NOR  )              ? a_data_in_a ~| a_data_in_b  :
+               (op == XOR  )              ? a_data_in_a ^  a_data_in_b  : 
+               (op == B    )              ? a_data_in_b                 : 8'h00;
 
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
@@ -115,8 +119,4 @@ module up_datapath(
                ir <= data_in[3:0];
       end
    end
-  
-   assign rb_data_in = (rb_sel_data_in) ? data_in : data_out;
-   
-
 endmodule
