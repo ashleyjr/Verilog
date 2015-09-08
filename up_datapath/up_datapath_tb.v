@@ -13,7 +13,7 @@ module up_datapath_tb;
    reg         pc_we;
    reg   [1:0] rb_sel_out_a;
    reg   [1:0] rb_sel_out_b;
-   reg   [1:0] rb_sel_in;
+   reg   [2:0] rb_sel_in;
    reg         rb_we;
    reg         sp_we;
    wire  [7:0] data_out;

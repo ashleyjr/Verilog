@@ -33,7 +33,7 @@ module up_datapath(
    parameter   SEL_I0         = 3'b000,
                SEL_I1         = 3'b001,
                SEL_I2         = 3'b010,
-               SEL_I3         = 3'b011;
+               SEL_I3         = 3'b011,
                SEL_O0         = 3'b100,
                SEL_O1         = 3'b101,
                SEL_O2         = 3'b110,
