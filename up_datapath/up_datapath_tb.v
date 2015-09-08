@@ -8,7 +8,7 @@ module up_datapath_tb;
    reg         rb_sel_data_in;
    reg         a_sel_in_a;
    reg         a_sel_in_b;
-   reg   [2:0] a_op;
+   reg   [3:0] a_op;
    reg         ir_we;
    reg         pc_we;
    reg   [1:0] rb_sel_out_a;
@@ -24,7 +24,6 @@ module up_datapath_tb;
 		.clk	               (clk              ),
 		.nRst	               (nRst             ),
       .data_in             (data_in          ),
-      .rb_sel_data_in      (rb_sel_data_in   ),
       .a_sel_in_a          (a_sel_in_a       ),
       .a_sel_in_b          (a_sel_in_b       ),
       .a_op                (a_op             ),
