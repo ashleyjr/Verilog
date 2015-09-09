@@ -2,12 +2,20 @@ module up_memory_tb;
 
 	parameter CLK_PERIOD = 20;
 
-	reg clk;
-	reg nRst;
+	reg         clk;
+	reg         nRst;
+   reg   [7:0] in;
+   reg   [7:0] address;
+   reg         we;
+   wire  [7:0] out;
 
 	up_memory up_memory(
-		.clk	(clk),
-		.nRst	(nRst)
+		.clk	      (clk     ),
+		.nRst	      (nRst    ),
+      .in         (in      ),
+      .address    (address ),
+      .we         (we      ),
+      .out        (out     )
 	);
 
 	initial begin
@@ -22,10 +30,36 @@ module up_memory_tb;
 	end
 
 	initial begin
-					nRst = 1;
-		#100		nRst = 0;
-		#100		nRst = 1;
-		#10000
+					nRst     = 1;
+		         in       = 8'h00;
+               address  = 8'h00;
+               we       = 0;
+      #100		nRst     = 0;
+		#100		nRst     = 1;
+   
+
+
+      // Write
+      #100     address  = 8'hFF;
+      #100     in       = 8'hAA;
+      #100     we       = 1;
+      #100     we       = 0;  
+     
+      #100     address  = 8'hAA;
+      #100     in       = 8'hFF;
+      #100     we       = 1;
+      #100     we       = 0;  
+
+      #100     address  = 8'h00;
+      #100     in       = 8'h01;
+      #100     we       = 1;
+      #100     we       = 0;  
+ 
+      #100     address  = 8'h01;
+      #100     in       = 8'h02;
+      #100     we       = 1;
+      #100     we       = 0;  
+ 
 		$finish;
 	end
 
