@@ -1,2 +1,0 @@
-up_alu.v
-up_alu_tb.v

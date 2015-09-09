@@ -1,2 +1,0 @@
-up_stack_pointer.v
-up_stack_pointer_tb.v

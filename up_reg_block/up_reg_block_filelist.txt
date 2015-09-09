@@ -1,2 +1,0 @@
-up_reg_block.v
-up_reg_block_tb.v
