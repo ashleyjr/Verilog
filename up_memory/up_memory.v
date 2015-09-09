@@ -4,7 +4,7 @@ module up_memory(
 	input  wire	[7:0]   in,
 	input  wire	[7:0]   address,
 	input  wire			we,
-	output wire	[7:0]   out,
+	output wire	[7:0]   out
 );
 
 	reg [7:0] mem [255:0];

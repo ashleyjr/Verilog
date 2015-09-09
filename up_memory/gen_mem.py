@@ -13,7 +13,7 @@ v.write("\tinput  wire\t\t\tnRst,\n")
 v.write("\tinput  wire\t[7:0]   in,\n")
 v.write("\tinput  wire\t[7:0]   address,\n")
 v.write("\tinput  wire\t\t\twe,\n")
-v.write("\toutput wire\t[7:0]   out,\n")
+v.write("\toutput wire\t[7:0]   out\n")
 v.write(");\n\n")
 
 v.write("\treg [7:0] mem [255:0];\n\n")
