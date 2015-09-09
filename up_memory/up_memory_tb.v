@@ -8,6 +8,7 @@ module up_memory_tb;
    reg   [7:0] address;
    reg         we;
    wire  [7:0] out;
+   wire        re;
 
 	up_memory up_memory(
 		.clk	      (clk     ),
@@ -15,8 +16,9 @@ module up_memory_tb;
       .in         (in      ),
       .address    (address ),
       .we         (we      ),
-      .out        (out     )
-	);
+      .out        (out     ),
+	   .re         (re      )
+   );
 
 	initial begin
 		while(1) begin
