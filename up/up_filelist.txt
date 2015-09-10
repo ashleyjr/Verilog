@@ -1,2 +1,5 @@
 up.v
+../up_controller/up_controller.v
+../up_datapath/up_datapath.v
+../up_memory/up_memory.v
 up_tb.v

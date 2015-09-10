@@ -1,6 +1,6 @@
 module up_controller(
 	input			clk,
-	input			nRst
+	input			nRst,
 	input			int,
 	input	[3:0]	ir,
 	input 			mem_re,
