@@ -27,7 +27,7 @@ module up_tb;
 					nRst     = 1; 
 		         int      = 0;
       #100		nRst     = 0;
-		#100		nRst     = 1;
+		#10		nRst     = 1;
       
       #10000   int      = 1;
 		$finish;

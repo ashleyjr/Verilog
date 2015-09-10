@@ -36,6 +36,7 @@ module up_datapath(
                (op == 5'b01100   )        ? pc                 :
                (op == 5'b01101   )        ? (pc >> 1 & 8'h7F)  : 
                (op == 5'b01110   )        ? (pc >> 1 | 8'h80)  :
+               (op == 5'b01111   )        ? pc + 1             :
                                             data_in            ;  
 
    always@(posedge clk or negedge nRst) begin
@@ -49,8 +50,8 @@ module up_datapath(
          r3 <= 8'h04;
       end else begin
          if(ir_we)
-            if(pc[0])   ir <= data_out[7:4];
-            else        ir <= data_out[3:0];
+            if(pc[0])   ir <= data_in[3:0];
+            else        ir <= data_in[7:4];
          if(sp_we)      sp <= data_out;
          if(pc_we)      pc <= data_out;
          if(rb_we) 
