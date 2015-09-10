@@ -15,7 +15,7 @@ module up(
    wire        pc_we;
    wire  [2:0] rb_sel_in;
    wire        rb_we;
-   wire        sp-we;
+   wire        sp_we;
    wire  [7:0] data_out;
    wire  [3:0] ir;
 
@@ -31,7 +31,7 @@ module up(
       end
    end
 
-   up_datapath(
+   up_datapath up_datapath(
       .clk        (clk              ),
       .nRst       (nRst             ),
       .data_in    (data_in          ),
@@ -42,11 +42,10 @@ module up(
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
       .data_out   (data_out         ),
-      .ir         (ir               )
-     
+      .ir         (ir               )    
    );
 
-   up_controller(
+   up_controller up_controller(
       .clk        (clk              ),
       .nRst       (nRst             ),
       .int        (int              ),
@@ -61,7 +60,7 @@ module up(
       .ale        (ale              )
    );
 
-   up_memory(
+   up_memory up_memory(
       .clk        (clk              ),
       .nRst       (nRst             ),
       .in         (data_out         ),
