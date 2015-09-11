@@ -4,24 +4,26 @@ module up_memory(
 	input  wire	[7:0]    in,
 	input  wire	[7:0]    address,
 	input  wire			   we,
-	output reg	[7:0]    out,
-   output reg           re
+	output wire [7:0]    out,
+   output wire           re
 );
 
 	reg [7:0] mem [255:0];
 
+   assign out = mem[address];
+   assign re = 1'b1;
+
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-         re <= 0;
-			mem[0] <= 8'h12;
-			mem[1] <= 8'h34;
-			mem[2] <= 8'h56;
-			mem[3] <= 8'h78;
-			mem[4] <= 8'h9A;
-			mem[5] <= 8'hBC;
-			mem[6] <= 8'hDE;
-			mem[7] <= 8'hF0;
-			mem[8] <= 8'h08;
+			mem[0] <= 8'h10;
+			mem[1] <= 8'h12;
+			mem[2] <= 8'h34;
+			mem[3] <= 8'h56;
+			mem[4] <= 8'h78;
+			mem[5] <= 8'h9A;
+			mem[6] <= 8'hBC;
+			mem[7] <= 8'hDE;
+			mem[8] <= 8'hFF;
 			mem[9] <= 8'h09;
 			mem[10] <= 8'h0A;
 			mem[11] <= 8'h00;
@@ -272,11 +274,6 @@ module up_memory(
 		end else begin
 			if(we) 
             mem[address] <= in;
-		   if(out == mem[address])
-            re <= 1;
-         else
-            re <= 0;
-         out <= mem[address];
       end
 	end
 

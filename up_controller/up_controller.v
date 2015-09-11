@@ -14,35 +14,49 @@ module up_controller(
 	output			ale
 );
 
-   parameter   FETCH_LATCH    = 2'b00,
-               FETCH_READ     = 2'b01,
-               EXECUTE        = 2'b10,
-               INT            = 2'b11;
+   parameter   FETCH_LATCH    = 3'b001,
+               FETCH_READ     = 3'b010,
+               EXECUTE        = 3'b011,
+               INT            = 3'b100;
 
-   reg [1:0]   state;
+   reg [2:0]   state;
 
    assign op = 
             (state == FETCH_LATCH)                       ?  5'b01101 :  // PC shifted right out
             (state == FETCH_READ )                       ?  5'b01111 :  // PC + 1 out
             ((state == EXECUTE) && (ir == 4'b0000))      ?  5'b00000 :  // Do an add
-                                                            5'b00000 ;
+            ((state == EXECUTE) && (ir == 4'b0001))      ?  5'b00001 :  // Do a sub
+            ((state == EXECUTE) && (ir == 4'b0010))      ?  5'b00010 :  // Do a mul
+            ((state == EXECUTE) && (ir == 4'b0011))      ?  5'b00011 :  // Do a div
+            ((state == EXECUTE) && (ir == 4'b0100))      ?  5'b00100 :  // Do a div
+       
+                                                         5'b00000 ;
 
    assign ir_we = 
-            ((state == FETCH_READ) && (mem_re))          ?  1'b1 : 1'b0;
+            (state == FETCH_READ)                        ?  1'b1 : 1'b0;
 
    assign pc_we = 
-            ((state == FETCH_READ) && (mem_re))          ?  1'b1 : 1'b0;
+            (state == FETCH_READ)                        ?  1'b1 : 1'b0;
 
 
    assign rb_sel_in = 
-            ((state == EXECUTE) && (ir == 4'b0000))      ? 2'b00 : 2'b00;
+            ((state == EXECUTE) && (ir == 4'b0000))      ?  3'b100 : 
+            ((state == EXECUTE) && (ir == 4'b0001))      ?  3'b100 :
+            ((state == EXECUTE) && (ir == 4'b0010))      ?  3'b100 :
+            ((state == EXECUTE) && (ir == 4'b0011))      ?  3'b100 :
+            ((state == EXECUTE) && (ir == 4'b0100))      ?  3'b100 : 
+                                                            3'b000;
 
    assign rb_we = 
-            ((state == EXECUTE) && (ir == 4'b0000))      ? 1'b1  : 1'b0;
+            ((state == EXECUTE) && (ir == 4'b0000))      ?  1'b1  : 
+            ((state == EXECUTE) && (ir == 4'b0001))      ?  1'b1  : 
+            ((state == EXECUTE) && (ir == 4'b0010))      ?  1'b1  : 
+            ((state == EXECUTE) && (ir == 4'b0011))      ?  1'b1  : 
+            ((state == EXECUTE) && (ir == 4'b0100))      ?  1'b1  :
+                                                            1'b0;
 
    assign ale = 
-            (state == FETCH_LATCH)  ?  1'b1     :
-                                       1'b0     ;
+            (state == FETCH_LATCH)                       ? 1'b1  : 1'b0;
 
 
 
@@ -52,9 +66,8 @@ module up_controller(
       end else begin
          case(state)
             FETCH_LATCH:               state <= FETCH_READ; 
-            FETCH_READ:    if(mem_re)  state <= EXECUTE;
-            EXECUTE:                   state <= FETCH_READ;
+            FETCH_READ:                state <= EXECUTE;
+            EXECUTE:                   state <= FETCH_LATCH;
          endcase
       end
-   end 
-endmodule
+   end endmodule
