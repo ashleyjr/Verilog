@@ -23,44 +23,31 @@ module up_controller(
    reg [2:0]   state;
 
    assign op = 
-            (state == FETCH_LATCH)                       ?  5'b01101 :  // PC shifted right out
-            (state == FETCH_READ )                       ?  5'b01111 :  // PC + 1 out
-            ((state == EXECUTE_1) && (ir == 4'b0000))      ?  5'b00000 :  // Do an add
-            ((state == EXECUTE_1) && (ir == 4'b0001))      ?  5'b00001 :  // Do a sub
-            ((state == EXECUTE_1) && (ir == 4'b0010))      ?  5'b00010 :  // Do a mul
-            ((state == EXECUTE_1) && (ir == 4'b0011))      ?  5'b00011 :  // Do a div
-            ((state == EXECUTE_1) && (ir == 4'b0100))      ?  5'b00100 :  // Do a div
-            (ir == 4'b0101)                                 ? 5'b00101  :  // Do an xor    
-            (ir == 4'b0110)                                 ? 5'b00110  :  // Do an xor    
-            (ir == 4'b0111)                                 ? 5'b00111  :  // Do an xor    
-
-                                                            5'b00000 ;
+            (state == FETCH_LATCH)                          ?  5'b01101 :  // PC shifted right out
+            (state == FETCH_READ )                          ?  5'b01111 :  // PC + 1 out
+                                                               {1'b0,ir};  // op is then defined the ir
+   
 
    assign ir_we = 
-            (state == FETCH_READ)                        ?  1'b1 : 1'b0;
+            (state == FETCH_READ)                           ?  1'b1 : 1'b0;
 
    assign pc_we = 
-            (state == FETCH_READ)                        ?  1'b1 : 1'b0;
+            (state == FETCH_READ)                           ?  1'b1 : 1'b0;
 
 
    assign rb_sel_in = 
-            ((state == EXECUTE_1) && (ir == 4'b0000))      ?  3'b100 : 
-            ((state == EXECUTE_1) && (ir == 4'b0001))      ?  3'b100 :
-            ((state == EXECUTE_1) && (ir == 4'b0010))      ?  3'b100 :
-            ((state == EXECUTE_1) && (ir == 4'b0011))      ?  3'b100 :
-            ((state == EXECUTE_1) && (ir == 4'b0100))      ?  3'b100 : 
-            ((state == EXECUTE_1) && (ir == 4'b0101))      ?  3'b100  :
-            ((state == EXECUTE_2) && (ir == 4'b0101))      ?  3'b101  :
-            ((state == EXECUTE_3) && (ir == 4'b0101))      ?  3'b100  :
-            ((state == EXECUTE_1) && (ir == 4'b0110))      ?  3'b101  :
-            ((state == EXECUTE_2) && (ir == 4'b0110))      ?  3'b110  :
-            ((state == EXECUTE_3) && (ir == 4'b0110))      ?  3'b101  :
-            ((state == EXECUTE_1) && (ir == 4'b0111))      ?  3'b110  :
-            ((state == EXECUTE_2) && (ir == 4'b0111))      ?  3'b111  :
-            ((state == EXECUTE_3) && (ir == 4'b0111))      ?  3'b110  :
-             
-            
-                  3'b000;
+            ((state == EXECUTE_1) && (ir == 4'b00??))       ?  3'b100   :  // Group add, sub, mul and div
+
+            ((state == EXECUTE_1) && (ir == 4'b0101))       ?  3'b100   :
+            ((state == EXECUTE_2) && (ir == 4'b0101))       ?  3'b101   :
+            ((state == EXECUTE_3) && (ir == 4'b0101))       ?  3'b100   :
+            ((state == EXECUTE_1) && (ir == 4'b0110))       ?  3'b101   :
+            ((state == EXECUTE_2) && (ir == 4'b0110))       ?  3'b110   :
+            ((state == EXECUTE_3) && (ir == 4'b0110))       ?  3'b101   :
+            ((state == EXECUTE_1) && (ir == 4'b0111))       ?  3'b110   :
+            ((state == EXECUTE_2) && (ir == 4'b0111))       ?  3'b111   :
+            ((state == EXECUTE_3) && (ir == 4'b0111))       ?  3'b110   :
+                                                               3'b000   ;
 
    assign rb_we = 
             ((state == EXECUTE_1) && (ir == 4'b0000))      ?  1'b1  : 
@@ -90,19 +77,14 @@ module up_controller(
          state <= FETCH_LATCH;
       end else begin
          case(state)
-            FETCH_LATCH:   state <= FETCH_READ; 
-            FETCH_READ:    state <= EXECUTE_1;
-            EXECUTE_1:     begin
-                              if((ir == 4'b0101) ||
-                                  (ir == 4'b0110) ||
-                                    (ir == 4'b0111) 
-                              )
-                                 state <= EXECUTE_2;
-                              else
-                                 state <= FETCH_LATCH;        
-                           end
-            EXECUTE_2:     state <= EXECUTE_3;
-            EXECUTE_3:     state <= FETCH_LATCH;
+            FETCH_LATCH:                     state <= FETCH_READ; 
+            FETCH_READ:                      state <= EXECUTE_1;
+            EXECUTE_1:     case(ir)
+                              4'b01??:       state <= EXECUTE_2;
+                              default:       state <= FETCH_LATCH;
+                           endcase     
+            EXECUTE_2:                       state <= EXECUTE_3;
+            EXECUTE_3:                       state <= FETCH_LATCH;
          endcase
       end
    end endmodule

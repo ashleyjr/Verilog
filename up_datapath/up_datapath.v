@@ -21,22 +21,22 @@ module up_datapath(
    reg   [7:0]    r3;  
 
    assign   data_out =
-               (op == 5'b00000   )        ? r1 +  r2           :
+               (op == 5'b00000   )        ? r1 +  r2           :     // Group add, sub, mul and div
                (op == 5'b00001   )        ? r1 -  r2           :
                (op == 5'b00010   )        ? r1 *  r2           :
                (op == 5'b00011   )        ? r1 /  r2           :
-               (op == 5'b00100   )        ? r1 ~& r2           :
-               (op == 5'b00101   )        ? r0 ^ r1            :
-               (op == 5'b00110   )        ? r1 ^ r2            :
-               (op == 5'b00111   )        ? r2 ^ r3            :
-               (op == 5'b01000   )        ? sp ^ r3            :
-               (op == 5'b01001   )        ? pc ^ r3            :
-               (op == 5'b01010   )        ? sp + 8'h01         :
-               (op == 5'b01011   )        ? sp - 8'h01         :
-               (op == 5'b01100   )        ? pc                 :
-               (op == 5'b01101   )        ? (pc >> 1 & 8'h7F)  : 
-               (op == 5'b01110   )        ? (pc >> 1 | 8'h80)  :
-               (op == 5'b01111   )        ? pc + 1             :
+
+               (op == 5'b00100   )        ? r0 ^ r1            :     // Group all the non-mem swaps
+               (op == 5'b00101   )        ? r1 ^ r2            :
+               (op == 5'b00110   )        ? r2 ^ r3            :
+               (op == 5'b00111   )        ? (pc + 1) ^ r3      :
+
+               (op == 5'b11010   )        ? sp + 8'h01         :
+               (op == 5'b11011   )        ? sp - 8'h01         :
+               (op == 5'b11100   )        ? pc                 :
+               (op == 5'b11101   )        ? (pc >> 1 & 8'h7F)  : 
+               (op == 5'b11110   )        ? (pc >> 1 | 8'h80)  :
+               (op == 5'b11111   )        ? pc + 1             :
                                             data_in            ;  
 
    always@(posedge clk or negedge nRst) begin
