@@ -30,7 +30,9 @@ module up_tb;
 		#10		nRst     = 1;
       
       #10000   int      = 1;
-		$finish;
+		#1000    int      = 0;
+      #10000
+      $finish;
 	end
 
 endmodule

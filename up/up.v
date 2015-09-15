@@ -57,6 +57,7 @@ module up(
       .rb_sel_in  (rb_sel_in        ),
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
+      .mem_we     (mem_we           ),
       .ale        (ale              )
    );
 
