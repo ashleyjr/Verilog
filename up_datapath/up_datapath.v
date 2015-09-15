@@ -8,9 +8,10 @@ module up_datapath(
    input    wire  [2:0] rb_sel_in,
    input    wire        rb_we,
    input    wire        sp_we,
+   input    wire        z_we,
    output   wire  [7:0] data_out,
-   output   reg   [3:0] ir
-   
+   output   reg   [3:0] ir,
+   output   reg         z
 );
 
    reg   [7:0]    sp;
@@ -19,7 +20,8 @@ module up_datapath(
    reg   [7:0]    r1;
    reg   [7:0]    r2;
    reg   [7:0]    r3;  
-
+   
+   
    assign   data_out =
                (op == 5'b00000   )        ? r1 +  r2           :     // Group add, sub, mul and div
                (op == 5'b00001   )        ? r1 -  r2           :
@@ -48,6 +50,7 @@ module up_datapath(
 
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
+         z  <= 1'b0;
          pc <= 8'h00;
          sp <= 8'hFF;
          ir <= 4'h0;
@@ -56,6 +59,7 @@ module up_datapath(
          r2 <= 8'h03;
          r3 <= 8'h04;
       end else begin
+         if(z_we)       z  <= (data_out == 8'h00) ? 1'b1 : 1'b0;
          if(ir_we)
             if(pc[0])   ir <= data_in[3:0];
             else        ir <= data_in[7:4];

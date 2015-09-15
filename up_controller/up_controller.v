@@ -3,6 +3,7 @@ module up_controller(
 	input			         nRst,
 	input			         int,
 	input	     [3:0]	   ir,
+   input                z,
 	input 			      mem_re,
 	output reg [4:0]     op,
 	output reg			   ir_we,
@@ -11,6 +12,7 @@ module up_controller(
 	output reg           rb_we,
 	output reg           sp_we,
 	output reg           mem_we,
+   output reg           z_we,
 	output reg           ale
 );
 
@@ -21,8 +23,7 @@ module up_controller(
                EXECUTE_3      = 3'b101;
 
    reg [2:0]   state;
-
-
+   
    reg         int_onoff;
    reg         int_last;
    wire        int_detect;
@@ -37,6 +38,7 @@ module up_controller(
       sp_we       = 1'b0;
       mem_we      = 1'b0;
       ale         = 1'b0;
+      z_we        = 1'b0;
       case(state)
          FETCH_LATCH:      begin
                               if(int_detect) begin
@@ -56,7 +58,10 @@ module up_controller(
                               pc_we       = 1'b1;
                            end
          EXECUTE_1:        casez(ir)
-                              4'b00??:    rb_we          = 1'b1;
+                              4'b00??:    begin
+                                             rb_we          = 1'b1;
+                                             z_we           = 1'b1;
+                                          end
                               4'b0100,
                               4'b0101,
                               4'b0110:    begin

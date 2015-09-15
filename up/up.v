@@ -18,6 +18,8 @@ module up(
    wire        sp_we;
    wire  [7:0] data_out;
    wire  [3:0] ir;
+   wire        z;
+   wire        z_we;
 
    // memory
    wire        mem_re;
@@ -41,8 +43,10 @@ module up(
       .rb_sel_in  (rb_sel_in        ),
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
+      .z_we       (z_we             ),
       .data_out   (data_out         ),
-      .ir         (ir               )    
+      .ir         (ir               ),
+      .z          (z                )
    );
 
    up_controller up_controller(
@@ -51,12 +55,14 @@ module up(
       .int        (int              ),
       .ir         (ir               ),
       .mem_re     (mem_re           ),
+      .z          (z                ),
       .op         (op               ),
       .ir_we      (ir_we            ),
       .pc_we      (pc_we            ),
       .rb_sel_in  (rb_sel_in        ),
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
+      .z_we       (z_we             ),
       .mem_we     (mem_we           ),
       .ale        (ale              )
    );
