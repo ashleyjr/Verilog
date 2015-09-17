@@ -74,6 +74,7 @@ module up_controller(
                                           end
                               4'b100?:    ale            = 1'b1;      
                               4'b1011:    rb_we          = 1'b1;
+                              4'b110?:    ale            = 1'b1;
                            endcase
          EXECUTE_2:        casez(ir)
                               4'b0100,
@@ -93,6 +94,14 @@ module up_controller(
                                              op          = 5'b11000;
                                              mem_we      = 1'b1;
                                           end
+                              4'b1100:    begin
+                                             op          = 5'b01000;
+                                             mem_we      = 1'b1;
+                                          end
+                              4'b1101:    begin
+                                             rb_sel_in   = 3'b011;
+                                             rb_we       = 1'b1;
+                                          end
                            endcase
          EXECUTE_3:        casez(ir)
                               4'b0100,
@@ -104,6 +113,14 @@ module up_controller(
                               4'b0111:    begin
                                              rb_sel_in   = 3'b110;
                                              rb_we       = 1'b1;
+                                          end
+                              4'b1100:    begin
+                                             op          = 5'b11011;
+                                             sp_we       = 1'b1;
+                                          end
+                              4'b1101:    begin
+                                             op          = 5'b11010;
+                                             sp_we       = 1'b1;
                                           end
                            endcase
       endcase
@@ -127,7 +144,8 @@ module up_controller(
             FETCH_READ:                         state <= EXECUTE_1;
             EXECUTE_1:     casez(ir)
                               4'b01??,
-                              4'b100?:          state <= EXECUTE_2;
+                              4'b100?,
+                              4'b110?:          state <= EXECUTE_2;
                               4'b1010:          begin
                                                    int_onoff <= ~int_onoff;
                                                    state <= FETCH_LATCH;

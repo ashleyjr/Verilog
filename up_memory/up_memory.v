@@ -39,10 +39,10 @@ module up_memory(
 			mem[21] <= 8'hA0;
 			mem[22] <= 8'h00;
 			mem[23] <= 8'h00;
-			mem[24] <= 8'h00;
-			mem[25] <= 8'h00;
-			mem[26] <= 8'h00;
-			mem[27] <= 8'h00;
+			mem[24] <= 8'hCC;
+			mem[25] <= 8'hCC;
+			mem[26] <= 8'hCC;
+			mem[27] <= 8'hDD;
 			mem[28] <= 8'h00;
 			mem[29] <= 8'h00;
 			mem[30] <= 8'h00;
