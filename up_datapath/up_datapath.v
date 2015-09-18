@@ -60,10 +60,10 @@ module up_datapath(
          pc <= 8'h00;
          sp <= 8'hFF;
          ir <= 4'h0;
-         r0 <= 8'h01;
-         r1 <= 8'h02;
-         r2 <= 8'h03;
-         r3 <= 8'h04;
+         r0 <= 8'h00;
+         r1 <= 8'h0A;
+         r2 <= 8'h01;
+         r3 <= 8'h81;
       end else begin
          if(z_we)       z  <= (data_out == 8'h00) ? 1'b1 : 1'b0;
          if(ir_we)
