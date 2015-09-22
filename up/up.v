@@ -19,7 +19,6 @@ module up(
    wire  [7:0] data_out;
    wire  [3:0] ir;
    wire        z;
-   wire        z_we;
 
    // memory
    wire        mem_re;
@@ -43,7 +42,6 @@ module up(
       .rb_sel_in  (rb_sel_in        ),
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
-      .z_we       (z_we             ),
       .data_out   (data_out         ),
       .ir         (ir               ),
       .z          (z                )
@@ -62,7 +60,6 @@ module up(
       .rb_sel_in  (rb_sel_in        ),
       .rb_we      (rb_we            ),
       .sp_we      (sp_we            ),
-      .z_we       (z_we             ),
       .mem_we     (mem_we           ),
       .ale        (ale              )
    );
