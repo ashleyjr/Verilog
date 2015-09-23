@@ -53,7 +53,7 @@ module up_controller(
          LOAD_REGS_3:   begin
                            op       = 5'b10010;
                            pc_we    = 1'b1;
-                           rb_sel   = 3'b011;
+                           rb_sel   = 3'b010;
                            rb_we    = 2'b1;
                         end
       endcase
