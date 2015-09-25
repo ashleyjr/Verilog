@@ -14,7 +14,7 @@ module up_datapath(
 );
 
    reg   [7:0]    sp;
-   reg   [8:0]    pc;
+   reg   [7:0]    pc;
    reg   [7:0]    r0;
    reg   [7:0]    r1;
    reg   [7:0]    r2;
@@ -23,15 +23,26 @@ module up_datapath(
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
    
    assign   data_out =
+               (op == 5'b00000   )        ? r1 + r2            :
+               (op == 5'b00001   )        ? r1 - r2            :
+               (op == 5'b00010   )        ? r1 * r2            :
+               (op == 5'b00011   )        ? r1 ~& r2           :
+               (op == 5'b00100   )        ? r0 ^ r1            :
+               (op == 5'b00101   )        ? r1 ^ r2            :
+               (op == 5'b00110   )        ? r2 ^ r3            :
+
+               
                (op == 5'b10000   )        ? 8'h00              :
                (op == 5'b10001   )        ? 8'h01              :
                (op == 5'b10010   )        ? 8'h02              :
                (op == 5'b10011   )        ? 8'h03              :
+               (op == 5'b10100   )        ? pc >> 1            :
+               (op == 5'b10101   )        ? pc + 1             :
                                             data_in            ;  
 
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
-         pc <= 8'h00;
+         pc <= 8'h08;
          sp <= 8'hFF;
          ir <= 4'h0;
          r0 <= 8'h00;
@@ -43,7 +54,7 @@ module up_datapath(
             if(pc[0])   ir <= data_in[3:0];
             else        ir <= data_in[7:4];
          if(sp_we)      sp <= data_out;
-         if(pc_we)      pc <= data_out << 1;
+         if(pc_we)      pc <= data_out;
          if(rb_we) 
             case(rb_sel_in) 
                3'b000:  r0 <= data_in;       // SEL_I0
