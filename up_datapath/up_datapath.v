@@ -38,6 +38,10 @@ module up_datapath(
                (op == 5'b10011   )        ? 8'h03              :
                (op == 5'b10100   )        ? pc >> 1            :
                (op == 5'b10101   )        ? pc + 1             :
+               (op == 5'b10110   )        ? r3                 :
+               (op == 5'b10110   )        ? sp + 1             :
+               (op == 5'b11000   )        ? data_in            :
+               (op == 5'b11001   )        ? sp                 :
                                             data_in            ;  
 
    always@(posedge clk or negedge nRst) begin

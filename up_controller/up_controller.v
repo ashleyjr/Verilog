@@ -98,6 +98,19 @@ module up_controller(
                                     rb_sel   = 3'b110;
                                     rb_we    = 1'b1;
                                  end
+                           4'h7: if(z) begin
+                                    op       = 5'b10110;
+                                    pc_we    = 1'b1;
+                                 end
+                           4'h8: begin
+                                    op       = 5'b10111;
+                                    sp_we    = 1'b1;
+                                    ale      = 1'b1;
+                                 end
+                           4'h9: begin
+                                    op       = 5'b11001;
+                                    ale      = 1'b1;
+                                 end
                         endcase
          EXECUTE_2:     case(ir)
                            4'h4: begin
@@ -114,6 +127,10 @@ module up_controller(
                                     op       = 5'b00110;
                                     rb_sel   = 3'b111;
                                     rb_we    = 1'b1;
+                                 end
+                           4'h8: begin
+                                    op       = 5'b11000;
+                                    pc_we    = 1'b1;
                                  end
                         endcase
          EXECUTE_3:     case(ir)
@@ -148,11 +165,12 @@ module up_controller(
             FETCH:         state <= DECODE;
             DECODE:        state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
-                              4'h0,4'h1,4'h2,4'h3:    state <= FETCH;
-                              4'h4,4'h5,4'h6:         state <= EXECUTE_2;
+                              4'h0,4'h1,4'h2,4'h3,4'h7:     state <= FETCH;
+                              4'h4,4'h5,4'h6,4'h8,4'h9:     state <= EXECUTE_2;
                            endcase
             EXECUTE_2:     case(ir)
-                              4'h4,4'h5,4'h6:         state <= EXECUTE_3;
+                              4'h8:                         state <= FETCH;
+                              4'h4,4'h5,4'h6:               state <= EXECUTE_3;
                            endcase
             EXECUTE_3:     state <= FETCH;
          endcase
