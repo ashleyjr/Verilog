@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import os
+import re
+import string
 from os import listdir
 from os.path import isfile, join
 
@@ -9,7 +11,7 @@ nm2hex = {
     'MUL'	: '2',
     'NAND'	: '3',
     'SW01'	: '4',
-	'SW12'	: '5',
+    'SW12'	: '5',
     'SW23'	: '6',
     'BE'	: '7',
     'POPC'	: '8',
@@ -22,6 +24,8 @@ nm2hex = {
     'INT'	: 'F'
 }
 
+WarnLongConst = False
+ErrNotHex = False
 
 c = open("code.asm","r")
 hx = ['0'] * 256
@@ -30,10 +34,26 @@ hx = ['0'] * 256
 i = 0;
 for line in c:
     if(i < 8):
-        hx[i] = line.rstrip()
+        # String handling
+        line = re.sub(" ", "", line)    # remove unwanted
+        line = re.sub("\n", "", line)
+        line = re.sub("\r", "", line)
+        line = line.split('#')[0]       # Split on comment
+        chars = list(line)              # split in to char
+        hx[i]   = chars[0]
+        hx[i+1]   = chars[1]
+        i = i + 2
+        # Error checking
+        if(len(chars) > 2):
+            WarnLongConst = True
+        if(chars[0] not in string.hexdigits):
+            ErrNotHex = True
+        if(chars[1] not in string.hexdigits):
+            ErrNotHex = True
     else:
-        hx[i] = nm2hex[line.rstrip()]
-
+        line = re.sub(r"\W", "", line)  # remove unwanted
+        hx[i] = nm2hex[line]
+        i = i + 1
 
     if(i == 9):
         print ""
@@ -43,9 +63,19 @@ for line in c:
         print "Int Vect: \t0x" + hx[4] +  hx[5]
         print ""
 
-    i = i + 1
-
 print hx
+print
+
+
+
+if(WarnLongConst):
+    print "WARNING: First four lines must contain hexidecimal byte, first two chars taken"
+if(ErrNotHex):
+    print "ERROR: First four lines must contain hexidecimal byte, bad output"
+
+
+
+
 
 v = open("up_memory.v", "wb")
 
