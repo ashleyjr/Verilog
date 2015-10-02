@@ -15,20 +15,20 @@ module up_memory(
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-			mem[0] <= 8'hCC;
-			mem[1] <= 8'hAA;
-			mem[2] <= 8'h6C;
-			mem[3] <= 8'hFF;
-			mem[4] <= 8'h65;
-			mem[5] <= 8'h99;
-			mem[6] <= 8'hCC;
-			mem[7] <= 8'hDD;
-			mem[8] <= 8'h00;
-			mem[9] <= 8'hEE;
-			mem[10] <= 8'hFF;
-			mem[11] <= 8'hFF;
-			mem[12] <= 8'h00;
-			mem[13] <= 8'h00;
+			mem[0] <= 8'h08;
+			mem[1] <= 8'h02;
+			mem[2] <= 8'h03;
+			mem[3] <= 8'h04;
+			mem[4] <= 8'h01;
+			mem[5] <= 8'h23;
+			mem[6] <= 8'hE4;
+			mem[7] <= 8'h5B;
+			mem[8] <= 8'hBB;
+			mem[9] <= 8'hBA;
+			mem[10] <= 8'h6A;
+			mem[11] <= 8'h54;
+			mem[12] <= 8'hA5;
+			mem[13] <= 8'hA7;
 			mem[14] <= 8'h00;
 			mem[15] <= 8'h00;
 			mem[16] <= 8'h00;

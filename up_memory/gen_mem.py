@@ -7,28 +7,43 @@ nm2hex = {
     'ADD'	: '0',
     'SUB'	: '1',
     'MUL'	: '2',
-    'DIV'	: '3',
+    'NAND'	: '3',
     'SW01'	: '4',
 	'SW12'	: '5',
     'SW23'	: '6',
-    'SWPC'	: '7',
-    'LDW'	: '8',
-    'STW'	: '9',
-    'INT'	: 'A',
-    'NAND'	: 'B',
-    'PUSH'	: 'C',
-    'POP'	: 'D',
-    'BE'	: 'E',
-    'BNE'	: 'F'
+    'BE'	: '7',
+    'POPC'	: '8',
+    'PUSHC'	: '9',
+    'POP'	: 'A',
+    'PUSH'	: 'B',
+    'LDW'	: 'C',
+    'STW'	: 'D',
+    'REF'	: 'E',
+    'INT'	: 'F'
 }
+
 
 c = open("code.asm","r")
 hx = ['0'] * 256
+
+
 i = 0;
 for line in c:
-	hx[i] = nm2hex[line.rstrip()]
-	print hx[i]
-	i = i + 1
+    if(i < 8):
+        hx[i] = line.rstrip()
+    else:
+        hx[i] = nm2hex[line.rstrip()]
+
+
+    if(i == 9):
+        print ""
+        print "Reg R0:  \t0x" + hx[0] +  hx[1]
+        print "Reg R1:  \t0x" + hx[2] +  hx[3]
+        print "Reg R2:  \t0x" + hx[6] +  hx[7]
+        print "Int Vect: \t0x" + hx[4] +  hx[5]
+        print ""
+
+    i = i + 1
 
 print hx
 
