@@ -26,6 +26,8 @@ module up_controller(
                EXECUTE_3      = 4'b1000;
 
    reg [3:0]   state;
+
+   reg         int_on_off;
    
 
    always @(*) begin
@@ -120,6 +122,18 @@ module up_controller(
                                     op       = 5'b11001;
                                     ale      = 1'b1;
                                  end
+                           4'hC: begin
+                                    op       = 5'b10110;
+                                    ale      = 1'b1;
+                                 end
+                           4'hD: begin
+                                    op       = 5'b10110;
+                                    ale      = 1'b1;
+                                 end
+                           4'hE: begin
+                                    op       = 5'b10000;
+                                    ale      = 1'b1;
+                                 end
                         endcase
          EXECUTE_2:     case(ir)
                            4'h4: begin
@@ -153,6 +167,18 @@ module up_controller(
                                     op       = 5'b11010;
                                     sp_we    = 1'b1;
                                  end
+                           4'hC: begin
+                                    rb_sel   = 3'b010;
+                                    rb_we    = 1'b1;
+                                 end
+                           4'hD: begin
+                                    op       = 5'b11100;
+                                    mem_we   = 1'b1;
+                                 end
+                           4'hE: begin
+                                    rb_sel   = 3'b000;
+                                    rb_we    = 1'b1;
+                                 end
                         endcase
          EXECUTE_3:     case(ir)
                            4'h4: begin
@@ -185,6 +211,7 @@ module up_controller(
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
          state       <= LOAD_REGS_0;
+         int_on_off  <= 1'b0;
       end else begin
          case(state)
             LOAD_REGS_0:   state <= LOAD_REGS_1;
@@ -194,11 +221,16 @@ module up_controller(
             FETCH:         state <= DECODE;
             DECODE:        state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
+
                               4'h0,4'h1,4'h2,4'h3,4'h7:     state <= FETCH;
-                              4'h4,4'h5,4'h6,4'h8,4'h9,4'hA,4'hB:     state <= EXECUTE_2;
+                              4'h4,4'h5,4'h6,4'h8,4'h9,4'hA,4'hB,4'hC,4'hD,4'hE:     state <= EXECUTE_2;
+                              4'hF: begin
+                                       state       <= FETCH;
+                                       int_on_off  <= ~int_on_off;
+                                    end
                            endcase
             EXECUTE_2:     case(ir)
-                              4'h8,4'hA:                         state <= FETCH;
+                              4'h8,4'hA,4'hC,4'hD,4'hE:                         state <= FETCH;
                               4'h4,4'h5,4'h6,4'h9,4'hB:          state <= EXECUTE_3;
                            endcase
             EXECUTE_3:     state <= FETCH;
