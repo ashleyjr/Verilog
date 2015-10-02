@@ -28,9 +28,13 @@ module up_tb;
 		         int      = 0;
       #100		nRst     = 0;
 		#10		nRst     = 1;
+     
+      repeat(260) begin
+         #10000   int      = 1;
+		   #10000   int      = 0;
+      end
       
-      #10000   int      = 1;
-		#1000    int      = 0;
+      
       #10000
       $finish;
 	end

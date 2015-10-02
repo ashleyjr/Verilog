@@ -57,13 +57,16 @@ v.write("\tinput  wire\t[7:0]   in,\n")
 v.write("\tinput  wire\t[7:0]   address,\n")
 v.write("\tinput  wire\t\t\twe,\n")
 v.write("\toutput wire\t[7:0]   out,\n")
-v.write("\toutput wire\t\t\tre\n")
+v.write("\toutput wire\t\t\tre,\n")
+v.write("\toutput wire\t[7:0]\t\ttest")
 v.write(");\n\n")
 
 v.write("\treg [7:0] mem [255:0];\n\n")
 
 v.write("\tassign out = mem[address];\n")
 v.write("\tassign re = 1'b1;\n\n")
+
+v.write("\tassign test = mem[128];")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")

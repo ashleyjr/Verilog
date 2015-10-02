@@ -71,7 +71,8 @@ module up(
       .address    (address_latch    ),
       .we         (mem_we           ),
       .out        (data_in          ),
-      .re         (mem_re           )
+      .re         (mem_re           ),
+      .test       ()
    );
 
 endmodule

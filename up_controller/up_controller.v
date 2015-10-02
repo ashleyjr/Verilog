@@ -23,12 +23,17 @@ module up_controller(
                DECODE         = 4'b0101,
                EXECUTE_1      = 4'b0110,
                EXECUTE_2      = 4'b0111,
-               EXECUTE_3      = 4'b1000;
+               EXECUTE_3      = 4'b1000,
+               INT_1          = 4'b1001,
+               INT_2          = 4'b1010;
 
    reg [3:0]   state;
 
    reg         int_on_off;
-   
+   reg         int_last; 
+   wire        int_go;
+
+   assign int_go = (int ^ int_last) & int & int_on_off;
 
    always @(*) begin
       op          = 5'b00000;  // Defaults
@@ -203,7 +208,15 @@ module up_controller(
                                     op       = 5'b11100;
                                     mem_we   = 1'b1;
                                  end
-                           endcase
+                        endcase
+         INT_1:         begin
+                           op = 5'b10010;
+                           ale = 1'b1;
+                        end
+         INT_2:         begin
+                           op = 5'b11000;
+                           pc_we = 1'b1;
+                        end
       endcase
    end
 
@@ -212,13 +225,16 @@ module up_controller(
       if(!nRst) begin
          state       <= LOAD_REGS_0;
          int_on_off  <= 1'b0;
+         int_last    <= 1'b0;
       end else begin
+         if(!int_go) int_last <= int;
          case(state)
             LOAD_REGS_0:   state <= LOAD_REGS_1;
             LOAD_REGS_1:   state <= LOAD_REGS_2;
             LOAD_REGS_2:   state <= LOAD_REGS_3;
             LOAD_REGS_3:   state <= FETCH;
-            FETCH:         state <= DECODE;
+            FETCH:         if(int_go)  state <= INT_1;
+                           else        state <= DECODE;
             DECODE:        state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
 
@@ -234,6 +250,11 @@ module up_controller(
                               4'h4,4'h5,4'h6,4'h9,4'hB:          state <= EXECUTE_3;
                            endcase
             EXECUTE_3:     state <= FETCH;
+            INT_1:         begin
+                              int_last <= int;
+                              state <= INT_2;
+                           end
+            INT_2:         state <= FETCH;
          endcase
       end
    end 
