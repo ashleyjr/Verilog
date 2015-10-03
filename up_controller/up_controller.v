@@ -25,7 +25,10 @@ module up_controller(
                EXECUTE_2      = 4'b0111,
                EXECUTE_3      = 4'b1000,
                INT_1          = 4'b1001,
-               INT_2          = 4'b1010;
+               INT_2          = 4'b1010,
+               INT_3          = 4'b1011,
+               INT_4          = 4'b1100,
+               INT_5          = 4'b1101;
 
    reg [3:0]   state;
 
@@ -209,12 +212,26 @@ module up_controller(
                                     mem_we   = 1'b1;
                                  end
                         endcase
+         
          INT_1:         begin
-                           op = 5'b10010;
+                           op = 5'b11001;    // Add sp
+                           ale = 1'b1;
+                        end 
+         INT_2:         begin
+                           op = 5'b11011;    // Write PC
+                           mem_we = 1'b1;
+                        end
+         INT_3:         begin
+                           op = 5'b11010;    // Dec SP
+                           sp_we = 1'b1;
+                        end               
+                        
+         INT_4:         begin
+                           op = 5'b10010;    // Address jump vector
                            ale = 1'b1;
                         end
-         INT_2:         begin
-                           op = 5'b11000;
+         INT_5:         begin
+                           op = 5'b11000;    // Write it to the PC
                            pc_we = 1'b1;
                         end
       endcase
@@ -254,7 +271,10 @@ module up_controller(
                               int_last <= int;
                               state <= INT_2;
                            end
-            INT_2:         state <= FETCH;
+            INT_2:         state <= INT_3;
+            INT_3:         state <= INT_4;
+            INT_4:         state <= INT_5;
+            INT_5:         state <= FETCH;
          endcase
       end
    end 

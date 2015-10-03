@@ -57,7 +57,15 @@ POPC
 
 
 # ----- Interrupt
-INT      # Interrupts off while inside
+INT      # INterrupts off
+PUSH
+SW23
+PUSH
+SW12
+PUSH
+SW01
+SW12
+PUSH     # Stash all regs
 REF
 SW01
 SW12
@@ -99,28 +107,13 @@ SW23     # Hold inc value in R3
 POP      # Get address back
 SW23     # 0x80 in R3 and inc value in R2
 STW
-REF
-SW01
-SW12
-REF
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-ADD
-SW01
-ADD
-SW01
-ADD
-SW01
-ADD
-SW01
-SW12     # Jump tp 0x28 
-PUSH     
 INT      # Interrupts back on
+POP      # Build all regs
+SW12
+SW01
+POP
+SW12
+POP
+SW23
+POP
 POPC
