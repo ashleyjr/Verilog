@@ -2,6 +2,7 @@
 import os
 import re
 import string
+import sys
 from os import listdir
 from os.path import isfile, join
 
@@ -31,6 +32,7 @@ c = open("code.asm","r")
 hx = ['0'] * 256
 
 
+sys.stdout.write('Address\t1st\t2nd\n')
 i = 0;
 for line in c:
     # String handling
@@ -39,6 +41,7 @@ for line in c:
     line = re.sub("\r", "", line)
     line = line.split('#')[0]       # Split on comment
     chars = list(line)              # split in to char
+
 
     if(len(chars) != 0):
         if(i < 8):
@@ -54,17 +57,22 @@ for line in c:
                 ErrNotHex = True
         else:
             line = re.sub(r"\W", "", line)  # remove unwanted
+            if((i % 2) == 0):
+                sys.stdout.write(str(hex(i/2)) + '\t' + line + '\t')
+            else:
+                sys.stdout.write(line + '\n')
             hx[i] = nm2hex[line]
             i = i + 1
 
-    if(i == 9):
-        print ""
-        print "Reg R0:  \t0x" + hx[0] +  hx[1]
-        print "Reg R1:  \t0x" + hx[2] +  hx[3]
-        print "Reg R2:  \t0x" + hx[6] +  hx[7]
-        print "Int Vect: \t0x" + hx[4] +  hx[5]
-        print ""
-
+print ""
+print ""
+print "Reg R0:  \t0x" + hx[0] +  hx[1]
+print "Reg R1:  \t0x" + hx[2] +  hx[3]
+print "Reg R2:  \t0x" + hx[6] +  hx[7]
+print "Int Vect: \t0x" + hx[4] +  hx[5]
+print ""
+print"Lines of code:\t" + str(i)
+print
 print hx
 print
 

@@ -79,6 +79,7 @@ SW12
 SW23
 LDW      # Load contents of 0x80 in R2
 SW23
+PUSH     # Keep the address for later
 REF
 SW01
 SW12
@@ -95,24 +96,7 @@ ADD      # Contents of 0x80 + 0x01 in R0
 SW01
 SW12
 SW23     # Hold inc value in R3
-REF
-SW01
-SW12
-REF
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-MUL
-SW01
-SW12
+POP      # Get address back
 SW23     # 0x80 in R3 and inc value in R2
 STW
 REF
