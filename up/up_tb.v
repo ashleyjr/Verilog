@@ -29,7 +29,7 @@ module up_tb;
       #100		nRst     = 0;
 		#10		nRst     = 1;
      
-      repeat(260) begin
+      repeat(25) begin
          #10000   int      = 1;
 		   #10000   int      = 0;
       end

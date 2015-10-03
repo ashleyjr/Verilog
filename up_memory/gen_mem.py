@@ -33,27 +33,29 @@ hx = ['0'] * 256
 
 i = 0;
 for line in c:
-    if(i < 8):
-        # String handling
-        line = re.sub(" ", "", line)    # remove unwanted
-        line = re.sub("\n", "", line)
-        line = re.sub("\r", "", line)
-        line = line.split('#')[0]       # Split on comment
-        chars = list(line)              # split in to char
-        hx[i]   = chars[0]
-        hx[i+1]   = chars[1]
-        i = i + 2
-        # Error checking
-        if(len(chars) > 2):
-            WarnLongConst = True
-        if(chars[0] not in string.hexdigits):
-            ErrNotHex = True
-        if(chars[1] not in string.hexdigits):
-            ErrNotHex = True
-    else:
-        line = re.sub(r"\W", "", line)  # remove unwanted
-        hx[i] = nm2hex[line]
-        i = i + 1
+    # String handling
+    line = re.sub(" ", "", line)    # remove unwanted
+    line = re.sub("\n", "", line)
+    line = re.sub("\r", "", line)
+    line = line.split('#')[0]       # Split on comment
+    chars = list(line)              # split in to char
+
+    if(len(chars) != 0):
+        if(i < 8):
+            hx[i]   = chars[0]
+            hx[i+1]   = chars[1]
+            i = i + 2
+            # Error checking
+            if(len(chars) > 2):
+                WarnLongConst = True
+            if(chars[0] not in string.hexdigits):
+                ErrNotHex = True
+            if(chars[1] not in string.hexdigits):
+                ErrNotHex = True
+        else:
+            line = re.sub(r"\W", "", line)  # remove unwanted
+            hx[i] = nm2hex[line]
+            i = i + 1
 
     if(i == 9):
         print ""
