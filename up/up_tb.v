@@ -35,7 +35,7 @@ module up_tb;
       end
       #10000   int = 1;
       #10000     int = 0;
-      repeat(10) begin
+      repeat(25) begin
          #2300     int = 1;
          #2300     int = 0;
       end
