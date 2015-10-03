@@ -29,9 +29,7 @@ module up_datapath(
                (op == 5'b00011   )        ? r1 ~& r2           :
                (op == 5'b00100   )        ? r0 ^ r1            :
                (op == 5'b00101   )        ? r1 ^ r2            :
-               (op == 5'b00110   )        ? r2 ^ r3            :
-
-               
+               (op == 5'b00110   )        ? r2 ^ r3            : 
                (op == 5'b10000   )        ? 8'h00              :
                (op == 5'b10001   )        ? 8'h01              :
                (op == 5'b10010   )        ? 8'h02              :
@@ -40,7 +38,6 @@ module up_datapath(
                (op == 5'b10101   )        ? pc + 1             :
                (op == 5'b10110   )        ? r3                 :
                (op == 5'b10111   )        ? sp + 1             :
-               (op == 5'b11000   )        ? data_in            :
                (op == 5'b11001   )        ? sp                 :
                (op == 5'b11010   )        ? sp - 1             :
                (op == 5'b11011   )        ? pc                 :
@@ -56,23 +53,23 @@ module up_datapath(
          r1 <= 8'h00;
          r2 <= 8'h00;
          r3 <= 8'h00;
-      end else begin
-         if(ir_we)
-            if(pc[0])   ir <= data_in[3:0];
-            else        ir <= data_in[7:4];
+      end else begin 
          if(sp_we)      sp <= data_out;
          if(pc_we)      pc <= data_out;
-         if(rb_we) 
-            case(rb_sel_in) 
-               3'b000:  r0 <= data_in;       // SEL_I0
-               3'b001:  r1 <= data_in;       // SEL_I1
-               3'b010:  r2 <= data_in;       // SEL_I2
-               3'b011:  r3 <= data_in;       // SEL_I3
-               3'b100:  r0 <= data_out;      // SEL_00
-               3'b101:  r1 <= data_out;      // SEL_01
-               3'b110:  r2 <= data_out;      // SEL_02
-               3'b111:  r3 <= data_out;      // SEL_03
-            endcase
+         case({ir_we,pc[0]})
+            2'b11:      ir <= data_in[3:0];
+            2'b10:      ir <= data_in[7:4];
+         endcase
+         case({rb_we,rb_sel_in}) 
+            4'b1000:    r0 <= data_in;       // SEL_I0
+            4'b1001:    r1 <= data_in;       // SEL_I1
+            4'b1010:    r2 <= data_in;       // SEL_I2
+            4'b1011:    r3 <= data_in;       // SEL_I3
+            4'b1100:    r0 <= data_out;      // SEL_00
+            4'b1101:    r1 <= data_out;      // SEL_01
+            4'b1110:    r2 <= data_out;      // SEL_02
+            4'b1111:    r3 <= data_out;      // SEL_03
+         endcase
       end
    end
 endmodule
