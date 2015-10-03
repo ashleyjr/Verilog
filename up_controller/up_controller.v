@@ -204,7 +204,7 @@ module up_controller(
                                     rb_we    = 1'b1;
                                  end
                            4'h9: begin
-                                    op       = 5'b11011;
+                                    op       = 5'b11101;
                                     mem_we   = 1'b1;
                                  end
                            4'hB: begin
