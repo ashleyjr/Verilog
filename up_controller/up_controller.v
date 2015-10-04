@@ -50,165 +50,117 @@ module up_controller(
       ale         = 1'b0;
       case(state)
          LOAD_REGS_0:   begin
-                           op       = 5'b10000;
-                           ale      = 1'b1;
+                                                      op       = 5'b01110;
+                                                      ale      = 1'b1;
                         end
-         LOAD_REGS_1:   begin
-                           op       = 5'b10001;
-                           rb_sel   = 3'b000;
-                           rb_we    = 1'b1;
-                           ale      = 1'b1;
-                        end
-         LOAD_REGS_2:   begin
-                           op       = 5'b10010;
-                           rb_sel   = 3'b001;
-                           rb_we    = 2'b1;
-                           ale      = 1'b1;
-                        end
-         LOAD_REGS_3:   begin
-                           op       = 5'b10011;
-                           rb_sel   = 3'b010;
-                           rb_we    = 1'b1;
-                           ale      = 1'b1;
-                        end
-         LOAD_REGS_4:   begin
-                           rb_sel   = 3'b011;
-                           rb_we    = 2'b1;
+         LOAD_REGS_1,LOAD_REGS_2,LOAD_REGS_3,LOAD_REGS_4:   
+                        begin
+                                                      op       = {1'b1,state};
+                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_we    = 1'b1;
+                                                      ale      = 1'b1;
                         end
          FETCH:         begin
-                           if(int_in)  op       = 5'b11110;
-                           else        op       = 5'b10100;
-                           ale      = 1'b1;
+                           if(int_in)                 op       = 5'b11110;
+                           else                       op       = 5'b10100;
+                                                      ale      = 1'b1;
                         end
          DECODE:        begin
-                           op       = 5'b10101;
-                           ir_we    = 1'b1;
-                           pc_we    = 1'b1;
+                                                      op       = 5'b10101;
+                                                      ir_we    = 1'b1;
+                                                      pc_we    = 1'b1;
                         end
          EXECUTE_1:     case(ir)
                            4'h0,4'h1,4'h2,4'h3,4'h4:  rb_we    = 1'b1;
-                           4'h5: begin 
+                           4'h5:       begin 
                                                       rb_sel   = 3'b101;
                                                       rb_we    = 1'b1;
-                                 end
-                           4'h6: begin                rb_sel   = 3'b110;
+                                       end
+                           4'h6:       begin                
+                                                      rb_sel   = 3'b110;
                                                       rb_we    = 1'b1;
-                                 end
+                                       end
                            4'h7: if(z) begin
                                                       op       = 5'b10110;
                                                       pc_we    = 1'b1;
                                  end
-                           4'h8: begin
-                                    op       = 5'b10111;
-                                    sp_we    = 1'b1;
-                                    ale      = 1'b1;
-                                 end
-                           4'h9: begin
-                                    op       = 5'b11001;
-                                    ale      = 1'b1;
-                                 end
-                           4'hA: begin
-                                    op       = 5'b10111;
-                                    sp_we    = 1'b1;
-                                    ale      = 1'b1;
-                                 end
-                           4'hB: begin
-                                    op       = 5'b11001;
-                                    ale      = 1'b1;
-                                 end
-                           4'hC: begin
-                                    op       = 5'b10110;
-                                    ale      = 1'b1;
-                                 end
-                           4'hD: begin
-                                    op       = 5'b10110;
-                                    ale      = 1'b1;
-                                 end
-                           4'hE: begin
-                                    op       = 5'b10000;
-                                    ale      = 1'b1;
-                                 end
+                           4'h8:       begin
+                                                      sp_we    = 1'b1;
+                                                      ale      = 1'b1;
+                                       end
+                           4'h9,4'hB:  begin
+                                                      op       = 5'b11001;
+                                                      ale      = 1'b1;
+                                       end
+                           4'hA:       begin
+                                                      op       = 5'b01000;
+                                                      sp_we    = 1'b1;
+                                                      ale      = 1'b1;
+                                       end
+                           4'hC,4'hD:  begin
+                                                      op       = 5'b10110;
+                                                      ale      = 1'b1;
+                                       end
+                           4'hE:                      ale      = 1'b1;
+                              
                         endcase
          EXECUTE_2:     case(ir)
-                           4'h4: begin
-                                    rb_sel   = 3'b101;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h5: begin
-                                    rb_sel   = 3'b110;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h6: begin
-                                    rb_sel   = 3'b111;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h8: begin
-                                    op       = 5'b11000;
-                                    pc_we    = 1'b1;
-                                 end
-                           4'h9: begin
-                                    op       = 5'b11010;
-                                    sp_we    = 1'b1;
-                                 end
-                           4'hA: begin
-                                    rb_sel   = 3'b010;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'hB: begin
-                                    op       = 5'b11010;
-                                    sp_we    = 1'b1;
-                                 end
-                           4'hC: begin
-                                    rb_sel   = 3'b010;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'hD: begin
-                                    op       = 5'b11100;
-                                    mem_we   = 1'b1;
-                                 end
-                           4'hE: begin
-                                    rb_sel   = 3'b000;
-                                    rb_we    = 1'b1;
-                                 end
+                           4'h4,4'h5, 4'h6:  begin
+                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_we    = 1'b1;
+                                             end
+                           4'h8:             begin
+                                                      op       = 5'b11000;
+                                                      pc_we    = 1'b1;
+                                             end
+                           4'h9,4'hB:        begin
+                                                      op       = 5'b11010;
+                                                      sp_we    = 1'b1;
+                                             end
+                           4'hA,4'hC:        begin
+                                                      rb_sel   = 3'b010;
+                                                      rb_we    = 1'b1;
+                                             end
+                           4'hD:             begin
+                                                      op       = 5'b11100;
+                                                      mem_we   = 1'b1;
+                                             end
+                           4'hE:             begin
+                                                      rb_sel   = 3'b000;
+                                                      rb_we    = 1'b1;
+                                             end
                         endcase
          EXECUTE_3:     case(ir)
-                           4'h4:    rb_we    = 1'b1;
-         
-                           4'h5: begin
-                                    rb_sel   = 3'b101;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h6: begin
-                                    rb_sel   = 3'b110;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h9: begin
-                                    op       = 5'b11101;
-                                    mem_we   = 1'b1;
-                                 end
-                           4'hB: begin
-                                    op       = 5'b11100;
-                                    mem_we   = 1'b1;
-                                 end
+                           4'h4:                      rb_we    = 1'b1; 
+                           4'h5,4'h6:        begin
+                                                      rb_sel   = ir[2:0];
+                                                      rb_we    = 1'b1;
+                                             end
+                           4'h9:             begin
+                                                      op       = 5'b11101;
+                                                      mem_we   = 1'b1;
+                                             end
+                           4'hB:             begin
+                                                      op       = 5'b11100;
+                                                      mem_we   = 1'b1;
+                                             end
                         endcase
-         
-         INT_1:         begin
-                           op = 5'b11001;    // Add sp
-                           ale = 1'b1;
-                        end 
-         INT_2:         begin
-                           op = 5'b11011;    // Write PC
-                           mem_we = 1'b1;
-                        end
-         INT_3:         begin
-                           op = 5'b11010;    // Dec SP
-                           sp_we = 1'b1;
-                        end               
-                        
-         INT_4:         begin
-                           op = 5'b10000;    // Jump to fixed location
-                           pc_we = 1'b1;
-                        end
+         INT_1:                              begin
+                                                      op       = 5'b11001;    // Add sp
+                                                      ale      = 1'b1;
+                                             end 
+         INT_2:                              begin
+                                                      op       = 5'b11011;    // Write PC
+                                                      mem_we   = 1'b1;
+                                             end
+         INT_3:                              begin
+                                                      op       = 5'b11010;    // Dec SP
+                                                      sp_we    = 1'b1;
+                                             end
+         INT_4:                              begin
+                                                      op       = 5'b01110;    // Jump to fixed location
+                                                      pc_we    = 1'b1;
+                                             end
       endcase
    end
 
@@ -222,40 +174,40 @@ module up_controller(
       end else begin
          if(!int_go) int_last <= int;
          case(state)
-            LOAD_REGS_0:   state <= LOAD_REGS_1;
-            LOAD_REGS_1:   state <= LOAD_REGS_2;
-            LOAD_REGS_2:   state <= LOAD_REGS_3;
-            LOAD_REGS_3:   state <= LOAD_REGS_4;
-            LOAD_REGS_4:   state <= FETCH;
-            FETCH:         if(int_go)  state <= INT_1;
-                           else        state <= DECODE;
-            DECODE:        state <= EXECUTE_1;
+            LOAD_REGS_0:                                                         state <= LOAD_REGS_1;
+            LOAD_REGS_1:                                                         state <= LOAD_REGS_2;
+            LOAD_REGS_2:                                                         state <= LOAD_REGS_3;
+            LOAD_REGS_3:                                                         state <= LOAD_REGS_4;
+            LOAD_REGS_4:                                                         state <= FETCH;
+            FETCH:         if(int_go)                                            state <= INT_1;
+                           else                                                  state <= DECODE;
+            DECODE:                                                              state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
-
-                              4'h0,4'h1,4'h2,4'h3,4'h7:     state <= FETCH;
-                              4'h4,4'h5,4'h6,4'h9,4'hA,4'hB,4'hC,4'hD,4'hE:     state <= EXECUTE_2;
+                              4'h0,4'h1,4'h2,4'h3,4'h7:                          state <= FETCH;
+                              4'h4,4'h5,4'h6,4'h9,4'hA,4'hB,4'hC,4'hD,4'hE:      state <= EXECUTE_2;
                               4'h8: begin
-                                       state <= EXECUTE_2;
-                                       int_in <= 1'b0;
+                                                                                 state <= EXECUTE_2;
+                                                                                 int_in <= 1'b0;
                                     end
                               4'hF: begin
-                                       state       <= FETCH;
-                                       int_on_off  <= ~int_on_off;
+                                                                                 state       <= FETCH;
+                                                                                 int_on_off  <= ~int_on_off;
                                     end
                            endcase
             EXECUTE_2:     case(ir)
-                              4'h8,4'hA,4'hC,4'hD,4'hE:                         state <= FETCH;
-                              4'h4,4'h5,4'h6,4'h9,4'hB:          state <= EXECUTE_3;
+                              4'h8,4'hA,4'hC,4'hD,4'hE:                          state <= FETCH;
+                              4'h4,4'h5,4'h6,4'h9,4'hB:                          state <= EXECUTE_3;
                            endcase
-            EXECUTE_3:     state <= FETCH;
+            EXECUTE_3:                                                           state <= FETCH;
             INT_1:         begin
-                              int_last <= int;
-                              int_in   <= 1'b1;
-                              state <= INT_2;
+                                                                                 int_last <= int;
+                                                                                 int_in   <= 1'b1;
+                                                                                 state <= INT_2;
                            end
-            INT_2:         state <= INT_3;
-            INT_3:         state <= INT_4;
-            INT_4:         state <= FETCH;
+            INT_2:                                                               state <= INT_3;
+            INT_3:                                                               state <= INT_4;
+            INT_4:                                                               state <= FETCH;
+            default:                                                             state <= FETCH;
          endcase
       end
    end 
