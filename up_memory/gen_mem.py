@@ -110,7 +110,7 @@ v.write("\treg [7:0] mem [255:0];\n\n")
 v.write("\tassign out = mem[address];\n")
 v.write("\tassign re = 1'b1;\n\n")
 
-v.write("\tassign test = mem[64];\n\n")
+v.write("\tassign test = mem[96];\n\n")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")

@@ -68,7 +68,7 @@ module up_controller(
          LOAD_REGS_3:   begin
                            op       = 5'b10011;
                            rb_sel   = 3'b010;
-                           rb_we    = 2'b1;
+                           rb_we    = 1'b1;
                            ale      = 1'b1;
                         end
          LOAD_REGS_4:   begin
@@ -225,7 +225,8 @@ module up_controller(
             LOAD_REGS_0:   state <= LOAD_REGS_1;
             LOAD_REGS_1:   state <= LOAD_REGS_2;
             LOAD_REGS_2:   state <= LOAD_REGS_3;
-            LOAD_REGS_3:   state <= FETCH;
+            LOAD_REGS_3:   state <= LOAD_REGS_4;
+            LOAD_REGS_4:   state <= FETCH;
             FETCH:         if(int_go)  state <= INT_1;
                            else        state <= DECODE;
             DECODE:        state <= EXECUTE_1;

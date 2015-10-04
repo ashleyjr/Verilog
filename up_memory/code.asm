@@ -1,31 +1,61 @@
 # -------------Init table 
-02          #  R0
-80          #  R1
-40          #  R2
-00          #  R3
+30          #  R0
+30          #  R1
+80          #  R2
+60          #  R3
 
-      # ----- Store 0x00 at 0x80
+
+      # Setup 
+      STW            # 0x80 @ 0x60
+      SW12
       SW23
       SW12
-      STW
-      # ------ Interupts now on
+      STW            # 0x80 @ 0x30 
       INT
-      # ----- Get PC, sub then return 
-      PUSHC    # Prep jump
-      LDW
+          
+
+      # Main Loop
+      PUSHC          # Prep jump back
+     
       REF
       SW01
       SW12
-      SUB
+      REF
+      SW01
+      ADD
       SW01
       SW12
+      SW23
+      LDW            # Contents of 0x40 in R2
+
+      REF
+      SW01
+      SW12
+      SW23
+      LDW            # Contents of 0x20 in R2
+                     # Contents of 0x40 in R1
+
+      SW23
+      POP
+      SW23
+      BE             # Jump back if contents equal
+      SW23
+      PUSH           # Did not jump so build stack
+
+      REF
+      SW01
+      SW12
+      REF
+      SW01
+      ADD
+      SW01
+      SW12
+      SW23
       STW
       POPC
-      # ----- Jump back
 
 
 ISR
-      INT      # INterrupts off
       PUSH
       SW23
       PUSH
@@ -33,47 +63,20 @@ ISR
       PUSH
       SW01
       SW12
-      PUSH     # Stash all regs
+      PUSH     # Stash all regs 
+     
       REF
-      SW01
-      SW12
-      REF
-      SW01
-      MUL
-      SW01
-      MUL
-      SW01
-      MUL
-      SW01
-      MUL
-      SW01
-      MUL
       SW01
       SW12
       SW23
-      LDW      # Load contents of 0x40 in R2
-      SW23
-      PUSH     # Keep the address for later
+      LDW      # Contents of 0x20 in R2
       REF
       SW01
-      SW12
-      REF
-      SW01
-      NAND     # NAND of R1 = R2 therefore not. R0 = 0xFD
-      SW01
-      ADD      # 0xFF = 0x02 + 0xFD
-      SW01
-      ADD      # 0x01 = 0x02 + 0xFF
-      SW01
-      SW23     
-      ADD      # Contents of 0x80 + 0x01 in R0
+      ADD
       SW01
       SW12
-      SW23     # Hold inc value in R3
-      POP      # Get address back
-      SW23     # 0x80 in R3 and inc value in R2
-      STW
-      INT      # Interrupts back on
+      STW      # Add 0x20 and write back
+      
       POP      # Build all regs
       SW12
       SW01
@@ -82,4 +85,4 @@ ISR
       POP
       SW23
       POP
-      POPC
+      POPC     # RET
