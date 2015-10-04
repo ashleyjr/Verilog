@@ -15,28 +15,29 @@ module up_controller(
 	output reg           ale
 );
 
-   parameter   LOAD_REGS_0    = 4'b0000,
-               LOAD_REGS_1    = 4'b0001,
-               LOAD_REGS_2    = 4'b0010,
-               LOAD_REGS_3    = 4'b0011,
-               FETCH          = 4'b0100,
-               DECODE         = 4'b0101,
-               EXECUTE_1      = 4'b0110,
-               EXECUTE_2      = 4'b0111,
-               EXECUTE_3      = 4'b1000,
-               INT_1          = 4'b1001,
-               INT_2          = 4'b1010,
-               INT_3          = 4'b1011,
-               INT_4          = 4'b1100,
-               INT_5          = 4'b1101;
+   parameter   LOAD_REGS_0    = 4'h0,
+               LOAD_REGS_1    = 4'h1,
+               LOAD_REGS_2    = 4'h2,
+               LOAD_REGS_3    = 4'h3,
+               LOAD_REGS_4    = 4'h4,
+               FETCH          = 4'h5,
+               DECODE         = 4'h6,
+               EXECUTE_1      = 4'h7,
+               EXECUTE_2      = 4'h8,
+               EXECUTE_3      = 4'h9,
+               INT_1          = 4'hA,
+               INT_2          = 4'hB,
+               INT_3          = 4'hC,
+               INT_4          = 4'hD;
 
    reg [3:0]   state;
 
    reg         int_on_off;
-   reg         int_last; 
+   reg         int_last;
+   reg         int_in;
    wire        int_go;
 
-   assign int_go = (int ^ int_last) & int & int_on_off;
+   assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
       op          = 5'b00000;  // Defaults
@@ -55,21 +56,28 @@ module up_controller(
          LOAD_REGS_1:   begin
                            op       = 5'b10001;
                            rb_sel   = 3'b000;
-                           rb_we    = 2'b1;
+                           rb_we    = 1'b1;
                            ale      = 1'b1;
                         end
          LOAD_REGS_2:   begin
-                           op       = 5'b10011;
+                           op       = 5'b10010;
                            rb_sel   = 3'b001;
                            rb_we    = 2'b1;
                            ale      = 1'b1;
                         end
          LOAD_REGS_3:   begin
+                           op       = 5'b10011;
                            rb_sel   = 3'b010;
+                           rb_we    = 2'b1;
+                           ale      = 1'b1;
+                        end
+         LOAD_REGS_4:   begin
+                           rb_sel   = 3'b011;
                            rb_we    = 2'b1;
                         end
          FETCH:         begin
-                           op       = 5'b10100;
+                           if(int_in)  op       = 5'b11110;
+                           else        op       = 5'b10100;
                            ale      = 1'b1;
                         end
          DECODE:        begin
@@ -227,11 +235,7 @@ module up_controller(
                         end               
                         
          INT_4:         begin
-                           op = 5'b10010;    // Address jump vector
-                           ale = 1'b1;
-                        end
-         INT_5:         begin
-                           op = 5'b11000;    // Write it to the PC
+                           op = 5'b10000;    // Jump to fixed location
                            pc_we = 1'b1;
                         end
       endcase
@@ -243,6 +247,7 @@ module up_controller(
          state       <= LOAD_REGS_0;
          int_on_off  <= 1'b0;
          int_last    <= 1'b0;
+         int_in      <= 1'b0;
       end else begin
          if(!int_go) int_last <= int;
          case(state)
@@ -256,7 +261,11 @@ module up_controller(
             EXECUTE_1:     case(ir)
 
                               4'h0,4'h1,4'h2,4'h3,4'h7:     state <= FETCH;
-                              4'h4,4'h5,4'h6,4'h8,4'h9,4'hA,4'hB,4'hC,4'hD,4'hE:     state <= EXECUTE_2;
+                              4'h4,4'h5,4'h6,4'h9,4'hA,4'hB,4'hC,4'hD,4'hE:     state <= EXECUTE_2;
+                              4'h8: begin
+                                       state <= EXECUTE_2;
+                                       int_in <= 1'b0;
+                                    end
                               4'hF: begin
                                        state       <= FETCH;
                                        int_on_off  <= ~int_on_off;
@@ -269,12 +278,12 @@ module up_controller(
             EXECUTE_3:     state <= FETCH;
             INT_1:         begin
                               int_last <= int;
+                              int_in   <= 1'b1;
                               state <= INT_2;
                            end
             INT_2:         state <= INT_3;
             INT_3:         state <= INT_4;
-            INT_4:         state <= INT_5;
-            INT_5:         state <= FETCH;
+            INT_4:         state <= FETCH;
          endcase
       end
    end 

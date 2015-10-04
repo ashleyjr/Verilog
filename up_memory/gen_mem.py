@@ -29,7 +29,7 @@ WarnLongConst = False
 ErrNotHex = False
 
 c = open("code.asm","r")
-hx = ['0'] * 256
+hx = ['0'] * 512
 
 
 sys.stdout.write('Address\t1st\t2nd\n')
@@ -40,6 +40,7 @@ for line in c:
     line = re.sub("\n", "", line)
     line = re.sub("\r", "", line)
     line = line.split('#')[0]       # Split on comment
+
     chars = list(line)              # split in to char
 
 
@@ -57,19 +58,22 @@ for line in c:
                 ErrNotHex = True
         else:
             line = re.sub(r"\W", "", line)  # remove unwanted
-            if((i % 2) == 0):
-                sys.stdout.write(str(hex(i/2)) + '\t' + line + '\t')
+            if(line == "ISR"):
+                i = 256;
             else:
-                sys.stdout.write(line + '\n')
-            hx[i] = nm2hex[line]
-            i = i + 1
+                if((i % 2) == 0):
+                    sys.stdout.write(str(hex(i/2)) + '\t' + line + '\t')
+                else:
+                    sys.stdout.write(line + '\n')
+                hx[i] = nm2hex[line]
+                i = i + 1
 
 print ""
 print ""
 print "Reg R0:  \t0x" + hx[0] +  hx[1]
 print "Reg R1:  \t0x" + hx[2] +  hx[3]
-print "Reg R2:  \t0x" + hx[6] +  hx[7]
-print "Int Vect: \t0x" + hx[4] +  hx[5]
+print "Reg R2:  \t0x" + hx[4] +  hx[7]
+print "Reg R3:  \t0x" + hx[6] +  hx[7]
 print ""
 print"Lines of code:\t" + str(i)
 print
@@ -106,12 +110,12 @@ v.write("\treg [7:0] mem [255:0];\n\n")
 v.write("\tassign out = mem[address];\n")
 v.write("\tassign re = 1'b1;\n\n")
 
-v.write("\tassign test = mem[128];")
+v.write("\tassign test = mem[64];\n\n")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")
 
-for i in range(0,128):
+for i in range(0,256):
 	v.write("\t\t\tmem[" + str(i) +"] <= 8'h" + str(hx[(i*2)]) + str(hx[(i*2) + 1]) + ";\n")
 
 v.write("\t\tend else begin\n")
