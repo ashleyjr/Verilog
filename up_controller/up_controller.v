@@ -40,7 +40,7 @@ module up_controller(
    assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
-      op          = 5'b00000;  // Defaults
+      op          = {1'b0,ir};  // Defaults
       ir_we       = 1'b0;
       pc_we       = 1'b0;
       rb_sel      = 3'b100;
@@ -86,39 +86,17 @@ module up_controller(
                            pc_we    = 1'b1;
                         end
          EXECUTE_1:     case(ir)
-                           4'h0: begin
-                                    op       = 5'b00000;
-                                    rb_we    = 1'b1;
+                           4'h0,4'h1,4'h2,4'h3,4'h4:  rb_we    = 1'b1;
+                           4'h5: begin 
+                                                      rb_sel   = 3'b101;
+                                                      rb_we    = 1'b1;
                                  end
-                           4'h1: begin
-                                    op       = 5'b00001;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h2: begin
-                                    op       = 5'b00010;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h3: begin
-                                    op       = 5'b00011;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h4: begin
-                                    op       = 5'b00100;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h5: begin
-                                    op       = 5'b00101;
-                                    rb_sel   = 3'b101;
-                                    rb_we    = 1'b1;
-                                 end
-                           4'h6: begin
-                                    op       = 5'b00110;
-                                    rb_sel   = 3'b110;
-                                    rb_we    = 1'b1;
+                           4'h6: begin                rb_sel   = 3'b110;
+                                                      rb_we    = 1'b1;
                                  end
                            4'h7: if(z) begin
-                                    op       = 5'b10110;
-                                    pc_we    = 1'b1;
+                                                      op       = 5'b10110;
+                                                      pc_we    = 1'b1;
                                  end
                            4'h8: begin
                                     op       = 5'b10111;
@@ -153,17 +131,14 @@ module up_controller(
                         endcase
          EXECUTE_2:     case(ir)
                            4'h4: begin
-                                    op       = 5'b00100;
                                     rb_sel   = 3'b101;
                                     rb_we    = 1'b1;
                                  end
                            4'h5: begin
-                                    op       = 5'b00101;
                                     rb_sel   = 3'b110;
                                     rb_we    = 1'b1;
                                  end
                            4'h6: begin
-                                    op       = 5'b00110;
                                     rb_sel   = 3'b111;
                                     rb_we    = 1'b1;
                                  end
@@ -197,17 +172,13 @@ module up_controller(
                                  end
                         endcase
          EXECUTE_3:     case(ir)
-                           4'h4: begin
-                                    op       = 5'b00100;
-                                    rb_we    = 1'b1;
-                                 end
+                           4'h4:    rb_we    = 1'b1;
+         
                            4'h5: begin
-                                    op       = 5'b00101;
                                     rb_sel   = 3'b101;
                                     rb_we    = 1'b1;
                                  end
                            4'h6: begin
-                                    op       = 5'b00110;
                                     rb_sel   = 3'b110;
                                     rb_we    = 1'b1;
                                  end
