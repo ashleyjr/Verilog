@@ -13,22 +13,22 @@ module up_memory(
 	assign out = mem[address];
 	assign re = 1'b1;
 
-	assign test = mem[96];
+	assign test = mem[127];
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-			mem[0] <= 8'h00;
-			mem[1] <= 8'h02;
-			mem[2] <= 8'h02;
-			mem[3] <= 8'hA0;
-			mem[4] <= 8'hF9;
-			mem[5] <= 8'h80;
-			mem[6] <= 8'h00;
-			mem[7] <= 8'h00;
-			mem[8] <= 8'h00;
-			mem[9] <= 8'h00;
-			mem[10] <= 8'h00;
-			mem[11] <= 8'h00;
+			mem[0] <= 8'h7E;
+			mem[1] <= 8'h01;
+			mem[2] <= 8'h00;
+			mem[3] <= 8'h7F;
+			mem[4] <= 8'hD4;
+			mem[5] <= 8'h56;
+			mem[6] <= 8'h45;
+			mem[7] <= 8'hD5;
+			mem[8] <= 8'h46;
+			mem[9] <= 8'h54;
+			mem[10] <= 8'hF9;
+			mem[11] <= 8'h80;
 			mem[12] <= 8'h00;
 			mem[13] <= 8'h00;
 			mem[14] <= 8'h00;
@@ -145,15 +145,15 @@ module up_memory(
 			mem[125] <= 8'h00;
 			mem[126] <= 8'h00;
 			mem[127] <= 8'h00;
-			mem[128] <= 8'h04;
-			mem[129] <= 8'h5D;
-			mem[130] <= 8'hE4;
-			mem[131] <= 8'h04;
-			mem[132] <= 8'h80;
-			mem[133] <= 8'h00;
-			mem[134] <= 8'h00;
-			mem[135] <= 8'h00;
-			mem[136] <= 8'h00;
+			mem[128] <= 8'hBC;
+			mem[129] <= 8'h45;
+			mem[130] <= 8'h6B;
+			mem[131] <= 8'hC0;
+			mem[132] <= 8'h45;
+			mem[133] <= 8'hDA;
+			mem[134] <= 8'h65;
+			mem[135] <= 8'h4D;
+			mem[136] <= 8'hA8;
 			mem[137] <= 8'h00;
 			mem[138] <= 8'h00;
 			mem[139] <= 8'h00;
