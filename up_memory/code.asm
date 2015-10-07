@@ -1,43 +1,91 @@
 # -------------Init table 
-7E          #  R0
-01          #  R1
-00          #  R2
-7F          #  R3
+01          #  R0 - Jump back
+1E          #  R1 - First function
+00          #  R2 - Blank
+7F          #  R3 - Address if variable
 
       # Setup
-      STW      # 0x00 @ 0x7F
-      SW01
-      SW12
-      SW23
-      SW01
-      SW12
-      STW      # 0x01 @ 0x7E  
-      SW12
-      SW01
-      SW23
-      SW12
-      SW01     # Regs back in the same order as setup table
+      STW         # R2 @ 0x7F
             
       # Loop
-      INT
       PUSHC
+
+      PUSHC
+      POP
+      SW01
+      ADD
+      SW01
+      SW12
+      PUSH
       POPC
-ISR
+      SW12
+
+
+
+
+
+      POPC
+
+
+# Function 1 - 
+
       PUSH
-      LDW      # 0x7E contents in R2
+      SW23
+      PUSH
+      SW12
+      PUSH
       SW01
       SW12
-      SW23     # Now in R1
-      PUSH
-      LDW      # 0x7F contents in R2 
-      ADD      # New in R0
-      SW01
+      PUSH        # Subroutine code
+
+      POP
       SW12
-      STW      # New stored in 0x7F
+      SW01
+      POP
+      SW12
       POP
       SW23
+      POP
+      POPC
+
+# Function 2 - 
+
+      PUSH
+      SW23
+      PUSH
+      SW12
+      PUSH
+      SW01
+      SW12
+      PUSH        # Subroutine code
+
+      POP
       SW12
       SW01
-      STW
-      POP      # Old stored in 0x7E
+      POP
+      SW12
+      POP
+      SW23
+      POP
+      POPC
+
+# Function 3 - 
+
+      PUSH
+      SW23
+      PUSH
+      SW12
+      PUSH
+      SW01
+      SW12
+      PUSH        # Subroutine code
+
+      POP
+      SW12
+      SW01
+      POP
+      SW12
+      POP
+      SW23
+      POP
       POPC
