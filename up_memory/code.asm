@@ -183,7 +183,7 @@ B3          #  R1
 
 
 
-# Function - x2 
+#LABEL:x2
 
       SW23
       PUSH        # Stash R3
@@ -226,7 +226,7 @@ B3          #  R1
       POPC        # R1 != R2
 
 
-# Function - +1 
+#LABEL:+1
 
       SW23
       PUSH        # Stash R3
@@ -272,7 +272,7 @@ B3          #  R1
 
 
 
-# Function - Store
+#LABEL:Store
 
       SW23
       PUSH        # Stash R3

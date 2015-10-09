@@ -39,6 +39,13 @@ for line in c:
     line = re.sub(" ", "", line)    # remove unwanted
     line = re.sub("\n", "", line)
     line = re.sub("\r", "", line)
+
+    comment = ""
+    if(len(line.split('#')) > 1):
+        comment = line.split('#')[1]
+
+
+
     line = line.split('#')[0]       # Split on comment
 
     chars = list(line)              # split in to char
@@ -67,12 +74,15 @@ for line in c:
                     sys.stdout.write(line + '\n')
                 hx[i] = nm2hex[line]
                 i = i + 1
+    else:
+        if(comment[:6] == "LABEL:"):
+            print "\n\n" + comment[6:]  + "= "+ str(hex(i)) +"\n"
 
 print ""
 print ""
 print "Reg R0:  \t0x" + hx[0] +  hx[1]
 print "Reg R1:  \t0x" + hx[2] +  hx[3]
-print "Reg R2:  \t0x" + hx[4] +  hx[7]
+print "Reg R2:  \t0x" + hx[4] +  hx[5]
 print "Reg R3:  \t0x" + hx[6] +  hx[7]
 print ""
 print"Lines of code:\t" + str(i)
