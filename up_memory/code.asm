@@ -1,7 +1,7 @@
 # -------------Init table 
 A1          #  R0 
-00          #  R1 
-A0          #  R2
+21          #  R1 
+00          #  R2
 A0          #  R3
 
 
@@ -15,7 +15,7 @@ A0          #  R3
       SW23
       PUSH        # Stash 0xA0
       SW23
-      PUSH        # Stash value in 0xA0
+      PUSH        # Stash value iin 0xA0
 
       REF
       SW01
@@ -23,17 +23,32 @@ A0          #  R3
       SW23
       LDW         # 0xA1
 
-      SW23
-      POP         
-      BE          
+      SW01
+      SW12
+      SW23        # Jump address in R3
 
-
-LABEL: No ADD
-      POP         # restore
-      SW23
       POP
-      SW23
+      BE
 
+#LABEL: Copy
+     
+      SW23        # R1 back in place 
+      SW12        
+      SW23        # Hide while pop
+      POP
+      SW23        # Write new value to location
+      STW         
+      REF         # Restore R0
+      
+      POPC
+
+#LABEL:Do not copy
+
+      SW23
+      SW12        # R1 back in place
+      POP
+      SW23        # R3
+      REF         # R0
       POPC
 
 
