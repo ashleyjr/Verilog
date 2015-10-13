@@ -112,24 +112,30 @@ v.write("\tinput  wire\t[7:0]   address,\n")
 v.write("\tinput  wire\t\t\twe,\n")
 v.write("\toutput wire\t[7:0]   out,\n")
 v.write("\toutput wire\t\t\tre,\n")
-v.write("\toutput wire\t[7:0]\t\ttest")
+v.write("\toutput wire\t[7:0]\t\ttest\n")
 v.write(");\n\n")
 
 v.write("\treg [7:0] mem [255:0];\n\n")
+v.write("\treg [3:0] count;\n\n")
+
+v.write("\tassign re = count[3] ^ count[1];     // PSRB number generate\n")
 
 v.write("\tassign out = mem[address];\n")
-v.write("\tassign re = 1'b1;\n\n")
 
 v.write("\tassign test = mem[127];\n\n")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")
+v.write("\t\t\tcount = 4'b0;\n")
 
 for i in range(0,256):
 	v.write("\t\t\tmem[" + str(i) +"] <= 8'h" + str(hx[(i*2)]) + str(hx[(i*2) + 1]) + ";\n")
 
 v.write("\t\tend else begin\n")
-v.write("\t\t\tif(we) mem[address] <= in;\n")
+v.write("\t\t\tif(we) begin\n")
+v.write("\t\t\t\tmem[address] <= in;\n")
+v.write("\t\t\t\tcount <= count + 1'b1;\n")
+v.write("\t\t\tend\n")
 v.write("\t\tend\n")
 v.write("\tend\n")
 
