@@ -179,8 +179,9 @@ module up_controller(
             LOAD_REGS_2:                                                         state <= LOAD_REGS_3;
             LOAD_REGS_3:                                                         state <= LOAD_REGS_4;
             LOAD_REGS_4:                                                         state <= FETCH;
-            FETCH:         if(int_go)                                            state <= INT_1;
-                           else                                                  state <= DECODE;
+            FETCH:         if(mem_re)
+                              if(int_go)                                         state <= INT_1;
+                              else                                               state <= DECODE;
             DECODE:                                                              state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
                               4'h0,4'h1,4'h2,4'h3,4'h7:                          state <= FETCH;

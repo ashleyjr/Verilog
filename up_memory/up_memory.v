@@ -11,9 +11,9 @@ module up_memory(
 
 	reg [7:0] mem [255:0];
 
-	reg [3:0] count;
+	reg [4:0] count;
 
-	assign re = count[3] ^ count[1];     // PSRB number generate
+	assign re = (count > 5'h04) ? 1'b1 : 1'b0;     // PSRB number generate
 	assign out = mem[address];
 	assign test = mem[127];
 
@@ -277,10 +277,8 @@ module up_memory(
 			mem[254] <= 8'h00;
 			mem[255] <= 8'h00;
 		end else begin
-			if(we) begin
-				mem[address] <= in;
-				count <= count + 1'b1;
-			end
+			if(we) mem[address] <= in;
+			count <= count + 1'b1;
 		end
 	end
 
