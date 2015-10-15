@@ -1,9 +1,12 @@
 module up(
 	input	   wire        clk,
 	input	   wire        nRst,
-   input    wire        int
+   input    wire        int,
+	output 	wire			led
 );
   
+	assign led = 8'hAA;
+	
    // up
    wire        ale;
    reg   [7:0] address_latch;

@@ -19,7 +19,7 @@ module up_memory(
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-			count = 4'b0;
+			count <= 4'b0;
 			mem[0] <= 8'hA1;
 			mem[1] <= 8'h21;
 			mem[2] <= 8'h00;

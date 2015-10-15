@@ -126,7 +126,7 @@ v.write("\tassign test = mem[127];\n\n")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")
-v.write("\t\t\tcount = 4'b0;\n")
+v.write("\t\t\tcount <= 4'b0;\n")
 
 for i in range(0,256):
 	v.write("\t\t\tmem[" + str(i) +"] <= 8'h" + str(hx[(i*2)]) + str(hx[(i*2) + 1]) + ";\n")
