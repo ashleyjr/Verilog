@@ -2,7 +2,9 @@ module mojo_top(
     input clk,
     input rst_n,
 	 input int,
-    output[7:0]led
+	 input rx,
+    output[7:0]led,
+	 output	tx
 );
 
 wire rst = ~rst_n; // make reset active high
@@ -13,8 +15,10 @@ wire rst = ~rst_n; // make reset active high
 up up(
    .clk     	(clk),
    .nRst    	(rst_n),
-   .int 			(itn),
-	.led 			(led)
+   .int 			(int),
+	.rx			(rx),
+	.led 			(led),
+	.tx			(tx)
 );
 ///////////////////////////////////////////////////
 
