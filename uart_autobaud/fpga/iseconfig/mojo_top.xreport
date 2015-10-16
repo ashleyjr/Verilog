@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2015-10-16T23:55:38</DateModified>
+  <DateModified>2015-10-16T23:55:40</DateModified>
   <ModuleName>mojo_top</ModuleName>
-  <SummaryTimeStamp>2015-10-16T23:46:26</SummaryTimeStamp>
-  <SavedFilePath>/home/ashley/Verilog/up/fpga/iseconfig/mojo_top.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>/home/ashley/Verilog/up/fpga/syn/</ImplementationReportsDirectory>
+  <SummaryTimeStamp>2015-10-16T23:33:46</SummaryTimeStamp>
+  <SavedFilePath>/home/ashley/Verilog/uart_autobaud/fpga/iseconfig/mojo_top.xreport</SavedFilePath>
+  <ImplementationReportsDirectory>/home/ashley/Verilog/uart_autobaud/fpga/syn/</ImplementationReportsDirectory>
   <DateInitialized>2012-11-08T12:38:20</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>
