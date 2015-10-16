@@ -1,25 +1,30 @@
 module up_memory(
-	input  wire			clk,
-	input  wire			nRst,
-	input  wire	[7:0]   in,
-	input  wire	[7:0]   address,
-	input  wire			we,
-	output wire	[7:0]   out,
-	output wire			re,
-	output wire	[7:0]		test
+	input    wire			   clk,
+	input    wire			   nRst,
+	input    wire	[7:0]    in,
+	input    wire	[7:0]    address,
+	input    wire			   we,
+   input    wire           busy_tx,
+	output   wire	[7:0]    out,
+	output   wire			   re,
+	output   wire	[7:0]		test,
+   output   reg   [7:0]    data_tx,
+   output   reg            transmit
 );
 
 	reg [7:0] mem [255:0];
 
 	reg [4:0] count;
 
-	assign re = (count > 5'h04) ? 1'b1 : 1'b0;     // PSRB number generate
+   assign re = ~busy_tx;     // PSRB number generate
 	assign out = mem[address];
 	assign test = mem[160];
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-			count <= 4'b0;
+			data_tx  <= 8'h00;
+         transmit <= 1'b0;
+         count <= 4'b0;
 			mem[0] <= 8'h01;
 			mem[1] <= 8'h00;
 			mem[2] <= 8'h00;
@@ -276,9 +281,16 @@ module up_memory(
 			mem[253] <= 8'h00;
 			mem[254] <= 8'h00;
 			mem[255] <= 8'h00;
-		end else begin
-			if(we) mem[address] <= in;
-			count <= count + 1'b1;
+      end else begin
+         if(we) begin
+            mem[address] <= in;
+            data_tx <= in;
+            transmit <= 1'b1;
+         end
+         if(busy_tx) begin 
+            transmit <= 1'b0;
+         end
+		   count <= count + 1'b1;
 		end
 	end
 

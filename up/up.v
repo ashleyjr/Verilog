@@ -1,8 +1,10 @@
 module up(
-	input	   wire        clk,
-	input	   wire        nRst,
-   input    wire        int,
-	output 	wire [7:0]			led
+	input	   wire           clk,
+	input	   wire           nRst,
+   input    wire           int,
+   input    wire           rx,
+	output 	wire [7:0]	   led,
+   output   wire           tx
 );
   
 
@@ -26,6 +28,12 @@ module up(
    // memory
    wire        mem_re;
    wire        mem_we;
+
+   // uart
+   wire        busy_tx;
+   wire  [7:0  ]data_tx;
+   wire        transmit;
+
 
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
@@ -73,9 +81,25 @@ module up(
       .in         (data_out         ),
       .address    (address_latch    ),
       .we         (mem_we           ),
+      .busy_tx    (busy_tx          ),
       .out        (data_in          ),
       .re         (mem_re           ),
-      .test       (led              )
+      .test       (led              ),
+      .data_tx    (data_tx          ),
+      .transmit   (transmit         )
+   );
+
+   uart_autobaud uart_autobaud(
+      .clk        (clk),
+      .nRst       (nRst),
+      .transmit   (transmit),
+      .data_tx    (data_tx),
+      .rx         (rx     ),
+      .busy_tx       (busy_tx),
+      .busy_rx    (),
+      .recieved      (),
+      .data_rx    (),
+      .tx         (tx)
    );
 
 endmodule

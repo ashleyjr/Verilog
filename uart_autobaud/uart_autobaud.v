@@ -69,7 +69,7 @@ module uart_autobaud(
          tx          <= 1;
 
          // Autobaud
-         baud        <= 32'hFFFFFFFF;
+         baud        <= 32'h0000000F;
          timer       <= 32'h0;
          delay_1     <= 1'b0;
          delay_2     <= 1'b0;
