@@ -2,10 +2,10 @@ module up(
 	input	   wire        clk,
 	input	   wire        nRst,
    input    wire        int,
-	output 	wire			led
+	output 	wire [7:0]			led
 );
   
-	assign led = 8'hAA;
+
 	
    // up
    wire        ale;
@@ -75,7 +75,7 @@ module up(
       .we         (mem_we           ),
       .out        (data_in          ),
       .re         (mem_re           ),
-      .test       ()
+      .test       (led              )
    );
 
 endmodule

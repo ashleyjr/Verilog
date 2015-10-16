@@ -122,7 +122,7 @@ v.write("\tassign re = (count > 5'h04) ? 1'b1 : 1'b0;     // PSRB number generat
 
 v.write("\tassign out = mem[address];\n")
 
-v.write("\tassign test = mem[127];\n\n")
+v.write("\tassign test = mem[160];\n\n")
 
 v.write("\talways@(posedge clk or negedge nRst) begin\n")
 v.write("\t\tif(!nRst) begin\n")
