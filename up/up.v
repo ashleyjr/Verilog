@@ -4,7 +4,7 @@ module up(
    input    wire           prog,
    input    wire           int,
    input    wire           rx,
-	output 	wire [7:0]	   led,
+	output 	wire [7:0]	   leds,
    output   wire           tx
 );
   
@@ -31,7 +31,6 @@ module up(
    wire        mem_we;
    wire  [7:0] load_in;
    wire  [7:0] load_out;
-   wire  [7:0] leds;
 
    // uart
    wire        busy_tx;
@@ -69,7 +68,7 @@ module up(
 
    up_controller up_controller(
       .clk        (clk              ),
-      .nRst       (nRst             ),
+      .nRst       (up_nRst          ),
       .int        (int              ),
       .ir         (ir               ),
       .mem_re     (mem_re           ),
