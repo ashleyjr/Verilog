@@ -1,6 +1,7 @@
 module up(
 	input	   wire           clk,
 	input	   wire           nRst,
+   input    wire           prog,
    input    wire           int,
    input    wire           rx,
 	output 	wire [7:0]	   led,
@@ -28,13 +29,21 @@ module up(
    // memory
    wire        mem_re;
    wire        mem_we;
+   wire  [7:0] load_in;
+   wire  [7:0] load_out;
+   wire  [7:0] leds;
 
    // uart
    wire        busy_tx;
-   wire  [7:0  ]data_tx;
+   wire  [7:0] data_tx;
+   wire  [7:0] data_rx;
    wire        transmit;
 
+   // Up only reset
+   wire  up_nRst;
+   assign up_nRst = nRst & ~prog;
 
+   // Address latch
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
          address_latch <= 8'h00;
@@ -45,7 +54,7 @@ module up(
 
    up_datapath up_datapath(
       .clk        (clk              ),
-      .nRst       (nRst             ),
+      .nRst       (up_nRst          ),
       .data_in    (data_in          ),
       .op         (op               ),
       .ir_we      (ir_we            ),
@@ -78,28 +87,31 @@ module up(
    up_memory up_memory(
       .clk        (clk              ),
       .nRst       (nRst             ),
+      .prog       (prog             ),
       .in         (data_out         ),
       .address    (address_latch    ),
       .we         (mem_we           ),
+      .load_in    (load_in          ),
       .busy_tx    (busy_tx          ),
+      .recived    (recived          ),
       .out        (data_in          ),
       .re         (mem_re           ),
-      .test       (led              ),
-      .data_tx    (data_tx          ),
-      .transmit   (transmit         )
+      .transmit   (transmit         ),
+      .load_out   (load_out         ),
+      .leds       (leds             )
    );
 
    uart_autobaud uart_autobaud(
-      .clk        (clk),
-      .nRst       (nRst),
-      .transmit   (transmit),
-      .data_tx    (data_tx),
-      .rx         (rx     ),
-      .busy_tx       (busy_tx),
+      .clk        (clk              ),
+      .nRst       (nRst             ),
+      .transmit   (transmit         ),
+      .data_tx    (data_tx          ),
+      .rx         (rx               ),
+      .busy_tx    (busy_tx          ),
       .busy_rx    (),
-      .recieved      (),
-      .data_rx    (),
-      .tx         (tx)
+      .recieved   (recived          ),
+      .data_rx    (load_in          ),
+      .tx         (tx               )
    );
 
 endmodule

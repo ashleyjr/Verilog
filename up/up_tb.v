@@ -4,14 +4,23 @@ module up_tb;
 
 	integer idx;
 
-	reg      clk;
-	reg      nRst;
-   reg      int;	
-   
+	reg         clk;
+	reg         nRst;
+   reg         prog;
+   reg         int;	
+   reg         rx;
+   wire  [7:0] leds;
+   wire        tx;
+
+
    up up(
 		.clk     (clk     ),
 		.nRst    (nRst    ),
-	   .int     (int     ) 
+	   .prog    (prog    ),
+      .int     (int     ), 
+      .rx      (rx      ),
+      .leds    (leds    ),
+      .tx      (tx      )
    );
 
 	initial begin
@@ -28,20 +37,13 @@ module up_tb;
 
 	initial begin
 					nRst     = 1; 
-		         int      = 0;
+		         prog     = 1
+               int      = 0;
       #100		nRst     = 0;
 		#10		nRst     = 1;
      
-      //repeat(25) begin
-      //   #10000   int      = 1;
-		//   #10000   int      = 0;
-      //end
-      //#10000   int = 1;
-      //#10000     int = 0;
-      //repeat(25) begin
-      //   #2300     int = 1;
-      //   #2300     int = 0;
-      //end
+      
+
 
       #100000
       $finish;
