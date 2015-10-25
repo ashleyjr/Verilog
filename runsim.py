@@ -36,7 +36,7 @@ if "__main__" == __name__:
         os.system(cmd)
 
 
-        cmd = "vvp " + str(sim) + ".dat -vcd"
+        cmd = "vvp " + str(sim) + ".dat -vcd | head -15"
         print "     Cmd: " + cmd
         os.system(cmd)
 
