@@ -48,6 +48,7 @@ module up_tb;
       end
    endtask
 
+   reg [7:0] code [255:0] ;
    reg [8:0] j;
 	initial begin
 					nRst     = 1;
@@ -59,8 +60,11 @@ module up_tb;
      
      
       #1000    prog = 1;
-               for(j=0;j<257;j=j+1) begin
-                  #500  uart_send(j[7:0]); 
+               #500  uart_send(8'h55); // Sync autbaud 
+               #500  uart_send(8'hAA); 
+               $readmemh("code/_code.hex", code) ;
+               for(j=256;j>0;j=j-1) begin
+                  #500  uart_send(code[j-1]); 
                end
 
       #100     prog = 0;
