@@ -51,6 +51,8 @@ module up_tb;
    reg [7:0] code [255:0] ;
    reg [8:0] j;
 	initial begin
+
+      // Init
 					nRst     = 1;
                rx       = 1; 
 		         prog     = 0;
@@ -59,6 +61,7 @@ module up_tb;
 		#10		nRst     = 1;
      
      
+      // Load the code
       #1000    prog = 1;
                #500  uart_send(8'h55); // Sync autbaud 
                #500  uart_send(8'hAA); 
@@ -69,7 +72,12 @@ module up_tb;
 
       #100     prog = 0;
 
-      #100000
+      // Wiggle int line
+      #100
+               for(j=0;j<50;j=j+1) begin
+                  #1000  int = 1;
+                  #1000  int = 0;
+               end 
       $finish;
 	end
 

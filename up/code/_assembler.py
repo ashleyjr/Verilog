@@ -28,7 +28,7 @@ nm2hex = {
 WarnLongConst = False
 ErrNotHex = False
 
-c = open("code.asm","r")
+c = open("_code.asm","r")
 hx = ['0'] * 512
 
 
@@ -101,7 +101,7 @@ if(ErrNotHex):
 
 
 
-v = open("code.hex", "wb")
+v = open("_code.hex", "wb")
 
 for i in range(0,256):
 	v.write(str(hx[(i*2)]) + str(hx[(i*2) + 1]) + "\r\n")
