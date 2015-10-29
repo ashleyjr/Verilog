@@ -5,6 +5,7 @@ import string
 import sys
 from os import listdir
 from os.path import isfile, join
+from optparse import OptionParser
 
 nm2hex = {
     'ADD'	: '0',
@@ -28,7 +29,12 @@ nm2hex = {
 WarnLongConst = False
 ErrNotHex = False
 
-c = open("_code.asm","r")
+parser = OptionParser(usage="_assembler.py [-c code]" )
+parser.add_option("-c", "--code", dest="code", help="point to the code you want to assemble")
+(options, args) = parser.parse_args()
+
+
+c = open(str(options.code),"r")
 hx = ['0'] * 512
 
 
