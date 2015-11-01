@@ -29,18 +29,25 @@ module fir_filter_tb;
       $dumpfile("fir_filter.vcd");
       $dumpvars(0,fir_filter_tb);
    end
-	
+
+   reg [31:0] data_in [255:0];
+   reg [7:0] i; 
+   reg [7:0] j;
+   reg [7:0] k;
    initial begin
-               in       = 32'd100;
+               $readmemh("sine.hex",data_in);
                sample   = 1;
       #100     nRst     = 1;
       #100     nRst     = 0;
       #50      nRst     = 1;
-      #300     in       = 32'd101;
-      #300     in       = 32'd102;
-	   #300     in       = 32'd101;
-      #300     in       = 32'd102;
-      #1000
+               for(i=0;i<50;i=i+1) begin
+                  for(j=0;j<255;j=j+1) begin
+                     for(k=0;k<i;k=k+1) begin
+                        #1;
+                     end
+                     in = data_in[j];
+                  end
+               end
       $finish;
 	end
 
