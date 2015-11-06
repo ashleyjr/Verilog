@@ -1,56 +1,70 @@
 module fir_filter(
-	input                      clk,
-	input                      nRst,
-	input                      sample,  // Take a sample
-	input    signed   [31:0]   in,      // Data in to filter
-	output   signed   [31:0]   out      // Data out of filter
-);
-	parameter LENGTH = 19;
-	reg signed [31:0] delay [LENGTH:0];
+	input                      	clk,
+	input                      	nRst,
+	input                      	sample,  		// Sample input
+	input						coeffs_shift,	// Shift coeffs along one
+	input    			[31:0] 	data_in,      	// Data in to filter
+	input				[7:0]	coeffs_in,		// Coeffcients in to filter
+	output   	reg 	[31:0] 	data_out,  		// Data out of filter
+	output				[7:0]	coeffs_out		// Coeffcients out of filter
+);	
+	parameter LENGTH = 20;
 
-	assign
-		out =	in				*			32'd1			+
-			delay[0]			*		32'd1 + 	
-			delay[1]			*		32'd1 + 	
-			delay[2]			*		32'd1 + 	
-			delay[3]			*		32'd1 + 	
-			delay[4]			*		32'd1 + 	
-			delay[5]			*		32'd1 + 	
-			delay[6]			*		32'd1 + 	
-			delay[7]			*		32'd1 + 	
-			delay[8]			*		32'd1 + 	
-			delay[9]			*		32'd1 + 	
-			delay[10]			*	32'd1 + 	
-			delay[11]			*	32'd1 + 	
-			delay[12]			*	32'd1 + 	
-			delay[13]			*	32'd1 + 	
-			delay[14]			*	32'd1 + 	
-			delay[15]			*	32'd1 + 	
-			delay[16]			*	32'd1 + 	
-			delay[17]			*	32'd1 + 	
-			delay[18]			*			32'd1			+
-			delay[19]			*			32'd1			;
 
-	always @(posedge clk or negedge nRst) begin
-		if(!nRst) begin
-			delay[0] <= 32'b0;
-		end else begin
-			if(sample) begin
-				delay[0] <= in;
-			end
-		end
+
+
+	// The coeff pipe
+
+	reg [7:0] coeffs [LENGTH:0];										// Registers
+
+	assign coeffs_out = coeffs[LENGTH];									// Take output
+
+	always @(posedge clk or negedge nRst) begin 						// Reset the pipe
+		if(!nRst) 				coeffs[0] <= 8'b0;
+		else if(coeffs_shift) 	coeffs[0] <= coeffs_in;
 	end
 
 	genvar i;
 		generate
-			for (i = 0; i < LENGTH; i = i + 1) begin: pipe
+			for (i = 0; i < LENGTH; i = i + 1) begin: coeff_pipe		// Shift between regs
 				always @(posedge clk or negedge nRst) begin
-					if(!nRst) begin
-						delay[i] <= 32'b0;
-					end else begin
-						delay[i+1] <= delay[i];
-					end
+					if(!nRst) 				coeffs[i] <= 8'b0;
+					else if(coeffs_shift) 	coeffs[i+1] <= coeffs[i];
 				end
 			end
 		endgenerate
+
+
+
+	// The data pipe
+
+	reg [31:0] data [LENGTH:0];											// Registers
+
+	always @(posedge clk or negedge nRst) begin 						// Reset the pipe
+		if(!nRst) 			data[0] <= 32'b0;
+		else if(sample) 	data[0] <= data_in;
+	end
+
+	genvar j;
+		generate
+			for (j = 0; j < LENGTH; j = j + 1) begin : data_pipe		// Shift between regs
+				always @(posedge clk or negedge nRst) begin
+					if(!nRst) 			data[j] <= 32'b0;
+					else if(sample) 	data[j+1] <= data[j];
+				end
+			end
+		endgenerate
+
+
+	// MAC
+	integer k;
+	always @(posedge clk) begin 
+		if(!nRst) 
+			data_out <= 32'b0;
+		else
+			data_out = 32'b0;
+			for(k=0;k<LENGTH;k=k+1) begin
+				data_out = data_out + (coeffs[k]*data[k]);
+			end
+	end
 endmodule
