@@ -40,6 +40,13 @@ if "__main__" == __name__:
             v.write("\tinput\tnRst\n")
             v.write(");"+ "\n")
             v.write("\n")
+            v.write("\talways@(posedge clk or negedge nRst) begin\n")
+            v.write("\t\tif(!nRst) begin\n")
+            v.write("\t\t\t// Reset code\n")
+            v.write("\t\tend else begin\n")
+            v.write("\t\t\t// Active code\n")
+            v.write("\t\tend\n")
+            v.write("\tend\n")
             v.write("endmodule\n")
             v.close()
 
