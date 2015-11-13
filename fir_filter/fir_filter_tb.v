@@ -42,11 +42,74 @@ module fir_filter_tb;
       end
    endtask
 
+	reg [31:0] file_in [255:0];
+   	reg [7:0] i; 
+   	reg [7:0] j;
+   	reg [7:0] k;
 	initial begin
+					$readmemh("sine.hex",file_in);
 					nRst = 1;
 		#100		nRst = 0;
 		#100		nRst = 1;
-		#10000		uart_send_1(8'hAA);
+
+		// Test clk div and pipe
+		#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+     	#10000 		uart_send_1(8'h01);
+     	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+     	#10000 		uart_send_1(8'h01);
+     	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+     	#10000 		uart_send_1(8'h01);
+     	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+     	#10000 		uart_send_1(8'h01);
+     	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h01);
+     	#10000 		uart_send_1(8'h01);
+     	#10000		uart_send_1(8'h01);
+      	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h07);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h05);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h03);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h11);
+
+
+     	// Setup filter to test
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+      	#10000		uart_send_1(8'h00);
+     	#10000 		uart_send_1(8'h00);
+     	#10000		uart_send_1(8'h00);
       	#10000		uart_send_1(8'h00);
       	#10000		uart_send_1(8'h00);
      	#10000 		uart_send_1(8'h00);
@@ -54,59 +117,20 @@ module fir_filter_tb;
       	#10000		uart_send_1(8'h00);
       	#10000		uart_send_1(8'h00);
      	#10000 		uart_send_1(8'h00);
-     	#10000		uart_send_1(8'h0A);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-     	#10000		uart_send_1(8'h11);
-      	#10000		uart_send_1(8'hAA);
-      	#10000		uart_send_1(8'h11);
-     	#10000 		uart_send_1(8'hAA);
-		#10000
+     	#10000		uart_send_1(8'h31);
+
+
+
+
+
+               for(i=0;i<50;i=i+1) begin
+                  for(j=0;j<255;j=j+1) begin
+                     for(k=0;k<i;k=k+1) begin
+                        #1;
+                     end
+                     fir_in = file_in[j];
+                  end
+               end
 		$finish;
 	end
 
