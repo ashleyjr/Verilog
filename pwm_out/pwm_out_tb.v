@@ -34,8 +34,8 @@ module pwm_out_tb;
  
    initial begin
 		while(1) begin
-			#(100/2) pwm_clk = 0;
-			#(100/2) pwm_clk = 1;
+			#(99/2) pwm_clk = 0;
+			#(99/2) pwm_clk = 1;
 		end	
    end
 
