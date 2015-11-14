@@ -1,2 +1,3 @@
 pwm_in.v
+../pwm_out/pwm_out.v
 pwm_in_tb.v

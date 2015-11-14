@@ -24,7 +24,7 @@ module pwm_out(
       pwm_clk_1 <= pwm_clk_0;
       casex({nRst,update,pwm_clk_rise,hit_top,hit_flip}) 
          5'b0xxxx:   begin
-                        out_reg  <= 1'b1;
+                        out      <= 1'b1;
                         flip     <= 8'h00;
                         count    <= 8'h00; 
                      end
@@ -33,7 +33,7 @@ module pwm_out(
                         out      <= (flip == 8'h00) ?  1'b0: 1'b1;
                      end
          5'b1010x:   count       <= count + 1'b1;
-         5'b10xx1:   out_reg     <= 1'b0;
+         5'b10xx1:   out         <= 1'b0;
          5'b11xxx:   flip        <= duty;
       endcase
    end
