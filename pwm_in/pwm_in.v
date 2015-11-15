@@ -7,6 +7,7 @@ module pwm_in(
 );
 
    reg   [31:0]   count;
+   reg   [31:0]   high;
    reg            in_0;
    reg            in_1;
   
@@ -26,9 +27,10 @@ module pwm_in(
                   end
          3'b11x:  begin
                      count <= 1'b0;
+                     high <= count / high; 
                   end
          3'b1x1:  begin
-                     count <= 1'b0;
+                     high  <= count;
                   end
          3'b100:  begin
                      count <= count + 1'b1;
