@@ -46,8 +46,8 @@ module pwm_in_tb;
  
    initial begin
 		while(1) begin
-			#(99/2) pwm_clk = 0;
-			#(99/2) pwm_clk = 1;
+			#(1000/2) pwm_clk = 0;
+			#(1000/2) pwm_clk = 1;
 		end	
    end
 
@@ -62,13 +62,19 @@ module pwm_in_tb;
 		#100		nRst     = 1;
     
       i = 0;
-      repeat(64) begin
-         #100000   duty_in     = i;
+      repeat(256) begin
+         #500000   duty_in     = i;
          #100     update   = 1'b1;
          #100     update   = 1'b0;
          i = i + 1;
       end
       
+      repeat(256) begin
+         #500000   duty_in     = i;
+         #100     update   = 1'b1;
+         #100     update   = 1'b0;
+         i = i - 1;
+      end
       
       #100000
 
