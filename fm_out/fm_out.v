@@ -19,6 +19,7 @@ module fm_out(
 
 	assign edgey = (centre_0 & ~centre_1) | (~centre_0 & centre_1);
 
+
 	assign hit = (count_out > period_out) ? 1'b1 : 1'b0;
 
 
@@ -55,7 +56,12 @@ module fm_out(
 		endcase
 
 		// calc the offset
-		if(edgey) period_out <= (period_in >> 2) + ((period_in >> 8)*data_reg);
+		if(edgey) 
+			if(data_reg > 8'h80) begin
+				period_out <= period_in + ((period_in >> 9)*(data_reg-8'h80));
+			end else begin
+				period_out <= period_in - ((period_in >> 9)*(8'h80-data_reg));
+			end
 		
 		// Generate output waveform
 		casex({nRst,hit})

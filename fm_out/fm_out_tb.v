@@ -1,7 +1,7 @@
 module fm_out_tb;
 
 	parameter CLK_PERIOD = 20;
-	parameter CENTRE_PERIOD = 11000;
+	parameter CENTRE_PERIOD = 30000;
 
 
 	reg 			clk;
@@ -39,7 +39,12 @@ module fm_out_tb;
 		end	
 	end
 
+	reg [31:0] file_in [255:0];
+	reg [7:0] i; 
+   	reg [7:0] j;
+   	reg [7:0] k;
 	initial begin
+					$readmemh("sine.hex",file_in);
 					data 	= 0;
 					update 	= 0;
 					nRst 	= 1;
@@ -52,6 +57,13 @@ module fm_out_tb;
 			#100000	update = 1;
 			#100 		update = 0;
 		end
+		for(i=0;i<1;i=i+1) begin
+         	for(j=0;j<255;j=j+1) begin
+           		#10000 	data = file_in[j];
+           		#100	update = 1;
+				#100 	update = 0;
+           	end
+     	end
 
 		$finish;
 	end
