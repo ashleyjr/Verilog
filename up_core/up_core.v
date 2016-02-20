@@ -15,6 +15,8 @@ module up_core(
    reg         mem_we;
    reg         ale;
   
+   wire [7:0]  data_out;
+
 
    // Address latch
    reg   [7:0] address_latch;
@@ -39,14 +41,16 @@ module up_core(
 	reg [7:0]   mem   [SIZE-1:0];
 
    assign data_in        = mem[address_latch];
+ //wire        ale;
   
    integer i;
    always@(posedge clk or negedge nRst) begin
-		if(!nRst) begin
-         for (i=0; i<SIZE; i=i+1) begin 
-            mem[i]   <= 8'h00;
-         end
-      end else begin
+		if(nRst) //begin
+        // for (i=0; i<SIZE; i=i+1) begin 
+            //mem[i]   <= 8'h00;
+         //end
+      //end 
+      begin
          if(mem_we)      mem[address_latch]   <= data_out;
       end
 	end

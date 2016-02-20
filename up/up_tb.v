@@ -31,10 +31,15 @@ module up_tb;
 		end	end
 
 	initial begin
-		$dumpfile("up.vcd");
+      $dumpfile("up.vcd");
 		$dumpvars(0,up_tb);
 		for (idx = 0; idx < 256; idx = idx + 1) $dumpvars(0,up_tb.up.up_memory.mem[idx]);
-	end
+
+      $readmemh("code/_code.hex", code) ;
+      for (idx = 0; idx < 256; idx = idx + 1) up_tb.up.up_core.mem[idx] = code[idx];
+      for (idx = 0; idx < 256; idx = idx + 1) $dumpvars(0,up_tb.up.up_core.mem[idx]);
+
+   end
 
    task uart_send;
       input [7:0] send;
