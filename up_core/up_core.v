@@ -1,11 +1,7 @@
 module up_core(
 	input	            clk,
-	input	            nRst,
-   input    [7:0]    data_in,
-   input             mem_re, 
-   input             int,
-   output   [7:0]    data_out,
-   output            mem_we
+	input	            nRst, 
+   input             int
 );
 
 
@@ -18,7 +14,45 @@ module up_core(
    reg         sp_we;
    reg         mem_we;
    reg         ale;
-   
+  
+
+   // Address latch
+   reg   [7:0] address_latch;
+ 
+   always@(posedge clk or negedge nRst) begin
+      if(!nRst) begin
+         address_latch <= 8'h00;
+      end else begin
+         if(ale) address_latch <= data_out;
+      end
+   end
+
+
+   // Memory
+   parameter   SIZE           = 256;
+   parameter   LEDS_LOC       = 160;
+   parameter   S_MEM_ONLY     = 2'b00;
+   parameter   S_MEM_LOAD_1   = 2'b01;
+   parameter   S_MEM_LOAD_2   = 2'b10;
+
+   wire [7:0] data_in;
+	reg [7:0]   mem   [SIZE-1:0];
+
+   assign data_in        = mem[address_latch];
+  
+   integer i;
+   always@(posedge clk or negedge nRst) begin
+		if(!nRst) begin
+         for (i=0; i<SIZE; i=i+1) begin 
+            mem[i]   <= 8'h00;
+         end
+      end else begin
+         if(mem_we)      mem[address_latch]   <= data_out;
+      end
+	end
+
+
+
    // Controller
    parameter   LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
@@ -185,7 +219,7 @@ module up_core(
             LOAD_REGS_2:                                                         state <= LOAD_REGS_3;
             LOAD_REGS_3:                                                         state <= LOAD_REGS_4;
             LOAD_REGS_4:                                                         state <= FETCH;
-            FETCH:         if(mem_re)
+            FETCH:         if(1)
                               if(int_go)                                         state <= INT_1;
                               else                                               state <= DECODE;
             DECODE:                                                              state <= EXECUTE_1;

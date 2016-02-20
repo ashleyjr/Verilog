@@ -85,12 +85,8 @@ module up(
 
    up_core up_core(
       .clk        (clk              ),
-      .nRst       (up_nRst          ),   
-      .data_in    (data_in          ),
-      .mem_re     (mem_re           ),
-      .int        (int              ),
-      .data_out   (                 ),         
-      .mem_we     (                 )
+      .nRst       (up_nRst          ),    
+      .int        (int              )
    ); 
 
 
