@@ -83,6 +83,17 @@ module up(
       .ale        (ale              )
    );
 
+   up_core up_core(
+      .clk        (clk              ),
+      .nRst       (up_nRst          ),   
+      .data_in    (data_in          ),
+      .mem_re     (mem_re           ),
+      .int        (int              ),
+      .data_out   (                 ),         
+      .mem_we     (                 )
+   ); 
+
+
    up_memory up_memory(
       .clk        (clk              ),
       .nRst       (nRst             ),
