@@ -76,7 +76,6 @@ module up_core(
    assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
-      op          = {1'b0,ir};  // Defaults
       ir_we       = 1'b0;
       pc_we       = 1'b0;
       rb_sel      = 3'b100;
@@ -163,6 +162,7 @@ module up_core(
                                                       pc_we    = 1'b1;
                                  end
                            4'h8:       begin
+                                                      op       = OP_SP_INC; 
                                                       sp_we    = 1'b1;
                                                       ale      = 1'b1;
                                        end
@@ -227,8 +227,17 @@ module up_core(
                                              end
                         endcase
          EXECUTE_3:     case(ir)
-                           4'h4:                      rb_we    = 1'b1; 
-                           4'h5,4'h6:        begin
+                           4'h4:             begin
+                                                      op       = OP_XOR_01;
+                                                      rb_we    = 1'b1;
+                                             end
+                           4'h5:             begin
+                                                      op       = OP_XOR_12;
+                                                      rb_sel   = ir[2:0];
+                                                      rb_we    = 1'b1;
+                                             end                           
+                           4'h6:             begin
+                                                      op       = OP_XOR_23;
                                                       rb_sel   = ir[2:0];
                                                       rb_we    = 1'b1;
                                              end
