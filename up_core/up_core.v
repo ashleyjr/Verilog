@@ -252,27 +252,27 @@ module up_core(
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
    
    assign   data_out =
-               (op == 5'b00000   )        ? r1 + r2            :
-               (op == 5'b00001   )        ? r1 - r2            :
-               (op == 5'b00010   )        ? r1 * r2            :
-               (op == 5'b00011   )        ? ~(r1 & r2)         :
-               (op == 5'b00100   )        ? r0 ^ r1            :
-               (op == 5'b00101   )        ? r1 ^ r2            :
-               (op == 5'b00110   )        ? r2 ^ r3            : 
-               (op == 5'b01110   )        ? 8'h00              :
-               (op == 5'b10001   )        ? 8'h01              :
-               (op == 5'b10010   )        ? 8'h02              :
-               (op == 5'b10011   )        ? 8'h03              :
-               (op == 5'b10100   )        ? {1'b0,pc[7:1]}     :
-               (op == 5'b10101   )        ? pc + 1'b1             :
-               (op == 5'b10110   )        ? r3                 :
-               (op == 5'b01000   )        ? sp + 1'b1             :
-               (op == 5'b11001   )        ? sp                 :
-               (op == 5'b11010   )        ? sp - 1'b1             :
-               (op == 5'b11011   )        ? pc                 :
-               (op == 5'b11100   )        ? r2                 :
-               (op == 5'b11101   )        ? pc - 1'b1                 :
-               (op == 5'b11110   )        ? {1'b1,pc[7:1]}     : 
+               (op ==  OP_ADD         )        ? r1 + r2            :
+               (op ==  OP_SUB         )        ? r1 - r2            :
+               (op ==  OP_MUL         )        ? r1 * r2            :
+               (op ==  OP_NAND        )        ? ~(r1 & r2)         :
+               (op ==  OP_XOR_01      )        ? r0 ^ r1            :
+               (op ==  OP_XOR_12      )        ? r1 ^ r2            :
+               (op ==  OP_XOR_23      )        ? r2 ^ r3            : 
+               (op ==  OP_00          )        ? 8'h00              :
+               (op ==  OP_01          )        ? 8'h01              :
+               (op ==  OP_02          )        ? 8'h02              :
+               (op ==  OP_03          )        ? 8'h03              :
+               (op ==  OP_PC_0        )        ? {1'b0,pc[7:1]}     :
+               (op ==  OP_PC_INC      )        ? pc + 1'b1             :
+               (op ==  OP_R3          )        ? r3                 :
+               (op ==  OP_SP_INC      )        ? sp + 1'b1             :
+               (op ==  OP_SP          )        ? sp                 :
+               (op ==  OP_SP_DEC      )        ? sp - 1'b1             :
+               (op ==  OP_PC          )        ? pc                 :
+               (op ==  OP_R2          )        ? r2                 :
+               (op ==  OP_PC_DEC      )        ? pc - 1'b1                 :
+               (op ==  OP_PC_1        )        ? {1'b1,pc[7:1]}     : 
                data_in            ;  
 
    always@(posedge clk or negedge nRst) begin
