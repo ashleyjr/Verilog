@@ -41,8 +41,8 @@ module up_core(
                OP_PC          = 5'b11011,
                OP_R2          = 5'b11100,
                OP_PC_DEC      = 5'b11101,
-               OP_PC_1        = 5'b11110;
-
+               OP_PC_1        = 5'b11110,
+               OP_IN_OUT      = 5'b11000;
 
 	reg   [7:0]    mem         [SIZE-1:0];
    reg   [3:0]    state;
@@ -89,16 +89,37 @@ module up_core(
                                                       op       = OP_00;
                                                       ale      = 1'b1;
                         end
-         LOAD_REGS_1,LOAD_REGS_2,LOAD_REGS_3,LOAD_REGS_4:   
+         LOAD_REGS_1:   begin
+                                                      op       = OP_01;
+                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_we    = 1'b1;
+                                                      ale      = 1'b1;
+
+                        end
+         LOAD_REGS_2:   begin
+                                                      op       = OP_02;
+                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_we    = 1'b1;
+                                                      ale      = 1'b1;
+
+                        end
+         LOAD_REGS_3:   begin
+                                                      op       = OP_03;
+                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_we    = 1'b1;
+                                                      ale      = 1'b1;
+
+                        end
+         LOAD_REGS_4:   
                         begin
-                                                      op       = {1'b1,state};
+                                                      op       = OP_PC_0;
                                                       rb_sel   = state[2:0] - 1'b1;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
                         end
          FETCH:         begin
                            if(int_in)                 op       = OP_PC_1;
-                           else                       op       = 5'b10100;
+                           else                       op       = OP_PC_0;
                                                       ale      = 1'b1;
                         end
          DECODE:        begin
@@ -107,12 +128,33 @@ module up_core(
                                                       pc_we    = 1'b1;
                         end
          EXECUTE_1:     case(ir)
-                           4'h0,4'h1,4'h2,4'h3,4'h4:  rb_we    = 1'b1;
-                           4'h5:       begin 
+                           4'h0:       begin
+                                                      op       = OP_ADD;
+                                                      rb_we    = 1'b1;
+                                       end
+                           4'h1:       begin
+                                                      op       = OP_SUB;
+                                                      rb_we    = 1'b1;
+                                       end
+                           4'h2:       begin
+                                                      op       = OP_MUL;
+                                                      rb_we    = 1'b1;
+                                       end
+                           4'h3:       begin
+                                                      op       = OP_NAND;
+                                                      rb_we    = 1'b1;
+                                       end
+                           4'h4:       begin
+                                                      op       = OP_XOR_01;
+                                                      rb_we    = 1'b1;
+                                       end
+                           4'h5:       begin
+                                                      op       = OP_XOR_12;
                                                       rb_sel   = 3'b101;
                                                       rb_we    = 1'b1;
                                        end
                            4'h6:       begin                
+                                                      op       = OP_XOR_23;
                                                       rb_sel   = 3'b110;
                                                       rb_we    = 1'b1;
                                        end
@@ -129,7 +171,7 @@ module up_core(
                                                       ale      = 1'b1;
                                        end
                            4'hA:       begin
-                                                      op       = 5'b01000;
+                                                      op       = OP_SP_INC;
                                                       sp_we    = 1'b1;
                                                       ale      = 1'b1;
                                        end
@@ -146,7 +188,7 @@ module up_core(
                                                       rb_we    = 1'b1;
                                              end
                            4'h8:             begin
-                                                      op       = 5'b11000;
+                                                      op       = OP_IN_OUT;
                                                       pc_we    = 1'b1;
                                              end
                            4'h9,4'hB:        begin
