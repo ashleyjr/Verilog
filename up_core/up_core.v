@@ -4,33 +4,8 @@ module up_core(
    input             int
 );
 
-
-   reg   [3:0] ir;
-   reg   [4:0] op;
-   reg         ir_we;
-   reg         pc_we;
-   reg   [2:0] rb_sel;
-   reg         rb_we;
-   reg         sp_we;
-   reg         mem_we;
-   reg         ale;
-   reg   [7:0] address_latch;
- 
-   wire [7:0]  data_out;
-
-
-parameter   SIZE           = 256;
-   parameter   LEDS_LOC       = 160;
-   parameter   S_MEM_ONLY     = 2'b00;
-   parameter   S_MEM_LOAD_1   = 2'b01;
-   parameter   S_MEM_LOAD_2   = 2'b10;
-
-   wire [7:0] data_in;
-	reg [7:0]   mem   [SIZE-1:0];
-
-   assign data_in        = mem[address_latch];
-
-parameter   LOAD_REGS_0    = 4'h0,
+   parameter   SIZE           = 256;
+   parameter   LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
                LOAD_REGS_2    = 4'h2,
                LOAD_REGS_3    = 4'h3,
@@ -45,31 +20,32 @@ parameter   LOAD_REGS_0    = 4'h0,
                INT_3          = 4'hC,
                INT_4          = 4'hD;
 
-   reg [3:0]   state;
 
-   reg         int_on_off;
-   reg         int_last;
-   reg         int_in;
-   wire        int_go;
-
-
-   // Address latch
-      always@(posedge clk or negedge nRst) begin
-      if(!nRst) begin
-         address_latch <= 8'h00;
-      end else begin
-         if(ale) address_latch <= data_out;
-      end
-   end
-
-
-   // Memory  
-   always@(posedge clk or negedge nRst) begin
-		if(nRst) 
-      begin
-         if(mem_we)      mem[address_latch]   <= data_out;
-      end
-	end
+	reg   [7:0]    mem         [SIZE-1:0];
+   reg   [3:0]    state;
+   reg            int_on_off;
+   reg            int_last;
+   reg            int_in;
+   reg   [3:0]    ir;
+   reg   [4:0]    op;
+   reg            ir_we;
+   reg            pc_we;
+   reg   [2:0]    rb_sel;
+   reg            rb_we;
+   reg            sp_we;
+   reg            mem_we;
+   reg            ale;
+   reg   [7:0]    sp;
+   reg   [7:0]    pc;
+   reg   [7:0]    r0;
+   reg   [7:0]    r1;
+   reg   [7:0]    r2;
+   reg   [7:0]    r3;  
+   reg   [7:0]    address_latch;
+   wire  [7:0]    data_out;
+   wire  [7:0]    data_in; 
+   wire           int_go;
+   assign         data_in = mem[address_latch];
 
 
 
@@ -216,9 +192,8 @@ parameter   LOAD_REGS_0    = 4'h0,
             LOAD_REGS_2:                                                         state <= LOAD_REGS_3;
             LOAD_REGS_3:                                                         state <= LOAD_REGS_4;
             LOAD_REGS_4:                                                         state <= FETCH;
-            FETCH:         if(1)
-                              if(int_go)                                         state <= INT_1;
-                              else                                               state <= DECODE;
+            FETCH:         if(int_go)                                            state <= INT_1;
+                           else                                                  state <= DECODE;
             DECODE:                                                              state <= EXECUTE_1;
             EXECUTE_1:     case(ir)
                               4'h0,4'h1,4'h2,4'h3,4'h7:                          state <= FETCH;
@@ -250,18 +225,7 @@ parameter   LOAD_REGS_0    = 4'h0,
       end
    end 
 
-
-
-
-
    // Datapath
-   reg   [7:0]    sp;
-   reg   [7:0]    pc;
-   reg   [7:0]    r0;
-   reg   [7:0]    r1;
-   reg   [7:0]    r2;
-   reg   [7:0]    r3;  
-
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
    
    assign   data_out =
@@ -317,4 +281,12 @@ parameter   LOAD_REGS_0    = 4'h0,
       end
    end
 
+   // Address latch
+   always@(posedge clk or negedge nRst) begin 
+      casex({nRst,ale,mem_we})
+         3'b0xx:  address_latch        <= 8'h00;
+         3'b11x:  address_latch        <= data_out;
+         3'b1x1:  mem[address_latch]   <= data_out;
+      endcase
+   end
 endmodule
