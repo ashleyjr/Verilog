@@ -179,11 +179,27 @@ module up_core(
                                                       op       = OP_R3;
                                                       ale      = 1'b1;
                                        end
-                           4'hE:                      ale      = 1'b1;
+                           4'hE:       begin
+                                                      op       = OP_00;
+                                                      ale      = 1'b1;
+                                       end
                               
                         endcase
          EXECUTE_2:     case(ir)
-                           4'h4,4'h5, 4'h6:  begin
+                           4'h4:             begin
+                                                      op       = OP_XOR_01;
+                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_we    = 1'b1;
+                                             end
+
+                           4'h5:             begin
+                                                      op       = OP_XOR_12;
+                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_we    = 1'b1;
+                                             end
+
+                           4'h6:             begin
+                                                      op       = OP_XOR_23;
                                                       rb_sel   = ir[2:0] + 1'b1;
                                                       rb_we    = 1'b1;
                                              end
@@ -196,6 +212,7 @@ module up_core(
                                                       sp_we    = 1'b1;
                                              end
                            4'hA,4'hC:        begin
+                                                      op       = OP_IN_OUT;
                                                       rb_sel   = 3'b010;
                                                       rb_we    = 1'b1;
                                              end
@@ -204,6 +221,7 @@ module up_core(
                                                       mem_we   = 1'b1;
                                              end
                            4'hE:             begin
+                                                      op       = OP_00;
                                                       rb_sel   = 3'b000;
                                                       rb_we    = 1'b1;
                                              end
