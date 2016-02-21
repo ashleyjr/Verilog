@@ -21,6 +21,29 @@ module up_core(
                INT_4          = 4'hD;
 
 
+   parameter   OP_ADD         = 5'b00000,
+               OP_SUB         = 5'b00001,
+               OP_MUL         = 5'b00010,
+               OP_NAND        = 5'b00011,
+               OP_XOR_01      = 5'b00100,
+               OP_XOR_12      = 5'b00101,
+               OP_XOR_23      = 5'b00110,
+               OP_00          = 5'b01110,
+               OP_01          = 5'b10001,
+               OP_02          = 5'b10010,
+               OP_03          = 5'b10011,
+               OP_PC_0        = 5'b10100,
+               OP_PC_INC      = 5'b10101,
+               OP_R3          = 5'b10110,
+               OP_SP_INC      = 5'b01000,
+               OP_SP          = 5'b11001,
+               OP_SP_DEC      = 5'b11010,
+               OP_PC          = 5'b11011,
+               OP_R2          = 5'b11100,
+               OP_PC_DEC      = 5'b11101,
+               OP_PC_1        = 5'b11110;
+
+
 	reg   [7:0]    mem         [SIZE-1:0];
    reg   [3:0]    state;
    reg            int_on_off;
