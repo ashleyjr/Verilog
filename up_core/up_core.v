@@ -64,11 +64,11 @@ module up_core(
    reg   [7:0]    r1;
    reg   [7:0]    r2;
    reg   [7:0]    r3;  
-   reg   [7:0]    address_latch;
+   reg   [7:0]    addr;
    reg   [7:0]    data_out;
    wire  [7:0]    data_in; 
    wire           int_go;
-   assign         data_in = mem[address_latch];
+   assign         data_in = mem[addr];
 
 
 
@@ -349,39 +349,35 @@ module up_core(
    
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
-         pc <= 8'h08;
-         sp <= 8'hFF;
-         ir <= 4'h0;
-         r0 <= 8'h00;
-         r1 <= 8'h00;
-         r2 <= 8'h00;
-         r3 <= 8'h00;
+         pc                            <= 8'h08;
+         sp                            <= 8'hFF;
+         ir                            <= 4'h0;
+         r0                            <= 8'h00;
+         r1                            <= 8'h00;
+         r2                            <= 8'h00;
+         r3                            <= 8'h00;
+         addr                          <= 8'h00;
       end else begin 
-         if(sp_we)      sp <= data_out;
-         if(pc_we)      pc <= data_out;
+         if(sp_we)      sp             <= data_out;
+         if(pc_we)      pc             <= data_out;
          case({ir_we,pc[0]})
-            2'b11:      ir <= data_in[3:0];
-            2'b10:      ir <= data_in[7:4];
+            2'b11:      ir             <= data_in[3:0];
+            2'b10:      ir             <= data_in[7:4];
          endcase
          case({rb_we,rb_sel}) 
-            4'b1000:    r0 <= data_in;       // SEL_I0
-            4'b1001:    r1 <= data_in;       // SEL_I1
-            4'b1010:    r2 <= data_in;       // SEL_I2
-            4'b1011:    r3 <= data_in;       // SEL_I3
-            4'b1100:    r0 <= data_out;      // SEL_00
-            4'b1101:    r1 <= data_out;      // SEL_01
-            4'b1110:    r2 <= data_out;      // SEL_02
-            4'b1111:    r3 <= data_out;      // SEL_03
+            4'b1000:    r0             <= data_in;      
+            4'b1001:    r1             <= data_in;      
+            4'b1010:    r2             <= data_in;      
+            4'b1011:    r3             <= data_in;      
+            4'b1100:    r0             <= data_out;     
+            4'b1101:    r1             <= data_out;     
+            4'b1110:    r2             <= data_out;     
+            4'b1111:    r3             <= data_out;     
+         endcase
+         casex({ale,mem_we})
+            2'b1x:      addr           <= data_out;
+            2'bx1:      mem[addr]      <= data_out;
          endcase
       end
-   end
-
-   // Address latch
-   always@(posedge clk or negedge nRst) begin 
-      casex({nRst,ale,mem_we})
-         3'b0xx:  address_latch        <= 8'h00;
-         3'b11x:  address_latch        <= data_out;
-         3'b1x1:  mem[address_latch]   <= data_out;
-      endcase
    end
 endmodule
