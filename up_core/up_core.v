@@ -14,24 +14,12 @@ module up_core(
    reg         sp_we;
    reg         mem_we;
    reg         ale;
-  
+   reg   [7:0] address_latch;
+ 
    wire [7:0]  data_out;
 
 
-   // Address latch
-   reg   [7:0] address_latch;
- 
-   always@(posedge clk or negedge nRst) begin
-      if(!nRst) begin
-         address_latch <= 8'h00;
-      end else begin
-         if(ale) address_latch <= data_out;
-      end
-   end
-
-
-   // Memory
-   parameter   SIZE           = 256;
+parameter   SIZE           = 256;
    parameter   LEDS_LOC       = 160;
    parameter   S_MEM_ONLY     = 2'b00;
    parameter   S_MEM_LOAD_1   = 2'b01;
@@ -41,24 +29,8 @@ module up_core(
 	reg [7:0]   mem   [SIZE-1:0];
 
    assign data_in        = mem[address_latch];
- //wire        ale;
-  
-   integer i;
-   always@(posedge clk or negedge nRst) begin
-		if(nRst) //begin
-        // for (i=0; i<SIZE; i=i+1) begin 
-            //mem[i]   <= 8'h00;
-         //end
-      //end 
-      begin
-         if(mem_we)      mem[address_latch]   <= data_out;
-      end
-	end
 
-
-
-   // Controller
-   parameter   LOAD_REGS_0    = 4'h0,
+parameter   LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
                LOAD_REGS_2    = 4'h2,
                LOAD_REGS_3    = 4'h3,
@@ -81,6 +53,27 @@ module up_core(
    wire        int_go;
 
 
+   // Address latch
+      always@(posedge clk or negedge nRst) begin
+      if(!nRst) begin
+         address_latch <= 8'h00;
+      end else begin
+         if(ale) address_latch <= data_out;
+      end
+   end
+
+
+   // Memory  
+   always@(posedge clk or negedge nRst) begin
+		if(nRst) 
+      begin
+         if(mem_we)      mem[address_latch]   <= data_out;
+      end
+	end
+
+
+
+   // Controller
    assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
