@@ -65,7 +65,7 @@ module up_core(
    reg   [7:0]    r2;
    reg   [7:0]    r3;  
    reg   [7:0]    address_latch;
-   wire  [7:0]    data_out;
+   reg   [7:0]    data_out;
    wire  [7:0]    data_in; 
    wire           int_go;
    assign         data_in = mem[address_latch];
@@ -319,31 +319,34 @@ module up_core(
 
    // Datapath
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
+      
+   always@(*) begin
+      case(op)
+         OP_ADD:              data_out = r1 + r2;         
+         OP_SUB:              data_out = r1 - r2;         
+         OP_MUL:              data_out = r1 * r2;         
+         OP_NAND:             data_out = ~(r1 & r2);      
+         OP_XOR_01:           data_out = r0 ^ r1;         
+         OP_XOR_12:           data_out = r1 ^ r2;         
+         OP_XOR_23:           data_out = r2 ^ r3;         
+         OP_00:               data_out = 8'h00;           
+         OP_01:               data_out = 8'h01;           
+         OP_02:               data_out = 8'h02;           
+         OP_03:               data_out = 8'h03;           
+         OP_PC_0:             data_out = {1'b0,pc[7:1]};  
+         OP_PC_INC:           data_out = pc + 1'b1;       
+         OP_R3:               data_out = r3;              
+         OP_SP_INC:           data_out = sp + 1'b1;       
+         OP_SP:               data_out = sp;              
+         OP_SP_DEC:           data_out = sp - 1'b1;       
+         OP_PC:               data_out = pc;              
+         OP_R2:               data_out = r2;              
+         OP_PC_DEC:           data_out = pc - 1'b1;       
+         OP_PC_1:             data_out = {1'b1,pc[7:1]};  
+         OP_IN_OUT:           data_out = data_in;         
+      endcase
+   end
    
-   assign   data_out =
-               (op ==  OP_ADD         )        ? r1 + r2            :
-               (op ==  OP_SUB         )        ? r1 - r2            :
-               (op ==  OP_MUL         )        ? r1 * r2            :
-               (op ==  OP_NAND        )        ? ~(r1 & r2)         :
-               (op ==  OP_XOR_01      )        ? r0 ^ r1            :
-               (op ==  OP_XOR_12      )        ? r1 ^ r2            :
-               (op ==  OP_XOR_23      )        ? r2 ^ r3            : 
-               (op ==  OP_00          )        ? 8'h00              :
-               (op ==  OP_01          )        ? 8'h01              :
-               (op ==  OP_02          )        ? 8'h02              :
-               (op ==  OP_03          )        ? 8'h03              :
-               (op ==  OP_PC_0        )        ? {1'b0,pc[7:1]}     :
-               (op ==  OP_PC_INC      )        ? pc + 1'b1             :
-               (op ==  OP_R3          )        ? r3                 :
-               (op ==  OP_SP_INC      )        ? sp + 1'b1             :
-               (op ==  OP_SP          )        ? sp                 :
-               (op ==  OP_SP_DEC      )        ? sp - 1'b1             :
-               (op ==  OP_PC          )        ? pc                 :
-               (op ==  OP_R2          )        ? r2                 :
-               (op ==  OP_PC_DEC      )        ? pc - 1'b1                 :
-               (op ==  OP_PC_1        )        ? {1'b1,pc[7:1]}     : 
-               data_in            ;  
-
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
          pc <= 8'h08;
