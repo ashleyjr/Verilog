@@ -86,7 +86,7 @@ module up_core(
       ale         = 1'b0;
       case(state)
          LOAD_REGS_0:   begin
-                                                      op       = 5'b01110;
+                                                      op       = OP_00;
                                                       ale      = 1'b1;
                         end
          LOAD_REGS_1,LOAD_REGS_2,LOAD_REGS_3,LOAD_REGS_4:   
@@ -97,12 +97,12 @@ module up_core(
                                                       ale      = 1'b1;
                         end
          FETCH:         begin
-                           if(int_in)                 op       = 5'b11110;
+                           if(int_in)                 op       = OP_PC_1;
                            else                       op       = 5'b10100;
                                                       ale      = 1'b1;
                         end
          DECODE:        begin
-                                                      op       = 5'b10101;
+                                                      op       = OP_PC_INC;
                                                       ir_we    = 1'b1;
                                                       pc_we    = 1'b1;
                         end
@@ -117,7 +117,7 @@ module up_core(
                                                       rb_we    = 1'b1;
                                        end
                            4'h7: if(z) begin
-                                                      op       = 5'b10110;
+                                                      op       = OP_R3;
                                                       pc_we    = 1'b1;
                                  end
                            4'h8:       begin
@@ -125,7 +125,7 @@ module up_core(
                                                       ale      = 1'b1;
                                        end
                            4'h9,4'hB:  begin
-                                                      op       = 5'b11001;
+                                                      op       = OP_SP;
                                                       ale      = 1'b1;
                                        end
                            4'hA:       begin
@@ -134,7 +134,7 @@ module up_core(
                                                       ale      = 1'b1;
                                        end
                            4'hC,4'hD:  begin
-                                                      op       = 5'b10110;
+                                                      op       = OP_R3;
                                                       ale      = 1'b1;
                                        end
                            4'hE:                      ale      = 1'b1;
@@ -150,7 +150,7 @@ module up_core(
                                                       pc_we    = 1'b1;
                                              end
                            4'h9,4'hB:        begin
-                                                      op       = 5'b11010;
+                                                      op       = OP_SP_DEC;
                                                       sp_we    = 1'b1;
                                              end
                            4'hA,4'hC:        begin
@@ -158,7 +158,7 @@ module up_core(
                                                       rb_we    = 1'b1;
                                              end
                            4'hD:             begin
-                                                      op       = 5'b11100;
+                                                      op       = OP_R2;
                                                       mem_we   = 1'b1;
                                              end
                            4'hE:             begin
@@ -173,28 +173,28 @@ module up_core(
                                                       rb_we    = 1'b1;
                                              end
                            4'h9:             begin
-                                                      op       = 5'b11101;
+                                                      op       = OP_PC_DEC;
                                                       mem_we   = 1'b1;
                                              end
                            4'hB:             begin
-                                                      op       = 5'b11100;
+                                                      op       = OP_R2;
                                                       mem_we   = 1'b1;
                                              end
                         endcase
          INT_1:                              begin
-                                                      op       = 5'b11001;    // Add sp
+                                                      op       = OP_SP;    // Add sp
                                                       ale      = 1'b1;
                                              end 
          INT_2:                              begin
-                                                      op       = 5'b11011;    // Write PC
+                                                      op       = OP_PC;    // Write PC
                                                       mem_we   = 1'b1;
                                              end
          INT_3:                              begin
-                                                      op       = 5'b11010;    // Dec SP
+                                                      op       = OP_SP_DEC;    // Dec SP
                                                       sp_we    = 1'b1;
                                              end
          INT_4:                              begin
-                                                      op       = 5'b01110;    // Jump to fixed location
+                                                      op       = OP_00;    // Jump to fixed location
                                                       pc_we    = 1'b1;
                                              end
       endcase
