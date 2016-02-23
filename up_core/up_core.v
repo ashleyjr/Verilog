@@ -102,192 +102,188 @@ module up_core(
       sp_we       = 1'b0;
       mem_we      = 1'b0;
       ale         = 1'b0;
-      case({state,ir})
-         {LOAD_REGS_0,4'bxxxx }:   begin
+      casex({state,ir})
+         {LOAD_REGS_0,4'bxxxx }:    begin
                                                       op       = OP_00;
                                                       ale      = 1'b1;
-                        end
-         {LOAD_REGS_1,4'bxxxx }:   begin
+                                    end
+         {LOAD_REGS_1,4'bxxxx }:    begin
                                                       op       = OP_01;
                                                       rb_sel   = state[2:0] - 1'b1;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
-                        end
-         {LOAD_REGS_2,4'bxxxx }:   begin
+                                    end
+         {LOAD_REGS_2,4'bxxxx }:    begin
                                                       op       = OP_02;
                                                       rb_sel   = state[2:0] - 1'b1;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
-                        end
-         {LOAD_REGS_3,4'bxxxx }:   begin
+                                    end
+         {LOAD_REGS_3,4'bxxxx }:    begin
                                                       op       = OP_03;
                                                       rb_sel   = state[2:0] - 1'b1;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
-                        end
+                                    end
          {LOAD_REGS_4,4'bxxxx }:   
-                        begin
+                                    begin
                                                       op       = OP_PC_0;
                                                       rb_sel   = state[2:0] - 1'b1;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
-                        end
-         {FETCH,4'bxxxx       }:         begin
-                           if(int_in)                 op       = OP_PC_1;
-                           else                       op       = OP_PC_0;
+                                    end
+         {FETCH,4'bxxxx       }:    begin
+                                       if(int_in)     op       = OP_PC_1;
+                                       else           op       = OP_PC_0;
                                                       ale      = 1'b1;
-                        end
-         {DECODE,4'bxxxx      }:        begin
+                                    end
+         {DECODE,4'bxxxx      }:    begin
                                                       op       = OP_PC_INC;
                                                       ir_we    = 1'b1;
                                                       pc_we    = 1'b1;
-                        end
+                                    end
 
-         {EXECUTE_1,IR_ADD    }:  begin
-                                    op       = OP_ADD;
-                                    rb_we    = 1'b1;
-                                 end
-         {EXECUTE_1,IR_SUB    }:       begin
-                                    op       = OP_SUB;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_ADD    }:    begin
+                                                      op       = OP_ADD;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_MUL    }:       begin
-                                    op       = OP_MUL;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_SUB    }:    begin
+                                                      op       = OP_SUB;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_NAND   }:       begin
-                                    op       = OP_NAND;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_MUL    }:    begin
+                                                      op       = OP_MUL;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW01   }:       begin
-                                    op       = OP_XOR_01;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_NAND   }:    begin
+                                                      op       = OP_NAND;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW12   }:       begin
-                                    op       = OP_XOR_12;
-                                    rb_sel   = 3'b101;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_SW01   }:    begin
+                                                      op       = OP_XOR_01;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW23   }:       begin                
-                                    op       = OP_XOR_23;
-                                    rb_sel   = 3'b110;
-                                    rb_we    = 1'b1;
+         {EXECUTE_1,IR_SW12   }:    begin
+                                                      op       = OP_XOR_12;
+                                                      rb_sel   = 3'b101;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_BE     }: if(z) begin
-                                    op       = OP_R3;
-                                    pc_we    = 1'b1;
+         {EXECUTE_1,IR_SW23   }:    begin                
+                                                      op       = OP_XOR_23;
+                                                      rb_sel   = 3'b110;
+                                                      rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_POPC   }:       begin
-                                    op       = OP_SP_INC; 
-                                    sp_we    = 1'b1;
-                                    ale      = 1'b1;
+         {EXECUTE_1,IR_BE     }:    if(z) begin
+                                                      op       = OP_R3;
+                                                      pc_we    = 1'b1;
+                                    end
+         {EXECUTE_1,IR_POPC   }:    begin
+                                                      op       = OP_SP_INC; 
+                                                      sp_we    = 1'b1;
+                                                      ale      = 1'b1;
                                     end
          {EXECUTE_1,IR_PUSHC  },
          {EXECUTE_1,IR_PUSH   }:    begin
-                                    op       = OP_SP;
-                                    ale      = 1'b1;
+                                                      op       = OP_SP;
+                                                      ale      = 1'b1;
                                     end
-         {EXECUTE_1,IR_POP    }:       begin
-                                    op       = OP_SP_INC;
-                                    sp_we    = 1'b1;
-                                    ale      = 1'b1;
+         {EXECUTE_1,IR_POP    }:    begin
+                                                      op       = OP_SP_INC;
+                                                      sp_we    = 1'b1;
+                                                      ale      = 1'b1;
                                     end
          {EXECUTE_1,IR_LDW    },
-         {EXECUTE_1,IR_STW    }:  begin
-                                    op       = OP_R3;
-                                    ale      = 1'b1;
+         {EXECUTE_1,IR_STW    }:    begin
+                                                      op       = OP_R3;
+                                                      ale      = 1'b1;
                                     end
-         {EXECUTE_1,IR_REF    }:       begin
-                                    op       = OP_00;
-                                    ale      = 1'b1;
+         {EXECUTE_1,IR_REF    }:    begin
+                                                      op       = OP_00;
+                                                      ale      = 1'b1;
                                     end
 
-               
-         {EXECUTE_2,4'bxxxx}:     case(ir)
 
-                           IR_SW01:             begin
+
+         {EXECUTE_2,IR_SW01   }:    begin
                                                       op       = OP_XOR_01;
                                                       rb_sel   = ir[2:0] + 1'b1;
                                                       rb_we    = 1'b1;
-                                             end
-
-                           IR_SW12:             begin
+                                    end
+         {EXECUTE_2,IR_SW12   }:    begin
                                                       op       = OP_XOR_12;
                                                       rb_sel   = ir[2:0] + 1'b1;
                                                       rb_we    = 1'b1;
-                                             end
-
-                           IR_SW23:             begin
+                                    end
+         {EXECUTE_2,IR_SW23   }:    begin
                                                       op       = OP_XOR_23;
                                                       rb_sel   = ir[2:0] + 1'b1;
                                                       rb_we    = 1'b1;
-                                             end
-                           IR_POPC:             begin
+                                    end
+         {EXECUTE_2,IR_POPC   }:    begin
                                                       op       = OP_IN_OUT;
                                                       pc_we    = 1'b1;
-                                             end
-                           IR_PUSHC,IR_PUSH:        begin
+                                    end
+         {EXECUTE_2,IR_PUSHC  },
+         {EXECUTE_2,IR_PUSH   }:    begin
                                                       op       = OP_SP_DEC;
                                                       sp_we    = 1'b1;
-                                             end
-                           IR_POP,IR_LDW:        begin
+                                    end
+         {EXECUTE_2,IR_POP    },
+         {EXECUTE_2, IR_LDW   }:    begin
                                                       op       = OP_IN_OUT;
                                                       rb_sel   = 3'b010;
                                                       rb_we    = 1'b1;
-                                             end
-                           IR_STW:             begin
+                                    end
+         {EXECUTE_2,IR_STW    }:    begin
                                                       op       = OP_R2;
                                                       mem_we   = 1'b1;
-                                             end
-                           IR_REF:             begin
+                                    end
+         {EXECUTE_2,IR_REF    }:    begin
                                                       op       = OP_00;
                                                       rb_sel   = 3'b000;
                                                       rb_we    = 1'b1;
-                                             end
-                        endcase
-         {EXECUTE_3,4'bxxxx}:     case(ir)
-                           IR_SW01:             begin
+                                    end
+         {EXECUTE_3,IR_SW01   }:    begin
                                                       op       = OP_XOR_01;
                                                       rb_we    = 1'b1;
-                                             end
-                           IR_SW12:             begin
+                                    end
+         {EXECUTE_3,IR_SW12   }:    begin
                                                       op       = OP_XOR_12;
                                                       rb_sel   = ir[2:0];
                                                       rb_we    = 1'b1;
-                                             end                           
-                           IR_SW23:             begin
+                                    end                           
+         {EXECUTE_3,IR_SW23   }:    begin
                                                       op       = OP_XOR_23;
                                                       rb_sel   = ir[2:0];
                                                       rb_we    = 1'b1;
-                                             end
-                           IR_PUSHC:             begin
+                                    end
+         {EXECUTE_3,IR_PUSHC  }:    begin
                                                       op       = OP_PC_DEC;
                                                       mem_we   = 1'b1;
-                                             end
-                           IR_PUSH:             begin
+                                    end
+         {EXECUTE_3,IR_PUSH   }:    begin
                                                       op       = OP_R2;
                                                       mem_we   = 1'b1;
-                                             end
-                        endcase
-         {INT_1,4'bxxxx}:                              begin
+                                    end
+         {INT_1,4'bxxxx       }:    begin
                                                       op       = OP_SP;    // Add sp
                                                       ale      = 1'b1;
-                                             end 
-         {INT_2,4'bxxxx}:                              begin
+                                    end 
+         {INT_2,4'bxxxx       }:    begin
                                                       op       = OP_PC;    // Write PC
                                                       mem_we   = 1'b1;
-                                             end
-         {INT_3,4'bxxxx}:                              begin
+                                    end
+         {INT_3,4'bxxxx       }:    begin
                                                       op       = OP_SP_DEC;    // Dec SP
                                                       sp_we    = 1'b1;
-                                             end
-         {INT_4,4'bxxxx}:                              begin
+                                    end
+         {INT_4,4'bxxxx       }:    begin
                                                       op       = OP_00;    // Jump to fixed location
                                                       pc_we    = 1'b1;
-                                             end
+                                    end
       endcase
    end
 
