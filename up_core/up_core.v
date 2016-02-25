@@ -90,8 +90,8 @@ module up_core(
    assign         data_in = mem[addr];
 
 
-
-   // Controller
+   assign z = (r1 == r2) ? 1'b1 : 1'b0;
+      
    assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
@@ -285,6 +285,30 @@ module up_core(
                                                       pc_we    = 1'b1;
                                     end
       endcase
+      case(op)
+         OP_ADD:              data_out = r1 + r2;         
+         OP_SUB:              data_out = r1 - r2;         
+         OP_MUL:              data_out = r1 * r2;         
+         OP_NAND:             data_out = ~(r1 & r2);      
+         OP_XOR_01:           data_out = r0 ^ r1;         
+         OP_XOR_12:           data_out = r1 ^ r2;         
+         OP_XOR_23:           data_out = r2 ^ r3;         
+         OP_00:               data_out = 8'h00;           
+         OP_01:               data_out = 8'h01;           
+         OP_02:               data_out = 8'h02;           
+         OP_03:               data_out = 8'h03;           
+         OP_PC_0:             data_out = {1'b0,pc[7:1]};  
+         OP_PC_INC:           data_out = pc + 1'b1;       
+         OP_R3:               data_out = r3;              
+         OP_SP_INC:           data_out = sp + 1'b1;       
+         OP_SP:               data_out = sp;              
+         OP_SP_DEC:           data_out = sp - 1'b1;       
+         OP_PC:               data_out = pc;              
+         OP_R2:               data_out = r2;              
+         OP_PC_DEC:           data_out = pc - 1'b1;       
+         OP_PC_1:             data_out = {1'b1,pc[7:1]};  
+         OP_IN_OUT:           data_out = data_in;         
+      endcase
    end
 
 
@@ -294,6 +318,14 @@ module up_core(
          int_on_off  <= 1'b0;
          int_last    <= 1'b0;
          int_in      <= 1'b0;
+         pc                            <= 8'h08;
+         sp                            <= 8'hFF;
+         ir                            <= IR_ADD;
+         r0                            <= 8'h00;
+         r1                            <= 8'h00;
+         r2                            <= 8'h00;
+         r3                            <= 8'h00;
+         addr                          <= 8'h00;
       end else begin
          if(!int_go) int_last <= int;
          casex({state,ir})
@@ -350,50 +382,6 @@ module up_core(
             {INT_4,4'bxxxx       }:    state <= FETCH;
             default:                   state <= FETCH;
          endcase
-      end
-   end 
-
-   // Datapath
-   assign z = (r1 == r2) ? 1'b1 : 1'b0;
-      
-   always@(*) begin
-      case(op)
-         OP_ADD:              data_out = r1 + r2;         
-         OP_SUB:              data_out = r1 - r2;         
-         OP_MUL:              data_out = r1 * r2;         
-         OP_NAND:             data_out = ~(r1 & r2);      
-         OP_XOR_01:           data_out = r0 ^ r1;         
-         OP_XOR_12:           data_out = r1 ^ r2;         
-         OP_XOR_23:           data_out = r2 ^ r3;         
-         OP_00:               data_out = 8'h00;           
-         OP_01:               data_out = 8'h01;           
-         OP_02:               data_out = 8'h02;           
-         OP_03:               data_out = 8'h03;           
-         OP_PC_0:             data_out = {1'b0,pc[7:1]};  
-         OP_PC_INC:           data_out = pc + 1'b1;       
-         OP_R3:               data_out = r3;              
-         OP_SP_INC:           data_out = sp + 1'b1;       
-         OP_SP:               data_out = sp;              
-         OP_SP_DEC:           data_out = sp - 1'b1;       
-         OP_PC:               data_out = pc;              
-         OP_R2:               data_out = r2;              
-         OP_PC_DEC:           data_out = pc - 1'b1;       
-         OP_PC_1:             data_out = {1'b1,pc[7:1]};  
-         OP_IN_OUT:           data_out = data_in;         
-      endcase
-   end
-   
-   always@(posedge clk or negedge nRst) begin
-      if(!nRst) begin
-         pc                            <= 8'h08;
-         sp                            <= 8'hFF;
-         ir                            <= IR_ADD;
-         r0                            <= 8'h00;
-         r1                            <= 8'h00;
-         r2                            <= 8'h00;
-         r3                            <= 8'h00;
-         addr                          <= 8'h00;
-      end else begin 
          if(sp_we)      sp             <= data_out;
          if(pc_we)      pc             <= data_out;
          case({ir_we,pc[0]})
@@ -415,5 +403,6 @@ module up_core(
             2'bx1:      mem[addr]      <= data_out;
          endcase
       end
-   end
-endmodule
+   end 
+    
+ endmodule
