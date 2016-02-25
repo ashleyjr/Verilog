@@ -78,7 +78,8 @@ module up_core(
       mem_we      = 1'b0;
       ale         = 1'b0;
       casex({state,ir})
-         {LOAD_REGS_0,4'bxxxx }:    begin
+         {LOAD_REGS_0,4'bxxxx }, 
+         {EXECUTE_1,IR_REF    }: begin
                                                       data_out = 8'h00;
                                                       ale      = 1'b1;
                                     end
@@ -137,16 +138,19 @@ module up_core(
                                                       data_out = ~(r1 & r2);
                                                       rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW01   }:    begin
+         {EXECUTE_1,IR_SW01   },
+         {EXECUTE_3,IR_SW01   }:    begin
                                                       data_out = r0 ^ r1;
                                                       rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW12   }:    begin
+         {EXECUTE_1,IR_SW12   },
+         {EXECUTE_3,IR_SW12   }:    begin
                                                       data_out = r1 ^ r2;
                                                       rb_sel   = 3'b101;
                                                       rb_we    = 1'b1;
                                     end
-         {EXECUTE_1,IR_SW23   }:    begin                
+         {EXECUTE_1,IR_SW23   },
+         {EXECUTE_3,IR_SW23   }:    begin                
                                                       data_out = r2 ^ r3;;
                                                       rb_sel   = 3'b110;
                                                       rb_we    = 1'b1;
@@ -155,19 +159,16 @@ module up_core(
                                                       data_out = r3;
                                                       pc_we    = 1'b1;
                                     end
+         {EXECUTE_1,IR_POP    },
          {EXECUTE_1,IR_POPC   }:    begin
                                                       data_out = sp + 1'b1; 
                                                       sp_we    = 1'b1;
                                                       ale      = 1'b1;
                                     end
          {EXECUTE_1,IR_PUSHC  },
-         {EXECUTE_1,IR_PUSH   }:    begin
+         {EXECUTE_1,IR_PUSH   },
+         {INT_1,4'bxxxx       }:    begin
                                                       data_out = sp;
-                                                      ale      = 1'b1;
-                                    end
-         {EXECUTE_1,IR_POP    }:    begin
-                                                      data_out = sp + 1'b1;
-                                                      sp_we    = 1'b1;
                                                       ale      = 1'b1;
                                     end
          {EXECUTE_1,IR_LDW    },
@@ -179,9 +180,6 @@ module up_core(
                                                       data_out = 8'h00;
                                                       ale      = 1'b1;
                                     end
-
-
-
          {EXECUTE_2,IR_SW01   }:    begin
                                                       data_out =  r0 ^ r1;
                                                       rb_sel   = 3'b101;
@@ -212,7 +210,8 @@ module up_core(
                                                       rb_sel   = 3'b010;
                                                       rb_we    = 1'b1;
                                     end
-         {EXECUTE_2,IR_STW    }:    begin
+         {EXECUTE_2,IR_STW    },
+         {EXECUTE_3,IR_PUSH   }:    begin
                                                       data_out = r2;
                                                       mem_we   = 1'b1;
                                     end
@@ -221,32 +220,10 @@ module up_core(
                                                       rb_sel   = 3'b000;
                                                       rb_we    = 1'b1;
                                     end
-         {EXECUTE_3,IR_SW01   }:    begin
-                                                      data_out = r0 ^ r1;
-                                                      rb_we    = 1'b1;
-                                    end
-         {EXECUTE_3,IR_SW12   }:    begin
-                                                      data_out = r1 ^ r2;
-                                                      rb_sel   = 3'b101;
-                                                      rb_we    = 1'b1;
-                                    end                           
-         {EXECUTE_3,IR_SW23   }:    begin
-                                                      data_out = r2 ^ r3;
-                                                      rb_sel   = 3'b110;
-                                                      rb_we    = 1'b1;
-                                    end
          {EXECUTE_3,IR_PUSHC  }:    begin
                                                       data_out = pc - 1'b1;
                                                       mem_we   = 1'b1;
                                     end
-         {EXECUTE_3,IR_PUSH   }:    begin
-                                                      data_out = r2;
-                                                      mem_we   = 1'b1;
-                                    end
-         {INT_1,4'bxxxx       }:    begin
-                                                      data_out = sp;    // Add sp
-                                                      ale      = 1'b1;
-                                    end 
          {INT_2,4'bxxxx       }:    begin
                                                       data_out = pc;    // Write PC
                                                       mem_we   = 1'b1;
