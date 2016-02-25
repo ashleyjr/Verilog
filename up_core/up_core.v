@@ -109,21 +109,21 @@ module up_core(
                                     end
          {LOAD_REGS_1,4'bxxxx }:    begin
                                                       op       = OP_01;
-                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_sel   = 3'b000;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
                                     end
          {LOAD_REGS_2,4'bxxxx }:    begin
                                                       op       = OP_02;
-                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_sel   = 3'b001;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
                                     end
          {LOAD_REGS_3,4'bxxxx }:    begin
                                                       op       = OP_03;
-                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_sel   = 3'b010;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
 
@@ -131,7 +131,7 @@ module up_core(
          {LOAD_REGS_4,4'bxxxx }:   
                                     begin
                                                       op       = OP_PC_0;
-                                                      rb_sel   = state[2:0] - 1'b1;
+                                                      rb_sel   = 3'b011;
                                                       rb_we    = 1'b1;
                                                       ale      = 1'b1;
                                     end
@@ -209,17 +209,17 @@ module up_core(
 
          {EXECUTE_2,IR_SW01   }:    begin
                                                       op       = OP_XOR_01;
-                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_sel   = 3'b101;
                                                       rb_we    = 1'b1;
                                     end
          {EXECUTE_2,IR_SW12   }:    begin
                                                       op       = OP_XOR_12;
-                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_sel   = 3'b110;
                                                       rb_we    = 1'b1;
                                     end
          {EXECUTE_2,IR_SW23   }:    begin
                                                       op       = OP_XOR_23;
-                                                      rb_sel   = ir[2:0] + 1'b1;
+                                                      rb_sel   = 3'b111;
                                                       rb_we    = 1'b1;
                                     end
          {EXECUTE_2,IR_POPC   }:    begin
@@ -252,12 +252,12 @@ module up_core(
                                     end
          {EXECUTE_3,IR_SW12   }:    begin
                                                       op       = OP_XOR_12;
-                                                      rb_sel   = ir[2:0];
+                                                      rb_sel   = 3'b101;
                                                       rb_we    = 1'b1;
                                     end                           
          {EXECUTE_3,IR_SW23   }:    begin
                                                       op       = OP_XOR_23;
-                                                      rb_sel   = ir[2:0];
+                                                      rb_sel   = 3'b110;
                                                       rb_we    = 1'b1;
                                     end
          {EXECUTE_3,IR_PUSHC  }:    begin
