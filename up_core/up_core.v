@@ -1,7 +1,11 @@
 module up_core(
 	input	            clk,
 	input	            nRst, 
-   input             int
+   input             int,
+   input             load,
+   input    [7:0]    mem_in,
+   output   [7:0]    mem_out, 
+   output   [7:0]    map_01
 );
 
    parameter   SIZE           = 256;
@@ -37,7 +41,8 @@ module up_core(
                IR_REF         = 4'b1110,
                IR_INT         = 4'b1111;
 
-
+   
+   integer i;
 
 	reg   [7:0]    mem         [SIZE-1:0];
    reg   [3:0]    state;
@@ -64,6 +69,8 @@ module up_core(
    wire           int_go;
    assign         data_in = mem[addr];
 
+   assign   map_01   = mem[126];
+   assign   mem_out  = mem[SIZE-1];
 
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
       
@@ -254,63 +261,83 @@ module up_core(
                                                 r3             <= 8'h00;
                                                 addr           <= 8'h00;
       end else begin
-         if(!int_go) int_last <= int;
-         state <= FETCH;
-         casex({int_go,state,ir})
-            {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state          <= LOAD_REGS_1;
-            {1'bx,LOAD_REGS_1,   4'bxxxx  }:    state          <= LOAD_REGS_2;
-            {1'bx,LOAD_REGS_2,   4'bxxxx  }:    state          <= LOAD_REGS_3;
-            {1'bx,LOAD_REGS_3,   4'bxxxx  }:    state          <= LOAD_REGS_4;
-            {1'b1,FETCH,         4'bxxxx  }:    state          <= INT_1;
-            {1'b0,FETCH,         4'bxxxx  }:    state          <= DECODE;
-            {1'bx,DECODE,        4'bxxxx  }:    state          <= EXECUTE_1; 
-            {1'bx,EXECUTE_1,     IR_SW01  },
-            {1'bx,EXECUTE_1,     IR_SW12  },
-            {1'bx,EXECUTE_1,     IR_SW23  },
-            {1'bx,EXECUTE_1,     IR_PUSHC },
-            {1'bx,EXECUTE_1,     IR_POP   },
-            {1'bx,EXECUTE_1,     IR_PUSH  },
-            {1'bx,EXECUTE_1,     IR_LDW   },
-            {1'bx,EXECUTE_1,     IR_STW   },
-            {1'bx,EXECUTE_1,     IR_REF   }:    state          <= EXECUTE_2;
-            {1'bx,EXECUTE_1,     IR_POPC  }:    begin
-                                                   state       <= EXECUTE_2;
-                                                   int_in      <= 1'b0;
-                                                end
-            {1'bx,EXECUTE_1,     IR_INT   }:    int_on_off     <= ~int_on_off;
-            {1'bx,EXECUTE_2,     IR_SW01  },
-            {1'bx,EXECUTE_2,     IR_SW12  },
-            {1'bx,EXECUTE_2,     IR_SW23  },
-            {1'bx,EXECUTE_2,     IR_PUSHC },
-            {1'bx,EXECUTE_2,     IR_PUSH  }:    state          <= EXECUTE_3;
-            {1'bx,INT_1,         4'bxxxx  }:    begin
-                                                   int_last    <= int;
-                                                   int_in      <= 1'b1;
-                                                   state       <= INT_2;
-                                                end
-            {1'bx,INT_2,         4'bxxxx  }:    state          <= INT_3;
-            {1'bx,INT_3,         4'bxxxx  }:    state          <= INT_4;
-         endcase
-         if(sp_we)                              sp             <= data_out;
-         if(pc_we)                              pc             <= data_out;
-         case({ir_we,pc[0]})
-            2'b11:                              ir             <= data_in[3:0];
-            2'b10:                              ir             <= data_in[7:4];
-         endcase
-         case({rb_we,rb_sel}) 
-            4'b1000:                            r0             <= data_in;      
-            4'b1001:                            r1             <= data_in;      
-            4'b1010:                            r2             <= data_in;      
-            4'b1011:                            r3             <= data_in;      
-            4'b1100:                            r0             <= data_out;     
-            4'b1101:                            r1             <= data_out;     
-            4'b1110:                            r2             <= data_out;     
-            4'b1111:                            r3             <= data_out;     
-         endcase
-         casex({ale,mem_we})
-            2'b1x:                              addr           <= data_out;
-            2'bx1:                              mem[addr]      <= data_out;
-         endcase
+         if(!load) begin
+            if(!int_go) int_last <= int;
+            state <= FETCH;
+            casex({int_go,state,ir})
+               {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state          <= LOAD_REGS_1;
+               {1'bx,LOAD_REGS_1,   4'bxxxx  }:    state          <= LOAD_REGS_2;
+               {1'bx,LOAD_REGS_2,   4'bxxxx  }:    state          <= LOAD_REGS_3;
+               {1'bx,LOAD_REGS_3,   4'bxxxx  }:    state          <= LOAD_REGS_4;
+               {1'b1,FETCH,         4'bxxxx  }:    state          <= INT_1;
+               {1'b0,FETCH,         4'bxxxx  }:    state          <= DECODE;
+               {1'bx,DECODE,        4'bxxxx  }:    state          <= EXECUTE_1; 
+               {1'bx,EXECUTE_1,     IR_SW01  },
+               {1'bx,EXECUTE_1,     IR_SW12  },
+               {1'bx,EXECUTE_1,     IR_SW23  },
+               {1'bx,EXECUTE_1,     IR_PUSHC },
+               {1'bx,EXECUTE_1,     IR_POP   },
+               {1'bx,EXECUTE_1,     IR_PUSH  },
+               {1'bx,EXECUTE_1,     IR_LDW   },
+               {1'bx,EXECUTE_1,     IR_STW   },
+               {1'bx,EXECUTE_1,     IR_REF   }:    state          <= EXECUTE_2;
+               {1'bx,EXECUTE_1,     IR_POPC  }:    begin
+                                                      state       <= EXECUTE_2;
+                                                      int_in      <= 1'b0;
+                                                   end
+               {1'bx,EXECUTE_1,     IR_INT   }:    int_on_off     <= ~int_on_off;
+               {1'bx,EXECUTE_2,     IR_SW01  },
+               {1'bx,EXECUTE_2,     IR_SW12  },
+               {1'bx,EXECUTE_2,     IR_SW23  },
+               {1'bx,EXECUTE_2,     IR_PUSHC },
+               {1'bx,EXECUTE_2,     IR_PUSH  }:    state          <= EXECUTE_3;
+               {1'bx,INT_1,         4'bxxxx  }:    begin
+                                                      int_last    <= int;
+                                                      int_in      <= 1'b1;
+                                                      state       <= INT_2;
+                                                   end
+               {1'bx,INT_2,         4'bxxxx  }:    state          <= INT_3;
+               {1'bx,INT_3,         4'bxxxx  }:    state          <= INT_4;
+            endcase
+            if(sp_we)                              sp             <= data_out;
+            if(pc_we)                              pc             <= data_out;
+            case({ir_we,pc[0]})
+               2'b11:                              ir             <= data_in[3:0];
+               2'b10:                              ir             <= data_in[7:4];
+            endcase
+            case({rb_we,rb_sel}) 
+               4'b1000:                            r0             <= data_in;      
+               4'b1001:                            r1             <= data_in;      
+               4'b1010:                            r2             <= data_in;      
+               4'b1011:                            r3             <= data_in;      
+               4'b1100:                            r0             <= data_out;     
+               4'b1101:                            r1             <= data_out;     
+               4'b1110:                            r2             <= data_out;     
+               4'b1111:                            r3             <= data_out;     
+            endcase
+            casex({ale,mem_we})
+               2'b1x:                              addr           <= data_out;
+               2'bx1:                              mem[addr]      <= data_out;
+            endcase
+         end else begin
+                             state          <= LOAD_REGS_0;
+                                                int_on_off     <= 1'b0;
+                                                int_last       <= 1'b0;
+                                                int_in         <= 1'b0;
+                                                pc             <= 8'h08;
+                                                sp             <= 8'hFF;
+                                                ir             <= IR_ADD;
+                                                r0             <= 8'h00;
+                                                r1             <= 8'h00;
+                                                r2             <= 8'h00;
+                                                r3             <= 8'h00;
+                                                addr           <= 8'h00;
+
+            mem[0] <= mem_in;
+            for(i=0;i<(SIZE-1);i=i+1) begin
+               mem[i+1] <= mem[i]; 
+            end
+         end      
       end
    end  
  endmodule
