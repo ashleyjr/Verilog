@@ -39,7 +39,7 @@ module up_core_tb;
    end
 
 	initial begin
-				   int      = 0;
+				   int      = 1;
                load     = 0;
                nRst     = 1;
 		#100		nRst     = 0;
@@ -56,8 +56,8 @@ module up_core_tb;
       #20      load     = 0;
       #100
       for(i=0;i<256;i=i+1) begin
-         #1000 int = 1;
          #1000 int = 0;
+         #1000 int = 1;
       end
       $finish;
 	end
