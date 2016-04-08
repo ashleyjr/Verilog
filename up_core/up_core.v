@@ -4,10 +4,10 @@ module up_core(
    input             int,
    input             load,
    input    [7:0]    mem_in,
-   input    [7:0]    mem_map_in_0,
-   input    [7:0]    mem_map_in_1,
-   input    [7:0]    mem_map_in_2,
-   input    [7:0]    mem_map_in_3,
+   input    [8:0]    mem_map_in_0,
+   input    [8:0]    mem_map_in_1,
+   input    [8:0]    mem_map_in_2,
+   input    [8:0]    mem_map_in_3,
    output   [7:0]    mem_out, 
    output   [7:0]    mem_map_out_0,
    output   [7:0]    mem_map_out_1,
@@ -281,6 +281,12 @@ module up_core(
                                                 addr           <= 8'h00;
       end else begin
          if(!load) begin
+            if(mem_map_in_0[8])  mem[MAP_0] <= mem_map_in_0[7:0];
+            if(mem_map_in_1[8])  mem[MAP_1] <= mem_map_in_1[7:0];
+            if(mem_map_in_2[8])  mem[MAP_2] <= mem_map_in_2[7:0];
+            if(mem_map_in_3[8])  mem[MAP_3] <= mem_map_in_3[7:0];
+
+
             if(!int_go) int_last <= int;
             state <= FETCH;
             casex({int_go,state,ir})

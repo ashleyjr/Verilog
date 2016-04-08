@@ -7,10 +7,10 @@ module up_core_tb;
    reg            int;
    reg            load;
    reg   [7:0]    mem_in;  
-   reg   [7:0]    mem_map_in_0;
-   reg   [7:0]    mem_map_in_1;
-   reg   [7:0]    mem_map_in_2;
-   reg   [7:0]    mem_map_in_3;   
+   reg   [8:0]    mem_map_in_0;
+   reg   [8:0]    mem_map_in_1;
+   reg   [8:0]    mem_map_in_2;
+   reg   [8:0]    mem_map_in_3;   
    wire  [7:0]    mem_out; 
    wire  [7:0]    mem_map_out_0;
    wire  [7:0]    mem_map_out_1;
@@ -81,6 +81,11 @@ module up_core_tb;
          #1000 int = 0;
          #1000 int = 1;
       end
+      #100     mem_map_in_0 = 258;  // 1
+      #100     mem_map_in_1 = 259;  // 2
+      #100     mem_map_in_2 = 260;  // 3
+      #100     mem_map_in_3 = 261;  // 4
+      #1000
       $finish;
 	end
 
