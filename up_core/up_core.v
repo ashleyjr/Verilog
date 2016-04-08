@@ -4,9 +4,22 @@ module up_core(
    input             int,
    input             load,
    input    [7:0]    mem_in,
+   input    [7:0]    mem_map_in_0,
+   input    [7:0]    mem_map_in_1,
+   input    [7:0]    mem_map_in_2,
+   input    [7:0]    mem_map_in_3,
    output   [7:0]    mem_out, 
-   output   [7:0]    map_01
+   output   [7:0]    mem_map_out_0,
+   output   [7:0]    mem_map_out_1,
+   output   [7:0]    mem_map_out_2,
+   output   [7:0]    mem_map_out_3
 );
+
+   parameter   MAP_0          = 128,
+               MAP_1          = 129,
+               MAP_2          = 130,
+               MAP_3          = 131;
+
 
    parameter   SIZE           = 256;
    parameter   LOAD_REGS_0    = 4'h0,
@@ -69,7 +82,13 @@ module up_core(
    wire           int_go;
    assign         data_in = mem[addr];
 
-   assign   map_01   = mem[126];
+   assign   mem_map_out_0   = mem[MAP_0];
+   assign   mem_map_oui_1   = mem[MAP_1];
+   assign   mem_map_out_2   = mem[MAP_2];
+   assign   mem_map_out_3   = mem[MAP_3];
+
+
+
    assign   mem_out  = mem[SIZE-1];
 
    assign z = (r1 == r2) ? 1'b1 : 1'b0;

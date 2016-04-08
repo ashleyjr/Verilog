@@ -6,19 +6,35 @@ module up_core_tb;
 	reg            nRst;
    reg            int;
    reg            load;
-   reg   [7:0]    mem_in;
-   wire  [7:0]    mem_out;
-   wire  [7:0]    map_01;
+   reg   [7:0]    mem_in;  
+   reg   [7:0]    mem_map_in_0;
+   reg   [7:0]    mem_map_in_1;
+   reg   [7:0]    mem_map_in_2;
+   reg   [7:0]    mem_map_in_3;   
+   wire  [7:0]    mem_out; 
+   wire  [7:0]    mem_map_out_0;
+   wire  [7:0]    mem_map_out_1;
+   wire  [7:0]    mem_map_out_2;
+   wire  [7:0]    mem_map_out_3;
+
+
 
 
 	up_core up_core(
-		.clk	   (clk        ),
-		.nRst	   (nRst       ),
-	   .int     (int        ),
-      .load    (load       ),
-      .mem_in  (mem_in     ),
-      .mem_out (mem_out    ),
-      .map_01  (map_01     )
+		.clk	            (clk              ),
+		.nRst	            (nRst             ),
+	   .int              (int              ),
+      .load             (load             ),
+      .mem_in           (mem_in           ),
+      .mem_map_in_0     (mem_map_in_0     ),
+      .mem_map_in_1     (mem_map_in_1     ),
+      .mem_map_in_2     (mem_map_in_2     ),
+      .mem_map_in_3     (mem_map_in_3     ), 
+      .mem_out          (mem_out          ),
+      .mem_map_out_0    (mem_map_out_0    ),
+      .mem_map_out_1    (mem_map_out_1    ),
+      .mem_map_out_2    (mem_map_out_2    ),
+      .mem_map_out_3    (mem_map_out_3    ) 
    );
 
    integer i;
@@ -41,6 +57,12 @@ module up_core_tb;
 	initial begin
 				   int      = 1;
                load     = 0;
+               
+               mem_map_in_0 = 0;
+               mem_map_in_1 = 0;
+               mem_map_in_2 = 0;
+               mem_map_in_3 = 0;
+
                nRst     = 1;
 		#100		nRst     = 0;
 		#100		nRst     = 1;
