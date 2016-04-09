@@ -18,11 +18,9 @@ module up_core(
    parameter   MAP_0          = 128,
                MAP_1          = 129,
                MAP_2          = 130,
-               MAP_3          = 131;
-
-
-   parameter   SIZE           = 256;
-   parameter   LOAD_REGS_0    = 4'h0,
+               MAP_3          = 131,
+               SIZE           = 256,
+               LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
                LOAD_REGS_2    = 4'h2,
                LOAD_REGS_3    = 4'h3,
@@ -35,9 +33,8 @@ module up_core(
                INT_1          = 4'hA,
                INT_2          = 4'hB,
                INT_3          = 4'hC,
-               INT_4          = 4'hD;
-   
-   parameter   IR_ADD         = 4'b0000,
+               INT_4          = 4'hD,
+               IR_ADD         = 4'b0000,
                IR_SUB         = 4'b0001,
                IR_MUL         = 4'b0010,
                IR_NAND        = 4'b0011,
@@ -86,8 +83,6 @@ module up_core(
    assign   mem_map_oui_1   = mem[MAP_1];
    assign   mem_map_out_2   = mem[MAP_2];
    assign   mem_map_out_3   = mem[MAP_3];
-
-
 
    assign   mem_out  = mem[SIZE-1];
 
