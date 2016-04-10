@@ -36,25 +36,23 @@ module up_core_tb;
       $readmemh("../up/code/_code.hex",code); 
    end
 
-	initial begin
-				   int      = 1;
-              
-               mem_map_load   = 0;
-               mem_map_in     = 8'hAA;
-               
-         
-               nRst = 0;
+	initial begin 
       for(i=0;i<256;i=i+1) up_core_tb.up_core.mem[i] = code[i];  
-      #1000 nRst = 1;
-                  mem_map_load = 1;
-      #100      mem_map_load = 0;     
-      
+                           int            = 1;
+                           mem_map_load   = 0;
+                           mem_map_in     = 8'h00;
+                           nRst           = 0;
+      #100                 nRst           = 1;
+
+                           mem_map_load   = 1;
+      #(CLK_PERIOD*11)     mem_map_in     = 8'hAA;
+      #(CLK_PERIOD*4)      mem_map_in     = 8'hFE;
+      #(CLK_PERIOD*42)     mem_map_in     = 8'hAA;
+      #(CLK_PERIOD*4)      mem_map_in     = 8'hFD;
+      #(CLK_PERIOD*42)     mem_map_in     = 8'hAA;
+      #(CLK_PERIOD*4)      mem_map_in     = 8'hFC;
+
       #10000   
-      for(i=0;i<256;i=i+1) begin
-         #1000 int = 0;
-         #1000 int = 1;
-      end
-      #100000 nRst = 1;
       $finish;
 	end
 
