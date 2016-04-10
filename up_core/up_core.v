@@ -2,20 +2,12 @@ module up_core(
 	input	            clk,
 	input	            nRst, 
    input             int,
-   input    [8:0]    mem_map_in_0,
-   input    [8:0]    mem_map_in_1,
-   input    [8:0]    mem_map_in_2,
-   input    [8:0]    mem_map_in_3, 
-   output   [7:0]    mem_map_out_0,
-   output   [7:0]    mem_map_out_1,
-   output   [7:0]    mem_map_out_2,
-   output   [7:0]    mem_map_out_3
+   input             mem_map_load,
+   input    [7:0]    mem_map_in,
+   output   [7:0]    mem_map_out 
 );
 
-   parameter   MAP_0          = 128,
-               MAP_1          = 129,
-               MAP_2          = 130,
-               MAP_3          = 131,
+   parameter   MAP            = 128,
                SIZE           = 256,
                LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
@@ -74,11 +66,8 @@ module up_core(
    wire           int_go;
    assign         data_in = mem[addr];
 
-   assign   mem_map_out_0   = mem[MAP_0];
-   assign   mem_map_oui_1   = mem[MAP_1];
-   assign   mem_map_out_2   = mem[MAP_2];
-   assign   mem_map_out_3   = mem[MAP_3];
-   
+   assign   mem_map_out   = mem[MAP];
+      
    assign z = (r1 == r2) ? 1'b1 : 1'b0;
       
    assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
@@ -256,12 +245,7 @@ module up_core(
    always@(posedge clk or negedge nRst) begin
       if(nRst) begin     
          if(!int_go) int_last <= int; 
-         if(mem_map_in_0[8])  mem[MAP_0] <= mem_map_in_0[7:0];
-         if(mem_map_in_1[8])  mem[MAP_1] <= mem_map_in_1[7:0];
-         if(mem_map_in_2[8])  mem[MAP_2] <= mem_map_in_2[7:0];
-         if(mem_map_in_3[8])  mem[MAP_3] <= mem_map_in_3[7:0];
-
-
+         if(mem_map_load)  mem[MAP] <= mem_map_in; 
          state <= FETCH;
          casex({int_go,state,ir})
             {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state          <= LOAD_REGS_1;
