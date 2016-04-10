@@ -66,21 +66,8 @@ module up_core_tb;
                nRst     = 1;
 		#100		nRst     = 0;
 		#100		nRst     = 1;
-		#10000
+		#10005
 
-      #100     load     = 1;
-	  
-      #5
-      for(i=0;i<256;i=i+1) begin
-         #20   mem_in   = code[255-i]; 
-      end
-     
-      #20      load     = 0;
-      #100
-      for(i=0;i<256;i=i+1) begin
-         #1000 int = 0;
-         #1000 int = 1;
-      end
    
       nRst = 0;
       for(i=0;i<256;i=i+1) up_core_tb.up_core.mem[i] = code[i];  

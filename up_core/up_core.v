@@ -261,6 +261,7 @@ module up_core(
    end
 
    always@(posedge clk or negedge nRst) begin
+      if(!int_go) int_last <= int;
       if(!nRst) begin
                                                 state          <= LOAD_REGS_0;
                                                 int_on_off     <= 1'b0;
@@ -275,14 +276,13 @@ module up_core(
                                                 r3             <= 8'h00;
                                                 addr           <= 8'h00;
       end else begin
-         if(!load) begin
+         //if(!load) begin
             if(mem_map_in_0[8])  mem[MAP_0] <= mem_map_in_0[7:0];
             if(mem_map_in_1[8])  mem[MAP_1] <= mem_map_in_1[7:0];
             if(mem_map_in_2[8])  mem[MAP_2] <= mem_map_in_2[7:0];
             if(mem_map_in_3[8])  mem[MAP_3] <= mem_map_in_3[7:0];
 
 
-            if(!int_go) int_last <= int;
             state <= FETCH;
             casex({int_go,state,ir})
                {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state          <= LOAD_REGS_1;
@@ -339,25 +339,25 @@ module up_core(
                2'b1x:                              addr           <= data_out;
                2'bx1:                              mem[addr]      <= data_out;
             endcase
-         end else begin
-                             state          <= LOAD_REGS_0;
-                                                int_on_off     <= 1'b0;
-                                                int_last       <= 1'b0;
-                                                int_in         <= 1'b0;
-                                                pc             <= 8'h08;
-                                                sp             <= 8'hFF;
-                                                ir             <= IR_ADD;
-                                                r0             <= 8'h00;
-                                                r1             <= 8'h00;
-                                                r2             <= 8'h00;
-                                                r3             <= 8'h00;
-                                                addr           <= 8'h00;
+         //end else begin
+         //                    state          <= LOAD_REGS_0;
+         //                                       int_on_off     <= 1'b0;
+         //                                       int_last       <= 1'b0;
+         //                                       int_in         <= 1'b0;
+         //                                       pc             <= 8'h08;
+         //                                       sp             <= 8'hFF;
+         //                                       ir             <= IR_ADD;
+         //                                       r0             <= 8'h00;
+         //                                       r1             <= 8'h00;
+         //                                       r2             <= 8'h00;
+         //                                       r3             <= 8'h00;
+         //                                       addr           <= 8'h00;
 
-            mem[0] <= mem_in;
-            for(i=0;i<(SIZE-1);i=i+1) begin
-               mem[i+1] <= mem[i]; 
-            end
-         end      
+         //   mem[0] <= mem_in;
+         //   for(i=0;i<(SIZE-1);i=i+1) begin
+         //      mem[i+1] <= mem[i]; 
+         //   end
+         //end      
       end
    end  
  endmodule
