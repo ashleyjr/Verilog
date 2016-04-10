@@ -81,11 +81,7 @@ module up_core_tb;
          #1000 int = 0;
          #1000 int = 1;
       end
-      #100     mem_map_in_0 = 258;  // 1
-      #100     mem_map_in_1 = 259;  // 2
-      #100     mem_map_in_2 = 260;  // 3
-      #100     mem_map_in_3 = 261;  // 4
-      
+   
       nRst = 0;
       for(i=0;i<256;i=i+1) up_core_tb.up_core.mem[i] = code[i];  
       #1000 nRst = 1;
