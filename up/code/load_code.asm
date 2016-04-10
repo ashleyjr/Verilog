@@ -1,17 +1,12 @@
 # -------------Init table 
-00          #  R0 
-00          #  R1 
+01          #  R0 
+FE          #  R1 
 00          #  R2
-00          #  R3
+7E          #  R3
 
 
-      REF
-      SW01
+      LDW      # Read mem map data in to R2           
       SW12
       SW23
-      REF
-      SW01
       SW12
-      REF
-      SW01
-      REF 
+      STW      # Store data from mem map at 0x7E 

@@ -40,17 +40,15 @@ module up_core_tb;
 				   int      = 1;
               
                mem_map_load   = 0;
-               mem_map_in     = 0;
+               mem_map_in     = 8'hAA;
                
-               nRst     = 1;
-		#100		nRst     = 0;
-		#100		nRst     = 1;
-		#10005
-
-   
-      nRst = 0;
+         
+               nRst = 0;
       for(i=0;i<256;i=i+1) up_core_tb.up_core.mem[i] = code[i];  
       #1000 nRst = 1;
+                  mem_map_load = 1;
+      #100      mem_map_load = 0;     
+      
       #10000   
       for(i=0;i<256;i=i+1) begin
          #1000 int = 0;
