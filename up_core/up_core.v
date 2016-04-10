@@ -7,7 +7,7 @@ module up_core(
    output   [7:0]    mem_map_out 
 );
 
-   parameter   MAP            = 128,
+   parameter   MAP            = 127,
                SIZE           = 256,
                LOAD_REGS_0    = 4'h0,
                LOAD_REGS_1    = 4'h1,
@@ -64,13 +64,11 @@ module up_core(
    reg   [7:0]    data_out;
    wire  [7:0]    data_in; 
    wire           int_go;
-   assign         data_in = mem[addr];
-
-   assign   mem_map_out   = mem[MAP];
-      
-   assign z = (r1 == r2) ? 1'b1 : 1'b0;
-      
-   assign int_go = (int ^ int_last) & int & int_on_off & ~int_in;
+   
+   assign         data_in        = mem[addr];
+   assign         mem_map_out    = mem[MAP]; 
+   assign         z              = (r1 == r2) ? 1'b1 : 1'b0; 
+   assign         int_go         = (int ^ int_last) & int & int_on_off & ~int_in;
 
    always @(*) begin
       ir_we       = 1'b0;
@@ -82,7 +80,7 @@ module up_core(
       ale         = 1'b0;
       casex({state,ir})
          {LOAD_REGS_0,4'bxxxx }, 
-         {EXECUTE_1,IR_REF    }: begin
+         {EXECUTE_1,IR_REF    }:    begin
                                                       data_out = 8'h00;
                                                       ale      = 1'b1;
                                     end
@@ -244,8 +242,8 @@ module up_core(
 
    always@(posedge clk or negedge nRst) begin
       if(nRst) begin     
-         if(!int_go) int_last <= int; 
-         if(mem_map_load)  mem[MAP] <= mem_map_in; 
+         if(!int_go)          int_last <= int; 
+         if(mem_map_load)     mem[MAP] <= mem_map_in; 
          state <= FETCH;
          casex({int_go,state,ir})
             {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state          <= LOAD_REGS_1;
