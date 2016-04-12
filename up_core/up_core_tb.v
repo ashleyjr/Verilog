@@ -54,8 +54,9 @@ module up_core_tb;
                            mem_map_load   = 0;
                            mem_map_in     = 8'h00;
                            nRst           = 0;
-      for(i=0;i<256;i=i+1)     load_mem(i,code[i]);
-      #100                 nRst           = 1;
+      #1000                nRst           = 1;
+      #1000                for(i=0;i<256;i=i+1)     
+                              load_mem(i,code[i]);
       
       #10000   
       $finish;

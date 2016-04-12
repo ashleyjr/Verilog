@@ -301,18 +301,19 @@ module up_core(
             2'bx1:                              mem[addr]      <= data_out;
          endcase
       end else begin
-                                                state          <= LOAD_REGS_0;
-                                                int_on_off     <= 1'b0;
-                                                int_last       <= 1'b0;
-                                                int_in         <= 1'b0;
-                                                pc             <= 8'h08;
-                                                sp             <= 8'hFF;
-                                                ir             <= IR_ADD;
-                                                r0             <= 8'h00;
-                                                r1             <= 8'h00;
-                                                r2             <= 8'h00;
-                                                r3             <= 8'h00;
-                                                addr           <= 8'h00;
+         state          <= LOAD_REGS_0;
+         int_on_off     <= 1'b0;
+         int_last       <= 1'b0;
+         int_in         <= 1'b0;
+         pc             <= 8'h08;
+         sp             <= 8'hFF;
+         ir             <= IR_ADD;
+         r0             <= 8'h00;
+         r1             <= 8'h00;
+         r2             <= 8'h00;
+         r3             <= 8'h00;
+         addr           <= 8'h00;
+         mem[4]         <= 8'h98;
       end
    end  
 endmodule
