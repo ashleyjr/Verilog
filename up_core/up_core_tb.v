@@ -7,6 +7,7 @@ module up_core_tb;
    reg            int;
    reg            load;
    reg            mem_map_load;
+   reg   [7:0]    mem_map_address;
    reg   [7:0]    mem_map_in;
    wire  [7:0]    mem_map_out;
 
@@ -15,8 +16,9 @@ module up_core_tb;
 		.nRst	            (nRst             ),
 	   .int              (int              ),
       .mem_map_load     (mem_map_load     ),
-      .mem_map_in       (mem_map_in     ), 
-      .mem_map_out      (mem_map_out    ) 
+      .mem_map_address  (mem_map_address  ),
+      .mem_map_in       (mem_map_in       ), 
+      .mem_map_out      (mem_map_out      ) 
    );
 
    integer i;
@@ -36,22 +38,25 @@ module up_core_tb;
       $readmemh("../up/code/_code.hex",code); 
    end
 
+   task load_mem;
+      input [7:0] address;
+      input [7:0] data;
+      begin
+         #(CLK_PERIOD*3)   mem_map_load      = 1;
+         #(CLK_PERIOD*3)   mem_map_address   = address;
+         #(CLK_PERIOD*3)   mem_map_in        = data;
+         #(CLK_PERIOD*3)   mem_map_load      = 0;
+      end
+   endtask
 	initial begin 
-      for(i=0;i<256;i=i+1) up_core_tb.up_core.mem[i] = code[i];  
+      
                            int            = 1;
                            mem_map_load   = 0;
                            mem_map_in     = 8'h00;
                            nRst           = 0;
+      for(i=0;i<256;i=i+1)     load_mem(i,code[i]);
       #100                 nRst           = 1;
-
-                           mem_map_load   = 1;
-      #(CLK_PERIOD*11)     mem_map_in     = 8'hAA;
-      #(CLK_PERIOD*4)      mem_map_in     = 8'hFE;
-      #(CLK_PERIOD*42)     mem_map_in     = 8'hAA;
-      #(CLK_PERIOD*4)      mem_map_in     = 8'hFD;
-      #(CLK_PERIOD*42)     mem_map_in     = 8'hAA;
-      #(CLK_PERIOD*4)      mem_map_in     = 8'hFC;
-
+      
       #10000   
       $finish;
 	end
