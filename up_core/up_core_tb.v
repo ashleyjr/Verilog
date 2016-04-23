@@ -7,7 +7,7 @@ module up_core_tb;
    reg            int;
    reg            load;
    reg            mem_map_load;
-   reg   [7:0]    mem_map_address;
+   reg   [8:0]    mem_map_address;
    reg   [7:0]    mem_map_in;
    wire  [7:0]    mem_map_out;
 
@@ -39,13 +39,13 @@ module up_core_tb;
    end
 
    task load_mem;
-      input [7:0] address;
+      input [8:0] address;
       input [7:0] data;
       begin
-         #(CLK_PERIOD*3)   mem_map_load      = 1;
-         #(CLK_PERIOD*3)   mem_map_address   = address;
-         #(CLK_PERIOD*3)   mem_map_in        = data;
-         #(CLK_PERIOD*3)   mem_map_load      = 0;
+                           mem_map_address   = address;
+                           mem_map_in        = data;
+         #(CLK_PERIOD*2)   mem_map_load      = 1;  
+         #(CLK_PERIOD*2)   mem_map_load      = 0;
       end
    endtask
 	initial begin 
@@ -57,6 +57,7 @@ module up_core_tb;
       #1000                nRst           = 1;
       #1000                for(i=0;i<256;i=i+1)     
                               load_mem(i,code[i]);
+      #1000                load_mem(257,0);
       
       #10000   
       $finish;
