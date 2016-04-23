@@ -62,11 +62,11 @@ module up_core(
    reg   [7:0]    r3;  
    reg   [7:0]    addr;
    reg   [7:0]    data_out;
+   reg   [7:0]    mem_map_out;
    wire  [7:0]    data_in; 
    wire           int_go;
    
-   assign         data_in        = mem[addr];
-   assign         mem_map_out    = mem[mem_map_address[7:0]]; 
+   assign         data_in        = mem[addr]; 
    assign         z              = (r1 == r2) ? 1'b1 : 1'b0; 
    assign         int_go         = (int ^ int_last) & int & int_on_off & ~int_in;
 
@@ -78,6 +78,17 @@ module up_core(
       sp_we       = 1'b0;
       mem_we      = 1'b0;
       ale         = 1'b0;
+      if(mem_map_address[8]) begin
+         case(mem_map_address[7:0]) 
+            8'h00:   mem_map_out = r0;
+            8'h01:   mem_map_out = r1;
+            8'h02:   mem_map_out = r2;
+            8'h03:   mem_map_out = r3;
+         endcase
+      end else begin
+         mem_map_out    = mem[mem_map_address[7:0]]; 
+      end
+      
       casex({state,ir})
          {LOAD_REGS_0,4'bxxxx }, 
          {EXECUTE_1,IR_REF    }:    begin

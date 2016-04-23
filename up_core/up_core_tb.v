@@ -58,7 +58,10 @@ module up_core_tb;
       #1000                for(i=0;i<256;i=i+1)     
                               load_mem(i,code[i]);
       #1000                load_mem(257,0);
-      
+      #1000                load_mem(258,0);
+      #1000                load_mem(259,0);
+      #1000                load_mem(260,0);
+
       #10000   
       $finish;
 	end
