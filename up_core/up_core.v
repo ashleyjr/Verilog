@@ -267,9 +267,6 @@ module up_core(
    end
    always@(posedge clk or negedge nRst) begin 
       if(nRst) begin      
-         if(mem_map_load) 
-            if(mem_map_address[8])              state                      <= LOAD_REGS_0;      // Soft reset
-            else                                mem[mem_map_address[7:0]]  <= mem_map_in;       // Load any byte in memory
          if(!int_go)                            int_last                   <= int;              // Clock in int 
          state <= FETCH;
          casex({int_go,state,ir})
@@ -327,6 +324,9 @@ module up_core(
             2'b1x:                              addr                       <= data_out;         // Interface to memory
             2'bx1:                              mem[addr]                  <= data_out;
          endcase 
+         if(mem_map_load) 
+            if(mem_map_address[8])              state                      <= LOAD_REGS_0;      // Soft reset
+            else                                mem[mem_map_address[7:0]]  <= mem_map_in;       // Load any byte in memory
       end else begin                                                                            // Hard reset
                                                 state                      <= LOAD_REGS_0;
                                                 int_on_off                 <= 1'b0;

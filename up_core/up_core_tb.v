@@ -34,8 +34,7 @@ module up_core_tb;
 		$dumpfile("up_core.vcd");
 		$dumpvars(0,up_core_tb);
       for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.up_core.mem[i]); 
-      for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.code[i]); 
-      $readmemh("../up/code/_code.hex",code); 
+      for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.code[i]);  
    end
 
    task load_mem;
@@ -46,23 +45,37 @@ module up_core_tb;
                            mem_map_in        = data;
          #(CLK_PERIOD*2)   mem_map_load      = 1;  
          #(CLK_PERIOD*2)   mem_map_load      = 0;
+                           mem_map_address   = 9'd256;
+         #(CLK_PERIOD*2)   mem_map_load      = 1;  
+         #(CLK_PERIOD*2)   mem_map_load      = 0;
       end
    endtask
-	initial begin 
-      
+
+   task test_code;
+      begin
                            int            = 1;
                            mem_map_load   = 0;
                            mem_map_in     = 8'h00;
                            nRst           = 0;
-      #1000                nRst           = 1;
-      #1000                for(i=0;i<256;i=i+1)     
+         #1000             nRst           = 1;
+         #1000             for(i=0;i<256;i=i+1)     
                               load_mem(i,code[i]);
-      #1000                load_mem(257,0);
-      #1000                load_mem(258,0);
-      #1000                load_mem(259,0);
-      #1000                load_mem(260,0);
-
-      #10000   
+         #1000             load_mem(9'd256,8'h00); // Soft reset
+         repeat(20) begin
+            #10000         int = 0; 
+            #10000         int = 1;
+         end
+         #10000            int = 0;
+      end
+   endtask
+	
+   initial begin 
+      $readmemh("code/fib.hex",code); 
+      test_code();
+      $readmemh("code/for_loop.hex",code); 
+      test_code(); 
+      $readmemh("code/isr_copy.hex",code); 
+      test_code(); 
       $finish;
 	end
 
