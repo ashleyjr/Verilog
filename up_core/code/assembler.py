@@ -107,7 +107,8 @@ if(ErrNotHex):
 
 
 
-v = open("_code.hex", "wb")
+out = str(options.code).split('.')[0] + ".hex"
+v = open(out, "wb")
 
 for i in range(0,256):
 	v.write(str(hx[(i*2)]) + str(hx[(i*2) + 1]) + "\r\n")
