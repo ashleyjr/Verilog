@@ -79,11 +79,27 @@ module up_core(
       mem_we      = 1'b0;
       ale         = 1'b0;
       if(mem_map_address[8]) begin                                                              // Registers are also available on memory map output
-         case(mem_map_address[7:0]) 
-            8'h00:   mem_map_out = r0;
-            8'h01:   mem_map_out = r1;
-            8'h02:   mem_map_out = r2;
-            8'h03:   mem_map_out = r3;
+         case(mem_map_address[7:0])  
+            8'h00:   mem_map_out    <= state;
+            8'h01:   mem_map_out    <= int_on_off;
+            8'h02:   mem_map_out    <= int_last;
+            8'h03:   mem_map_out    <= int_in;
+            8'h04:   mem_map_out    <= ir;
+            8'h05:   mem_map_out    <= ir_we;
+            8'h06:   mem_map_out    <= pc_we;
+            8'h07:   mem_map_out    <= rb_sel;
+            8'h08:   mem_map_out    <= rb_we;
+            8'h09:   mem_map_out    <= sp_we;
+            8'h0A:   mem_map_out    <= mem_we;
+            8'h0B:   mem_map_out    <= ale;
+            8'h0C:   mem_map_out    <= sp;
+            8'h0D:   mem_map_out    <= pc;
+            8'h0E:   mem_map_out    <= r0;
+            8'h0F:   mem_map_out    <= r1;
+            8'h10:   mem_map_out    <= r2;
+            8'h11:   mem_map_out    <= r3;  
+            8'h12:   mem_map_out    <= addr;
+            8'h13:   mem_map_out    <= data_out;
          endcase
       end else begin
          mem_map_out    = mem[mem_map_address[7:0]];                                            // Memory output 
