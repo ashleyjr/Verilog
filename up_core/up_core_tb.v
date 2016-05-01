@@ -43,11 +43,11 @@ module up_core_tb;
       begin
                            mem_map_address   = address;
                            mem_map_in        = data;
-         #(CLK_PERIOD*2)   mem_map_load      = 1;  
-         #(CLK_PERIOD*2)   mem_map_load      = 0;
+         #(CLK_PERIOD)     mem_map_load      = 1;  
+         #(CLK_PERIOD)     mem_map_load      = 0;
                            mem_map_address   = 9'd256;
-         #(CLK_PERIOD*2)   mem_map_load      = 1;  
-         #(CLK_PERIOD*2)   mem_map_load      = 0;
+         #(CLK_PERIOD)     nRst      = 0;  
+         #(CLK_PERIOD)     nRst = 1;
       end
    endtask
 
@@ -70,12 +70,17 @@ module up_core_tb;
    endtask
 	
    initial begin 
-      $readmemh("code/fib.hex",code); 
+      $readmemh("code/all_ops.hex",code); 
       test_code();
+      $readmemh("code/fin.hex",code); 
+      test_code(); 
       $readmemh("code/for_loop.hex",code); 
       test_code(); 
       $readmemh("code/isr_copy.hex",code); 
       test_code(); 
+      $readmemh("code/subroutines.hex",code); 
+      test_code(); 
+
       $finish;
 	end
 
