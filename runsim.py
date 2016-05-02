@@ -29,11 +29,24 @@ if "__main__" == __name__:
 
 
     if(options.sim):
-        print "    Info: Simulate " + str(sim)
+        print "    Info: Searching for simulation dependants"
+        code = "code"
+        if(os.path.isdir(code)):
+            os.chdir(code)
+            print "    Move: " + code + "/"
+            for file in os.listdir("."):
+                if file.endswith(".asm"):
+                    cmd = "python assembler.py -c " + str(file) + " > " + str(file).replace(".asm",".txt")
+                    print "     Cmd: " + cmd
+            os.chdir("..")
 
+
+
+        print "    Info: Simulate " + str(sim)
         cmd = "iverilog -o " + str(sim) + ".dat -c " + str(sim) +"_filelist.txt"
         print "     Cmd: " + cmd
         os.system(cmd)
+
 
 
         cmd = "vvp " + str(sim) + ".dat -vcd | head -15"
