@@ -44,7 +44,8 @@ module up_core(
 	reg   [7:0]    mem         [SIZE-1:0];
    reg   [3:0]    state;
    reg            int_on_off;
-   reg            int_last;
+   reg            int_1;
+   reg            int_2;
    reg            int_in;
    reg   [3:0]    ir;
    reg            ir_we;
@@ -68,7 +69,7 @@ module up_core(
    
    assign         data_in        = mem[addr];                                                   // Output from memory
    assign         z              = (r1 == r2) ? 1'b1 : 1'b0;                                    // branch signal
-   assign         int_go         = (int ^ int_last) & int & int_on_off & ~int_in;               // Interrupt signal
+   assign         int_go         = (int_1 ^ int_2) & int_1 & int_on_off & ~int_in;               // Interrupt signal
 
    always @(*) begin
       ir_we       = 1'b0;
@@ -82,24 +83,25 @@ module up_core(
          case(mem_map_address[7:0])  
             8'h00:   mem_map_out    <= state;
             8'h01:   mem_map_out    <= int_on_off;
-            8'h02:   mem_map_out    <= int_last;
-            8'h03:   mem_map_out    <= int_in;
-            8'h04:   mem_map_out    <= ir;
-            8'h05:   mem_map_out    <= ir_we;
-            8'h06:   mem_map_out    <= pc_we;
-            8'h07:   mem_map_out    <= rb_sel;
-            8'h08:   mem_map_out    <= rb_we;
-            8'h09:   mem_map_out    <= sp_we;
-            8'h0A:   mem_map_out    <= mem_we;
-            8'h0B:   mem_map_out    <= ale;
-            8'h0C:   mem_map_out    <= sp;
-            8'h0D:   mem_map_out    <= pc;
+            8'h02:   mem_map_out    <= int_1;
+            8'h03:   mem_map_out    <= int_1;
+            8'h04:   mem_map_out    <= int_in;
+            8'h05:   mem_map_out    <= ir;
+            8'h06:   mem_map_out    <= ir_we;
+            8'h07:   mem_map_out    <= pc_we;
+            8'h08:   mem_map_out    <= rb_sel;
+            8'h09:   mem_map_out    <= rb_we;
+            8'h0A:   mem_map_out    <= sp_we;
+            8'h0B:   mem_map_out    <= mem_we;
+            8'h0D:   mem_map_out    <= ale;
+            8'h0E:   mem_map_out    <= sp;
+            8'h0F:   mem_map_out    <= pc;
             8'h0E:   mem_map_out    <= r0;
-            8'h0F:   mem_map_out    <= r1;
-            8'h10:   mem_map_out    <= r2;
-            8'h11:   mem_map_out    <= r3;  
-            8'h12:   mem_map_out    <= addr;
-            8'h13:   mem_map_out    <= data_out;
+            8'h10:   mem_map_out    <= r1;
+            8'h11:   mem_map_out    <= r2;
+            8'h12:   mem_map_out    <= r3;  
+            8'h13:   mem_map_out    <= addr;
+            8'h14:   mem_map_out    <= data_out;
          endcase
       end else begin
          mem_map_out    = mem[mem_map_address[7:0]];                                            // Memory output 
@@ -267,7 +269,10 @@ module up_core(
    end
    always@(posedge clk or negedge nRst) begin 
       if(nRst) begin      
-         if(!int_go)                            int_last                   <= int;              // Clock in int 
+         if(!int_go) begin
+                                                int_1                      <= int;              // Clock in int 
+                                                int_2                      <= int_1;
+         end
          state <= FETCH;
          casex({int_go,state,ir})
             {1'bx,LOAD_REGS_0,   4'bxxxx  }:    state                      <= LOAD_REGS_1;      // The load regs from bottom four bytes 
@@ -297,7 +302,6 @@ module up_core(
             {1'bx,EXECUTE_2,     IR_PUSHC },
             {1'bx,EXECUTE_2,     IR_PUSH  }:    state                      <= EXECUTE_3;
             {1'bx,INT_1,         4'bxxxx  }:    begin                                           // Interrupt jump happens here
-                                                   int_last                <= int;
                                                    int_in                  <= 1'b1;
                                                    state                   <= INT_2;
                                                 end
@@ -328,7 +332,8 @@ module up_core(
             if(mem_map_address[8])              begin
                                                 state                      <= LOAD_REGS_0;      // Soft reset
                                                 int_on_off                 <= 1'b0;
-                                                int_last                   <= 1'b0;
+                                                int_1                      <= 1'b0;
+                                                int_2                      <= 1'b0;
                                                 int_in                     <= 1'b0;
                                                 pc                         <= 8'h08;
                                                 sp                         <= 8'hFF;
@@ -343,7 +348,8 @@ module up_core(
       end else begin                                                                            // Hard reset
                                                 state                      <= LOAD_REGS_0;
                                                 int_on_off                 <= 1'b0;
-                                                int_last                   <= 1'b0;
+                                                int_1                      <= 1'b0;
+                                                int_2                      <= 1'b0;
                                                 int_in                     <= 1'b0;
                                                 pc                         <= 8'h08;
                                                 sp                         <= 8'hFF;
