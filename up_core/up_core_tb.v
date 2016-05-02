@@ -35,6 +35,8 @@ module up_core_tb;
 		$dumpvars(0,up_core_tb);
       for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.up_core.mem[i]); 
       for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.code[i]);  
+      $display("--------------|TIME|-------|FIB|-------       ");
+      $monitor("%d         %d",$time,up_core_tb.up_core.mem[127]);
    end
 
    task load_mem;
@@ -72,6 +74,7 @@ module up_core_tb;
       /////////////
       // ALL OPS //
       /////////////
+      $display("\n\n\n--- ALL OPS ---");
       $readmemh("code/all_ops.hex",code); 
       load_code();
       #10000
@@ -79,6 +82,7 @@ module up_core_tb;
       /////////
       // FIB //
       /////////
+      $display("\n\n\n--- FIB ---");
       $readmemh("code/fib.hex",code); 
       load_code();
       int = 0;
@@ -98,6 +102,7 @@ module up_core_tb;
       //////////////
       // FOR LOOP //
       //////////////
+      $display("\n\n\n--- FOR LOOP ---");
       $readmemh("code/for_loop.hex",code); 
       load_code(); 
       #10000
@@ -105,6 +110,7 @@ module up_core_tb;
       //////////////
       // ISR COPY //
       //////////////
+      $display("\n\n\n--- ISR COPY ---");
       $readmemh("code/isr_copy.hex",code); 
       load_code(); 
       #10000
@@ -112,6 +118,7 @@ module up_core_tb;
       /////////////////
       // SUBROUTINES //
       /////////////////
+      $display("\n\n\n--- SUBROUTINES ---");
       $readmemh("code/subroutines.hex",code); 
       load_code(); 
       #10000
