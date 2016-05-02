@@ -48,40 +48,73 @@ module up_core_tb;
       end
    endtask
 
-   task test_code;
+   task load_code;
       begin
-                           int            = 1; 
-                           load_mem(9'd256,8'h00);    // soft reset
-                           load_mem(9'd4,8'h98);      // put into loop  
-                           for(i=5;i<256;i=i+1)       // Load all above loop    
-                              load_mem(i,code[i]);
-                           for(i=0;i<4;i=i+1)         // Load below loop    
-                              load_mem(i,code[i]);
-                           load_mem(9'd256,8'h00);    // soft reset
-                           load_mem(9'd4,code[4]);    // replace the loop
-
-         repeat(20) begin
-            #94729         int = 0; 
-            #86736         int = 1;
-         end
-         #10000            int = 0;
+         load_mem(9'd256,8'h00);    // soft reset
+         load_mem(9'd4,8'h98);      // put into loop  
+         for(i=5;i<256;i=i+1)       // Load all above loop    
+         load_mem(i,code[i]);
+         for(i=0;i<4;i=i+1)         // Load below loop    
+         load_mem(i,code[i]);
+         load_mem(9'd256,8'h00);    // soft reset
+         load_mem(9'd4,code[4]);    // replace the loop
       end
    endtask
 	
    initial begin
-      #100  nRst = 1;
-      #100  nRst = 0;
-      #100  nRst = 1;
+                        nRst              = 1;
+                        int               = 1;
+                        mem_map_load      = 0;
+      #(CLK_PERIOD*2)   nRst              = 0;
+      #(CLK_PERIOD*2)   nRst              = 1;
+      
+     
+      /////////////
+      // ALL OPS //
+      /////////////
       $readmemh("code/all_ops.hex",code); 
-      test_code();
+      load_code();
+      #10000
+
+      /////////
+      // FIB //
+      /////////
       $readmemh("code/fib.hex",code); 
-      test_code(); 
+      load_code();
+      int = 0;
+      #(CLK_PERIOD*30)                                   // Wait for setup to complete
+      repeat(10) begin                                   // Do the first 10 interrupts fast
+         #(CLK_PERIOD*45)     int = 1;                   // 1,2,3,5,8,13,21,34,55,89
+         #(CLK_PERIOD*45)     int = 0;
+      end
+      #(CLK_PERIOD*45)        int = 1;                   // 144
+      #(CLK_PERIOD*1000)      int = 0;
+      #(CLK_PERIOD*1000)      int = 1;                   // 233
+      #(CLK_PERIOD*1000)      int = 0;
+      #(CLK_PERIOD*1000)      int = 1;                   // Over flow
+      #(CLK_PERIOD*1000)
+      
+      
+      //////////////
+      // FOR LOOP //
+      //////////////
       $readmemh("code/for_loop.hex",code); 
-      test_code(); 
+      load_code(); 
+      #10000
+
+      //////////////
+      // ISR COPY //
+      //////////////
       $readmemh("code/isr_copy.hex",code); 
-      test_code(); 
+      load_code(); 
+      #10000
+
+      /////////////////
+      // SUBROUTINES //
+      /////////////////
       $readmemh("code/subroutines.hex",code); 
-      test_code(); 
+      load_code(); 
+      #10000
 
       $finish;
 	end
