@@ -19,6 +19,8 @@ if "__main__" == __name__:
     move = "cd " + sim
     os.chdir(sim)
 
+    temp =  str(sim) + "_runsim.txt"
+
     print
     print "--- runsim.py ---"
     print "  Module: "+ sim
@@ -49,10 +51,19 @@ if "__main__" == __name__:
 
 
 
-        cmd = "vvp " + str(sim) + ".dat -vcd | head -15"
+        cmd = "vvp " + str(sim) + ".dat -vcd > " + temp
         print "     Cmd: " + cmd
         os.system(cmd)
 
+
+        print "    Info: Head of " + temp
+        f = open(temp)
+        count = 1
+        for line in f:
+            print "    Info: " + line,
+            count = count + 1
+            if(count > 15):
+                break
 
     if(options.waves):
         cmd = "gtkwave " + str(sim) +".vcd"
