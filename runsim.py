@@ -40,6 +40,7 @@ if "__main__" == __name__:
                 if file.endswith(".asm"):
                     cmd = "python assembler.py -c " + str(file) + " > " + str(file).replace(".asm",".txt")
                     print "     Cmd: " + cmd
+                    os.system(cmd)
             os.chdir("..")
 
 
