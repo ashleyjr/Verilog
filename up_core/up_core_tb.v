@@ -43,24 +43,23 @@ module up_core_tb;
       begin
                            mem_map_address   = address;
                            mem_map_in        = data;
-         #(CLK_PERIOD)     mem_map_load      = 1;  
-         #(CLK_PERIOD)     mem_map_load      = 0;
-                           mem_map_address   = 9'd256;
-         #(CLK_PERIOD)     nRst      = 0;  
-         #(CLK_PERIOD)     nRst = 1;
+         #(CLK_PERIOD*2)   mem_map_load      = 1;  
+         #(CLK_PERIOD*2)   mem_map_load      = 0; 
       end
    endtask
 
    task test_code;
       begin
-                           int            = 1;
-                           mem_map_load   = 0;
-                           mem_map_in     = 8'h00;
-                           nRst           = 0;
-         #1000             nRst           = 1;
-         #1000             for(i=0;i<256;i=i+1)     
+                           int            = 1; 
+                           load_mem(9'd256,8'h00);    // soft reset
+                           load_mem(9'd4,8'h98);      // put into loop  
+                           for(i=5;i<256;i=i+1)       // Load all above loop    
                               load_mem(i,code[i]);
-         #1000             load_mem(9'd256,8'h00); // Soft reset
+                           for(i=0;i<4;i=i+1)         // Load below loop    
+                              load_mem(i,code[i]);
+                           load_mem(9'd256,8'h00);    // soft reset
+                           load_mem(9'd4,code[4]);    // replace the loop
+
          repeat(20) begin
             #10000         int = 0; 
             #10000         int = 1;
@@ -69,7 +68,10 @@ module up_core_tb;
       end
    endtask
 	
-   initial begin 
+   initial begin
+      #100  nRst = 1;
+      #100  nRst = 0;
+      #100  nRst = 1;
       $readmemh("code/all_ops.hex",code); 
       test_code();
       $readmemh("code/fin.hex",code); 

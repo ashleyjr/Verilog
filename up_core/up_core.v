@@ -315,7 +315,7 @@ module up_core(
             4'h9:                               r1                         <= data_in;      
             4'hA:                               r2                         <= data_in;      
             4'hB:                               r3                         <= data_in;      
-            4'hB:                               r0                         <= data_out;     
+            4'hC:                               r0                         <= data_out;     
             4'hD:                               r1                         <= data_out;     
             4'hE:                               r2                         <= data_out;     
             4'hF:                               r3                         <= data_out;     
@@ -325,8 +325,21 @@ module up_core(
             2'bx1:                              mem[addr]                  <= data_out;
          endcase 
          if(mem_map_load) 
-            if(mem_map_address[8])              state                      <= LOAD_REGS_0;      // Soft reset
-            else                                mem[mem_map_address[7:0]]  <= mem_map_in;       // Load any byte in memory
+            if(mem_map_address[8])              begin
+                                                state                      <= LOAD_REGS_0;      // Soft reset
+                                                int_on_off                 <= 1'b0;
+                                                int_last                   <= 1'b0;
+                                                int_in                     <= 1'b0;
+                                                pc                         <= 8'h08;
+                                                sp                         <= 8'hFF;
+                                                ir                         <= IR_ADD;
+                                                r0                         <= 8'h00;
+                                                r1                         <= 8'h00;
+                                                r2                         <= 8'h00;
+                                                r3                         <= 8'h00;
+                                                addr                       <= 8'h00; 
+
+            end else                            mem[mem_map_address[7:0]]  <= mem_map_in;       // Load any byte in memory
       end else begin                                                                            // Hard reset
                                                 state                      <= LOAD_REGS_0;
                                                 int_on_off                 <= 1'b0;
