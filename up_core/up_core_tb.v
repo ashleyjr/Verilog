@@ -61,8 +61,8 @@ module up_core_tb;
                            load_mem(9'd4,code[4]);    // replace the loop
 
          repeat(20) begin
-            #10000         int = 0; 
-            #10000         int = 1;
+            #94729         int = 0; 
+            #86736         int = 1;
          end
          #10000            int = 0;
       end
@@ -74,7 +74,7 @@ module up_core_tb;
       #100  nRst = 1;
       $readmemh("code/all_ops.hex",code); 
       test_code();
-      $readmemh("code/fin.hex",code); 
+      $readmemh("code/fib.hex",code); 
       test_code(); 
       $readmemh("code/for_loop.hex",code); 
       test_code(); 
