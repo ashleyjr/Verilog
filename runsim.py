@@ -75,13 +75,18 @@ if "__main__" == __name__:
 
     if(options.synth):
         print "    Info: Synth"
-        f = open(yosys, "w")
-        f.write("read_verilog " + sim + ".v\n")
-        f.write("hierarchy\n")
-        f.write("proc; opt; memory; opt; techmap; opt\n")
-        f.write("write_blif " + yosys_blif)
-        f.close()
-        cmd = "yosys " + yosys + " > " + yosys_out
+        cmd = "yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v"
+        print "     Cmd: " + cmd
+        os.system(cmd)
+        cmd = "yosys -o " + sim + "_syn.v " + sim + ".blif"
+        print "     Cmd: " + cmd
+        os.system(cmd)
+
+        cmd = "iverilog -o " + sim + ".dat -D POST_SYNTHESIS " + sim + "_tb.v " + sim + "_syn.v \ `yosys-config --datdir/ice40/cells_sim.v`"
+        print "     Cmd: " + cmd
+        os.system(cmd)
+
+        cmd = "vvp " + str(sim) + ".dat -vcd > " + temp
         print "     Cmd: " + cmd
         os.system(cmd)
 
