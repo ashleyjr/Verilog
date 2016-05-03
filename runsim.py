@@ -26,6 +26,7 @@ if "__main__" == __name__:
 
     yosys_out = str(sim) + "_yosys_out.txt"
 
+    yosys_blif = str(sim) + ".blif"
     print
     print "--- runsim.py ---"
     print "  Module: "+ sim
@@ -75,7 +76,10 @@ if "__main__" == __name__:
     if(options.synth):
         print "    Info: Synth"
         f = open(yosys, "w")
-        f.write("read_verilog " + sim + ".v")
+        f.write("read_verilog " + sim + ".v\n")
+        f.write("hierarchy\n")
+        f.write("proc; opt; memory; opt; techmap; opt\n")
+        f.write("write_blif " + yosys_blif)
         f.close()
         cmd = "yosys " + yosys + " > " + yosys_out
         print "     Cmd: " + cmd
