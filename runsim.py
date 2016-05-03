@@ -12,6 +12,7 @@ if "__main__" == __name__:
     parser.add_option("-m", "--module", dest="module", help="module to simulate - should not be defined if program is")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
     parser.add_option("-w", "--waves", action="store_true", dest="waves")
+    parser.add_option("-y", "--synth",action="store_true", dest="synth")
     (options, args) = parser.parse_args()
 
     sim = str(options.module)
@@ -20,6 +21,10 @@ if "__main__" == __name__:
     os.chdir(sim)
 
     temp =  str(sim) + "_runsim.txt"
+
+    yosys = str(sim) + "_yosys.ys"
+
+    yosys_out = str(sim) + "_yosys_out.txt"
 
     print
     print "--- runsim.py ---"
@@ -65,6 +70,17 @@ if "__main__" == __name__:
             count = count + 1
             if(count > 15):
                 break
+
+
+    if(options.synth):
+        print "    Info: Synth"
+        f = open(yosys, "w")
+        f.write("read_verilog " + sim + ".v")
+        f.close()
+        cmd = "yosys " + yosys + " > " + yosys_out
+        print "     Cmd: " + cmd
+        os.system(cmd)
+
 
     if(options.waves):
         cmd = "gtkwave " + str(sim) +".vcd"
