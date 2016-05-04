@@ -12,7 +12,9 @@ if "__main__" == __name__:
     parser.add_option("-m", "--module", dest="module", help="module to simulate - should not be defined if program is")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
     parser.add_option("-w", "--waves", action="store_true", dest="waves")
-    parser.add_option("-y", "--synth",action="store_true", dest="synth")
+    parser.add_option("-x", "--synth",action="store_true", dest="synth")
+    parser.add_option("-y", "--synth_sim",action="store_true", dest="syn_sim")
+    parser.add_option("-z", "--synth_waves",action="store_true", dest="syn_waves")
     (options, args) = parser.parse_args()
 
     sim = str(options.module)
@@ -82,14 +84,25 @@ if "__main__" == __name__:
         print "     Cmd: " + cmd
         os.system(cmd)
 
-        cmd = "iverilog -o " + sim + ".dat -D POST_SYNTHESIS " + sim + "_tb.v " + sim + "_syn.v \ `yosys-config --datdir/ice40/cells_sim.v`"
+
+    if(options.syn_sim):
+        cmd = "iverilog -o " + sim + "_syn.dat -D POST_SYNTHESIS " + sim + "_tb.v " + sim + "_syn.v \ `yosys-config --datdir/ice40/cells_sim.v`"
         print "     Cmd: " + cmd
         os.system(cmd)
 
-        cmd = "vvp " + str(sim) + ".dat -vcd > " + temp
+        cmd = "vvp " + str(sim) + "_syn.dat -vcd > " + temp
         print "     Cmd: " + cmd
         os.system(cmd)
 
+        cmd = "cp " + str(sim) + ".vcd " + sim + "_syn.vcd"
+        print "     Cmd: " + cmd
+        os.system(cmd)
+
+
+    if(options.syn_waves):
+        cmd = "gtkwave " + str(sim) +"_syn.vcd "
+        print "     Cmd: " + cmd
+        os.system(cmd)
 
     if(options.waves):
         cmd = "gtkwave " + str(sim) +".vcd"
