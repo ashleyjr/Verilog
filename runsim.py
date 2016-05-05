@@ -77,10 +77,10 @@ if "__main__" == __name__:
 
     if(options.synth):
         print "    Info: Synth"
-        cmd = "yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v"
+        cmd = "yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v > " + sim + "_syn.txt"
         print "     Cmd: " + cmd
         os.system(cmd)
-        cmd = "yosys -o " + sim + "_syn.v " + sim + ".blif"
+        cmd = "yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt"
         print "     Cmd: " + cmd
         os.system(cmd)
 
