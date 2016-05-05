@@ -21,38 +21,43 @@ module uart_autobaud_tb;
 
 
    uart_autobaud uart_autobaud(
-      .clk        (clk        ),
-      .nRst       (nRst       ),
-      .transmit   (recieved   ),
       `ifdef POST_SYNTHESIS
-         . \data_tx[0] (data_rx[0]),
-         . \data_tx[1] (data_rx[1]),
-         . \data_tx[2] (data_rx[2]),
-         . \data_tx[3] (data_rx[3]),
-         . \data_tx[4] (data_rx[4]),
-         . \data_tx[5] (data_rx[5]),
-         . \data_tx[6] (data_rx[6]),
-         . \data_tx[7] (data_rx[7]),
+         .clk           (clk        ),
+         .nRst          (nRst       ),
+         .transmit      (recieved   ),
+         . \data_tx[0]  (data_rx[0] ),
+         . \data_tx[1]  (data_rx[1] ),
+         . \data_tx[2]  (data_rx[2] ),
+         . \data_tx[3]  (data_rx[3] ),
+         . \data_tx[4]  (data_rx[4] ),
+         . \data_tx[5]  (data_rx[5] ),
+         . \data_tx[6]  (data_rx[6] ),
+         . \data_tx[7]  (data_rx[7] ),
+         .rx            (tx         ),
+         .busy_rx       (busy_rx    ),
+         .busy_tx       (busy_tx    ),
+         .recieved      (recieved   ),
+         . \data_rx[0]  (data_rx[0] ),
+         . \data_rx[1]  (data_rx[1] ),
+         . \data_rx[2]  (data_rx[2] ),
+         . \data_rx[3]  (data_rx[3] ),
+         . \data_rx[4]  (data_rx[4] ),
+         . \data_rx[5]  (data_rx[5] ),
+         . \data_rx[6]  (data_rx[6] ),
+         . \data_rx[7]  (data_rx[7] ),
+         .tx            (rx         ) 
       `else
-         .data_tx (data_rx    ),
+         .clk           (clk        ),
+         .nRst          (nRst       ),
+         .transmit      (recieved   ),
+         .data_tx       (data_rx    ),
+         .rx            (tx         ),
+         .busy_rx       (busy_rx    ),
+         .busy_tx       (busy_tx    ),
+         .recieved      (recieved   ),
+         .data_rx       (data_rx    ),
+         .tx            (rx         )
       `endif
-      .rx         (tx         ),
-      .busy_rx    (busy_rx    ),
-      .busy_tx    (busy_tx    ),
-      .recieved   (recieved   ),
-      `ifdef POST_SYNTHESIS
-         . \data_rx[0] (data_rx[0]),
-         . \data_rx[1] (data_rx[1]),
-         . \data_rx[2] (data_rx[2]),
-         . \data_rx[3] (data_rx[3]),
-         . \data_rx[4] (data_rx[4]),
-         . \data_rx[5] (data_rx[5]),
-         . \data_rx[6] (data_rx[6]),
-         . \data_rx[7] (data_rx[7]),
-      `else
-         .data_rx (data_rx    ),
-      `endif
-      .tx         (rx         )
    );
 
 	initial begin
