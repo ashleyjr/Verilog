@@ -105,7 +105,7 @@ if "__main__" == __name__:
         os.system(cmd)
 
     if(options.waves):
-        cmd = "gtkwave " + str(sim) +".vcd"
+        cmd = "gtkwave -S " + str(sim) + "_tb.tcl "+ str(sim) +".vcd"
         print "     Cmd: " + cmd
         os.system(cmd)
 
