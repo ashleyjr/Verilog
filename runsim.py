@@ -34,7 +34,18 @@ if "__main__" == __name__:
     print "  Module: "+ sim
     print "    Move: " + move + "/"
 
-    if((options.sim == None) and (options.waves == None)):
+    no_op = True
+    if(options.sim != None):
+        no_op = False
+    if(options.waves != None):
+        no_op = False
+    if(options.synth != None):
+        no_op = False
+    if(options.syn_sim != None):
+        no_op = False
+    if(options.syn_waves != None):
+        no_op = False
+    if(no_op):
         print "    Info: You must specify and operation"
 
 
