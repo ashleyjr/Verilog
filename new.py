@@ -28,6 +28,7 @@ if "__main__" == __name__:
             txt_name = sim + "_filelist.txt"
             v_name = sim + ".v"
             tb_name = sim + "_tb.v"
+            tcl_name = sim + "_tb.tcl"
 
             txt = open(txt_name, "wb")
             txt.write(v_name + "\n")
@@ -59,8 +60,13 @@ if "__main__" == __name__:
             tb.write("\treg nRst;\n")
             tb.write("\n")
             tb.write("\t" + sim + " " + sim + "(\n")
-            tb.write("\t\t.clk\t(clk),\n")
-            tb.write("\t\t.nRst\t(nRst)\n")
+            tb.write("\t\t`ifdef POST_SYNTHESIS\n")
+            tb.write("\t\t\t.clk\t(clk),\n")
+            tb.write("\t\t\t.nRst\t(nRst)\n")
+            tb.write("\t\t`else\n")
+            tb.write("\t\t\t.clk\t(clk),\n")
+            tb.write("\t\t\t.nRst\t(nRst)\n")
+            tb.write("\t\t`endif\n")
             tb.write("\t);"+ "\n")
             tb.write("\n")
             tb.write("\tinitial begin\n")
@@ -71,8 +77,13 @@ if "__main__" == __name__:
             tb.write("\tend\n")
             tb.write("\n")
             tb.write("\tinitial begin\n")
-            tb.write("\t\t$dumpfile(\"" + sim + ".vcd\");\n")
-            tb.write("\t\t$dumpvars(0," + sim + "_tb);\n")
+            tb.write("\t\t`ifdef POST_SYNTHESIS\n")
+            tb.write("\t\t\t$dumpfile(\"" + sim + "_syn.vcd\");\n")
+            tb.write("\t\t\t$dumpvars(0," + sim + "_tb);\n")
+            tb.write("\t\t`else\n")
+            tb.write("\t\t\t$dumpfile(\"" + sim + ".vcd\");\n")
+            tb.write("\t\t\t$dumpvars(0," + sim + "_tb);\n")
+            tb.write("\t\t`endif\n")
             tb.write("\tend\n\n")
             tb.write("\tinitial begin\n")
             tb.write("\t\t\t\t\tnRst = 1;\n")
@@ -84,10 +95,16 @@ if "__main__" == __name__:
             tb.write("endmodule\n")
             tb.close()
 
-
-
-
-
+            tcl = open(tcl_name, "wb")
+            tcl.write("set nsigs [ gtkwave::getNumFacs ]\n")
+            tcl.write("set sigs [list]\n")
+            tcl.write("for {set i 0} {$i < $nsigs} {incr i} {\n")
+            tcl.write("    set name  [ gtkwave::getFacName $i ]\n")
+            tcl.write("    lappend sigs $name\n")
+            tcl.write("}\n")
+            tcl.write("set added [ gtkwave::addSignalsFromList $sigs ]\n")
+            tcl.write("gtkwave::/Time/Zoom/Zoom_Full\n")
+            tcl.close()
 
         else:
             print "   Error: Module already exists!"
