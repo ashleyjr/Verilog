@@ -6,8 +6,11 @@ from optparse import OptionParser
 
 
 
+def cmd_print(cmd):
+    print "     Cmd: " + cmd
+    os.system(cmd)
 
-if "__main__" == __name__:
+def main():
     parser = OptionParser(usage="runsim.py [-m module] [-s do a sim] [-w view waves]" )
     parser.add_option("-m", "--module", dest="module", help="module to simulate - should not be defined if program is")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
@@ -57,23 +60,14 @@ if "__main__" == __name__:
             print "    Move: " + code + "/"
             for file in os.listdir("."):
                 if file.endswith(".asm"):
-                    cmd = "python assembler.py -c " + str(file) + " > " + str(file).replace(".asm",".txt")
-                    print "     Cmd: " + cmd
-                    os.system(cmd)
+                    cmd_print("python assembler.py -c " + str(file) + " > " + str(file).replace(".asm",".txt"))
             os.chdir("..")
 
 
 
         print "    Info: Simulate " + str(sim)
-        cmd = "iverilog -o " + str(sim) + ".dat -c " + str(sim) +"_filelist.txt"
-        print "     Cmd: " + cmd
-        os.system(cmd)
-
-
-
-        cmd = "vvp " + str(sim) + ".dat -vcd > " + temp
-        print "     Cmd: " + cmd
-        os.system(cmd)
+        cmd_print("iverilog -o " + str(sim) + ".dat -c " + str(sim) +"_filelist.txt")
+        cmd_print("vvp " + str(sim) + ".dat -vcd > " + temp)
 
 
         print "    Info: Head of " + temp
@@ -88,33 +82,23 @@ if "__main__" == __name__:
 
     if(options.synth):
         print "    Info: Synth"
-        cmd = "yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v > " + sim + "_syn.txt"
-        print "     Cmd: " + cmd
-        os.system(cmd)
-        cmd = "yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt"
-        print "     Cmd: " + cmd
-        os.system(cmd)
+        cmd_print("yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v > " + sim + "_syn.txt")
+        cmd_print("yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt")
 
 
     if(options.syn_sim):
-        cmd = "iverilog -o " + sim + "_syn.dat -D POST_SYNTHESIS " + sim + "_tb.v " + sim + "_syn.v \ `yosys-config --datdir/ice40/cells_sim.v`"
-        print "     Cmd: " + cmd
-        os.system(cmd)
-
-        cmd = "vvp " + str(sim) + "_syn.dat -vcd > " + temp
-        print "     Cmd: " + cmd
-        os.system(cmd)
+        cmd_print("iverilog -o " + sim + "_syn.dat -D POST_SYNTHESIS " + sim + "_tb.v " + sim + "_syn.v \ `yosys-config --datdir/ice40/cells_sim.v`")
+        cmd_print("vvp " + str(sim) + "_syn.dat -vcd > " + temp)
 
     if(options.syn_waves):
-        cmd = "gtkwave " + str(sim) +"_syn.vcd "
-        print "     Cmd: " + cmd
-        os.system(cmd)
+        cmd_print("gtkwave -S" + str(sim) + "_tb.tcl " + str(sim) +"_syn.vcd ")
 
     if(options.waves):
-        cmd = "gtkwave -S " + str(sim) + "_tb.tcl "+ str(sim) +".vcd"
-        print "     Cmd: " + cmd
-        os.system(cmd)
+        cmd_print("gtkwave -S " + str(sim) + "_tb.tcl "+ str(sim) +".vcd")
 
     print
     print "DONE"
     print
+
+if "__main__" == __name__:
+    main()
