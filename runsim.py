@@ -94,11 +94,6 @@ if "__main__" == __name__:
         print "     Cmd: " + cmd
         os.system(cmd)
 
-        cmd = "cp " + str(sim) + ".vcd " + sim + "_syn.vcd"
-        print "     Cmd: " + cmd
-        os.system(cmd)
-
-
     if(options.syn_waves):
         cmd = "gtkwave " + str(sim) +"_syn.vcd "
         print "     Cmd: " + cmd

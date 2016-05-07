@@ -12,13 +12,44 @@ module up_core_tb;
    wire  [7:0]    mem_map_out;
 
 	up_core up_core(
-		.clk	            (clk              ),
-		.nRst	            (nRst             ),
-	   .int              (int              ),
-      .mem_map_load     (mem_map_load     ),
-      .mem_map_address  (mem_map_address  ),
-      .mem_map_in       (mem_map_in       ), 
-      .mem_map_out      (mem_map_out      ) 
+		`ifdef POST_SYNTHESIS
+         .clk	                  (clk                 ),
+		   .nRst	                  (nRst                ),
+	      .int                    (int                 ),
+         .mem_map_load           (mem_map_load        ), 
+         . \mem_map_address[0]   (mem_map_address[0]  ),
+         . \mem_map_address[1]   (mem_map_address[1]  ),
+         . \mem_map_address[2]   (mem_map_address[2]  ),
+         . \mem_map_address[3]   (mem_map_address[3]  ),
+         . \mem_map_address[4]   (mem_map_address[4]  ),
+         . \mem_map_address[5]   (mem_map_address[5]  ),
+         . \mem_map_address[6]   (mem_map_address[6]  ),
+         . \mem_map_address[7]   (mem_map_address[7]  ),
+         . \mem_map_in[0]        (mem_map_in[0]       ),
+         . \mem_map_in[1]        (mem_map_in[1]       ),
+         . \mem_map_in[2]        (mem_map_in[2]       ),
+         . \mem_map_in[3]        (mem_map_in[3]       ),
+         . \mem_map_in[4]        (mem_map_in[4]       ),
+         . \mem_map_in[5]        (mem_map_in[5]       ),
+         . \mem_map_in[6]        (mem_map_in[6]       ),
+         . \mem_map_in[7]        (mem_map_in[7]       ),
+         . \mem_map_out[0]       (mem_map_out[0]      ),
+         . \mem_map_out[1]       (mem_map_out[1]      ),
+         . \mem_map_out[2]       (mem_map_out[2]      ),
+         . \mem_map_out[3]       (mem_map_out[3]      ),
+         . \mem_map_out[4]       (mem_map_out[4]      ),
+         . \mem_map_out[5]       (mem_map_out[5]      ),
+         . \mem_map_out[6]       (mem_map_out[6]      ),
+         . \mem_map_out[7]       (mem_map_out[7]      )
+      `else
+         .clk	                  (clk                 ),
+		   .nRst	                  (nRst                ),
+	      .int                    (int                 ),
+         .mem_map_load           (mem_map_load        ),
+         .mem_map_address        (mem_map_address     ),
+         .mem_map_in             (mem_map_in          ), 
+         .mem_map_out            (mem_map_out         ) 
+      `endif
    );
 
    integer i;
@@ -29,15 +60,21 @@ module up_core_tb;
 			#(CLK_PERIOD/2) clk = 0;
 			#(CLK_PERIOD/2) clk = 1;
 		end	end
-
-	initial begin
-		$dumpfile("up_core.vcd");
-		$dumpvars(0,up_core_tb);
-      for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.up_core.mem[i]); 
-      for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.code[i]);  
-      $display("--------------|TIME|-------|FIB|-------       ");
-      $monitor("%d         %d",$time,up_core_tb.up_core.mem[127]);
+   
+   initial begin
+      `ifdef POST_SYNTHESIS
+         $dumpfile("up_core_syn.vcd");  
+         $dumpvars(0,up_core_tb);
+      `else
+         $dumpfile("up_core.vcd");
+         $dumpvars(0,up_core_tb);
+         for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.up_core.mem[i]); 
+         for(i=0;i<256;i=i+1) $dumpvars(0,up_core_tb.code[i]);  
+         $display("--------------|TIME|-------|FIB|-------       ");
+         $monitor("%d         %d",$time,up_core_tb.up_core.mem[127]);
+      `endif
    end
+  
 
    task load_mem;
       input [8:0] address;
