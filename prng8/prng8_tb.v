@@ -28,7 +28,7 @@ module prng8_tb;
          . \rand[3]  (rand[3] ),
          . \rand[2]  (rand[2] ),
          . \rand[1]  (rand[1] ),
-         . \rand[0]  (rand[0] ),
+         . \rand[0]  (rand[0] )
       `else
 			.clk	      (clk     ),
 			.nRst	      (nRst    ),
