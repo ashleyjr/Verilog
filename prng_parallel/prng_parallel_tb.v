@@ -2,6 +2,8 @@ module prng_parallel_tb;
 
 	parameter CLK_PERIOD = 20;
 
+   integer        file;
+
 	reg            clk;
 	reg            nRst;
    reg            update;
@@ -61,7 +63,7 @@ module prng_parallel_tb;
 			$dumpvars(0,prng_parallel_tb);
 		`endif
 	end
-
+      
    task plant;
       input [7:0] value;
       begin
@@ -85,6 +87,14 @@ module prng_parallel_tb;
                plant(8'h34);      
                plant(8'hAC);      
                plant(8'h34);    
+               
+               file = $fopen("prng_parallel.txt","w");
+               repeat(100000) begin
+                  @(posedge clk);
+                   $fwrite(file,"%d\n",rand);
+               end
+               $fclose(file);
+
                update   = 0;      
                plant(8'h55);      
                plant(8'h12);      
