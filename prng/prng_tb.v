@@ -26,14 +26,14 @@ module prng_tb;
          . \seed[2]  (seed[2]    ),
          . \seed[1]  (seed[1]    ),
          . \seed[0]  (seed[0]    ),
-         . \rand[7]  (rand[7]    ),
-         . \rand[6]  (rand[6]    ),
-         . \rand[5]  (rand[5]    ),
-         . \rand[4]  (rand[4]    ),
-         . \rand[3]  (rand[3]    ),
-         . \rand[2]  (rand[2]    ),
-         . \rand[1]  (rand[1]    ),
-         . \rand[0]  (rand[0]    )
+         . \rand[7]  (rand8_0[7]    ),
+         . \rand[6]  (rand8_0[6]    ),
+         . \rand[5]  (rand8_0[5]    ),
+         . \rand[4]  (rand8_0[4]    ),
+         . \rand[3]  (rand8_0[3]    ),
+         . \rand[2]  (rand8_0[2]    ),
+         . \rand[1]  (rand8_0[1]    ),
+         . \rand[0]  (rand8_0[0]    )
       `else
 			.clk	      (clk        ),
 			.nRst	      (nRst       ),
@@ -60,14 +60,14 @@ module prng_tb;
          . \seed[2]  (seed[2]    ),
          . \seed[1]  (seed[1]    ),
          . \seed[0]  (seed[0]    ),
-         . \rand[7]  (rand[7]    ),
-         . \rand[6]  (rand[6]    ),
-         . \rand[5]  (rand[5]    ),
-         . \rand[4]  (rand[4]    ),
-         . \rand[3]  (rand[3]    ),
-         . \rand[2]  (rand[2]    ),
-         . \rand[1]  (rand[1]    ),
-         . \rand[0]  (rand[0]    )
+         . \rand[7]  (rand8_1[7]    ),
+         . \rand[6]  (rand8_1[6]    ),
+         . \rand[5]  (rand8_1[5]    ),
+         . \rand[4]  (rand8_1[4]    ),
+         . \rand[3]  (rand8_1[3]    ),
+         . \rand[2]  (rand8_1[2]    ),
+         . \rand[1]  (rand8_1[1]    ),
+         . \rand[0]  (rand8_1[0]    )
       `else
 			.clk	      (clk        ),
 			.nRst	      (nRst       ),
@@ -78,86 +78,16 @@ module prng_tb;
       `endif		
    );
 
-
-   prng #(32,16,12) prng_2(
-			`ifdef POST_SYNTHESIS
-			.clk	         (clk           ),
-			.nRst	         (nRst          ),
-		   .update        (update        ),
-         .reseed        (reseed        ), 
-         . \seed[31]    (seed[31]      ),
-         . \seed[30]    (seed[30]      ),
-         . \seed[28]    (seed[29]      ),
-         . \seed[28]    (seed[28]      ),
-         . \seed[27]    (seed[27]      ),
-         . \seed[26]    (seed[26]      ),
-         . \seed[25]    (seed[25]      ),
-         . \seed[24]    (seed[24]      )
-         . \seed[23]    (seed[23]      ),
-         . \seed[22]    (seed[22]      ),
-         . \seed[21]    (seed[21]      ),
-         . \seed[20]    (seed[20]      ),
-         . \seed[19]    (seed[19]      ),
-         . \seed[18]    (seed[18]      ),
-         . \seed[17]    (seed[17]      ),
-         . \seed[16]    (seed[16]      ),
-         . \seed[15]    (seed[15]      ),
-         . \seed[14]    (seed[14]      ),
-         . \seed[13]    (seed[13]      ),
-         . \seed[12]    (seed[12]      ),
-         . \seed[11]    (seed[11]      ),
-         . \seed[10]    (seed[10]      ),
-         . \seed[9]     (seed[9]       ),
-         . \seed[8]     (seed[9]       )
-         . \seed[7]     (seed[7]       ),
-         . \seed[6]     (seed[6]       ),
-         . \seed[5]     (seed[5]       ),
-         . \seed[4]     (seed[4]       ),
-         . \seed[3]     (seed[3]       ),
-         . \seed[2]     (seed[2]       ),
-         . \seed[1]     (seed[1]       ),
-         . \seed[0]     (seed[0]       )
-         . \rand[31]    (rand[31]      ),
-         . \rand[30]    (rand[30]      ),
-         . \rand[28]    (rand[29]      ),
-         . \rand[28]    (rand[28]      ),
-         . \rand[27]    (rand[27]      ),
-         . \rand[26]    (rand[26]      ),
-         . \rand[25]    (rand[25]      ),
-         . \rand[24]    (rand[24]      )
-         . \rand[23]    (rand[23]      ),
-         . \rand[22]    (rand[22]      ),
-         . \rand[21]    (rand[21]      ),
-         . \rand[20]    (rand[20]      ),
-         . \rand[19]    (rand[19]      ),
-         . \rand[18]    (rand[18]      ),
-         . \rand[17]    (rand[17]      ),
-         . \rand[16]    (rand[16]      ),
-         . \rand[15]    (rand[15]      ),
-         . \rand[14]    (rand[14]      ),
-         . \rand[13]    (rand[13]      ),
-         . \rand[12]    (rand[12]      ),
-         . \rand[11]    (rand[11]      ),
-         . \rand[10]    (rand[10]      ),
-         . \rand[9]     (rand[9]       ),
-         . \rand[8]     (rand[9]       )
-         . \rand[7]     (rand[7]       ),
-         . \rand[6]     (rand[6]       ),
-         . \rand[5]     (rand[5]       ),
-         . \rand[4]     (rand[4]       ),
-         . \rand[3]     (rand[3]       ),
-         . \rand[2]     (rand[2]       ),
-         . \rand[1]     (rand[1]       ),
-         . \rand[0]     (rand[0]       )
-      `else
-			.clk	      (clk        ),
-			.nRst	      (nRst       ),
+   `ifndef POST_SYNTHESIS
+      prng #(32,16,12) prng_2(
+	  	   .clk	      (clk        ),
+	   	.nRst	      (nRst       ),
          .update     (update     ),
          .reseed     (reseed     ),
-		   .seed       (seed       ),
-         .rand       (rand32     )
-      `endif		
-   );
+	   	.seed       (seed       ),
+         .rand       (rand32     )	
+      );
+   `endif
 
 	initial begin
 		while(1) begin
