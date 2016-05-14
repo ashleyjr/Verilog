@@ -4,6 +4,7 @@ module prng8_tb;
 
 	reg            clk;
 	reg            nRst;
+   reg            update;
    reg            reseed;
    reg   [7:0]    seed;
    wire  [7:0]    rand;
@@ -12,7 +13,8 @@ module prng8_tb;
 		`ifdef POST_SYNTHESIS
 			.clk	      (clk     ),
 			.nRst	      (nRst    ),
-		   .reseed     (reseed  ),
+		   .update     (update  ),
+         .reseed     (reseed  ),
          . \seed[7]  (seed[7] ),
          . \seed[6]  (seed[6] ),
          . \seed[5]  (seed[5] ),
@@ -32,6 +34,7 @@ module prng8_tb;
       `else
 			.clk	      (clk     ),
 			.nRst	      (nRst    ),
+         .update     (update  ),
          .reseed     (reseed  ),
 		   .seed       (seed    ),
          .rand       (rand    )
@@ -65,9 +68,10 @@ module prng8_tb;
    endtask
 
 	initial begin
-					nRst = 1;
-		#100		nRst = 0;
-		#100		nRst = 1;
+					update   = 1;
+               nRst     = 1;
+		#100		nRst     = 0;
+		#100		nRst     = 1;
 		plant(8'h88);      
       plant(8'h66);      
       plant(8'h77);      
