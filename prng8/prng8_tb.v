@@ -72,15 +72,23 @@ module prng8_tb;
                nRst     = 1;
 		#100		nRst     = 0;
 		#100		nRst     = 1;
-		plant(8'h88);      
-      plant(8'h66);      
-      plant(8'h77);      
-      plant(8'h00);      
-      plant(8'hFF);      
-      plant(8'h28);      
-      plant(8'h39);      
-      plant(8'h46);      
-      $finish;
+		         plant(8'h88);      
+               plant(8'h66);      
+               plant(8'h77);      
+               plant(8'h00);      
+               plant(8'hFF);      
+               plant(8'h28);      
+               plant(8'h39);      
+               plant(8'h46);    
+               update   = 0;      
+               plant(8'h28);      
+               plant(8'h39);      
+               plant(8'h46);
+               update   = 1;      
+               plant(8'h28);      
+               plant(8'h39);      
+               plant(8'h46);
+               $finish;
 	end
 
 endmodule
