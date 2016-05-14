@@ -13,6 +13,16 @@ module prng8parallel(
 
    assign pass[0] = seed;
 
+   assign rand =  {  
+                     pass[7][7],
+                     pass[7][6],
+                     pass[7][5],
+                     pass[7][4],
+                     pass[7][3],
+                     pass[7][2],
+                     pass[7][1],
+                     pass[7][0]
+                  };
    genvar i;
    generate
       for(i=0;i<WIDTH;i=i+1) begin:prng8

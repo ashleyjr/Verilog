@@ -58,36 +58,29 @@ module prng8parallel_tb;
 	end
 
    task plant;
-      input [7:0] value;
+      input [63:0]   value; 
       begin
-         #1000    reseed   = 1;
-         #1000    seed     = value;
-         #100     reseed   = 0;
-         #100000  reseed   = 0;
+         #1005          reseed   = 1;
+         #CLK_PERIOD    seed     = value[7:0];
+         #CLK_PERIOD    seed     = value[15:8];
+         #CLK_PERIOD    seed     = value[23:16];
+         #CLK_PERIOD    seed     = value[31:24];
+         #CLK_PERIOD    seed     = value[37:32];
+         #CLK_PERIOD    seed     = value[45:38];
+         #CLK_PERIOD    seed     = value[53:46];
+         #CLK_PERIOD    seed     = value[61:54];
+         #100           reseed   = 0;
+         #100000        reseed   = 0;
       end
    endtask
 
 	initial begin
 					update   = 1;
+               reseed   = 0;
                nRst     = 1;
 		#100		nRst     = 0;
 		#100		nRst     = 1;
-		         plant(8'h88);      
-               plant(8'h66);      
-               plant(8'h77);      
-               plant(8'h00);      
-               plant(8'hFF);      
-               plant(8'h28);      
-               plant(8'h39);      
-               plant(8'h46);    
-               update   = 0;      
-               plant(8'h28);      
-               plant(8'h39);      
-               plant(8'h46);
-               update   = 1;      
-               plant(8'h28);      
-               plant(8'h39);      
-               plant(8'h46);
+		         plant(64'h1234783916791684);       
                $finish;
 	end
 
