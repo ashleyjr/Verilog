@@ -1,0 +1,3 @@
+prng_parallel.v
+../prng/prng.v
+prng_parallel_tb.v
