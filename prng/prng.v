@@ -11,11 +11,12 @@ module prng(
                TAP1  = 1,
                TAP2  = 0;
 
-   always@(posedge clk or negedge nRst) begin	
-      casex({nRst,update,reseed}) 
-         3'b0xx:  rand <= 0;
-         3'b1x1:  rand <= seed;
-         3'b110:  rand <= {(rand[TAP1] ^ rand[TAP2]),rand[(WIDTH-1):1]}; 
-      endcase
+   always@(posedge clk or negedge nRst ) begin	
+      if(!nRst)   rand <= 0; 
+      else
+         casex({update,reseed}) 
+            2'bx1:  rand <= seed;
+            2'b10:  rand <= {(rand[TAP1] ^ rand[TAP2]),rand[(WIDTH-1):1]}; 
+         endcase
    end
 endmodule
