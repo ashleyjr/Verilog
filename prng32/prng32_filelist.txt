@@ -1,0 +1,3 @@
+prng32.v
+../prng8/prng8.v
+prng32_tb.v
