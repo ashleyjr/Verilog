@@ -81,8 +81,13 @@ def main():
 
 
     if(options.synth):
+        filelist = open(str(sim) + "_filelist.txt","r")
+        files = filelist.read()
+        files = files.replace("\n"," ")
+        files = files.replace(str(sim) + "_tb.v","")
         print "    Info: Synth"
-        cmd_print("yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + sim + ".v > " + sim + "_syn.txt")
+
+        cmd_print("yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + files + " > " + sim + "_syn.txt")
         cmd_print("yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt")
 
 
