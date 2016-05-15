@@ -1,3 +1,0 @@
-prng8parallel.v
-../prng8/prng8.v
-prng8parallel_tb.v
