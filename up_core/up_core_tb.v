@@ -170,6 +170,7 @@ module up_core_tb;
       #10000
 
 
+      #10000
       $finish;
 	end
 
