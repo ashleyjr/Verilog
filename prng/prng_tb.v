@@ -11,10 +11,10 @@ module prng_tb;
    reg   [31:0]   seed;
    wire  [7:0]    rand8_0;
    wire  [7:0]    rand8_1;
-   wire  [31:0]   rand32;
+   wire  [15:0]   rand16;
 
 	
-   prng #(8,4,5) prng_0(
+   prng #(8,4,4,5,5) prng_0(
 			`ifdef POST_SYNTHESIS
 			.clk	      (clk        ),
 			.nRst	      (nRst       ),
@@ -48,7 +48,7 @@ module prng_tb;
 
 
 
-   prng #(8,6,2) prng_1(
+   prng #(8,6,6,2,2) prng_1(
 			`ifdef POST_SYNTHESIS
 			.clk	      (clk        ),
 			.nRst	      (nRst       ),
@@ -81,13 +81,13 @@ module prng_tb;
    );
 
    `ifndef POST_SYNTHESIS
-      prng #(32,16,12) prng_2(
+      prng #(16,0,5,7,9) prng_2(
 	  	   .clk	      (clk        ),
 	   	.nRst	      (nRst       ),
          .update     (update     ),
          .reseed     (reseed     ),
-	   	.seed       (seed       ),
-         .rand       (rand32     )	
+	   	.seed       (seed[15:0] ),
+         .rand       (rand16     )	
       );
    `endif
 
@@ -134,7 +134,7 @@ module prng_tb;
                file = $fopen("prng_parallel.txt","w");
                repeat(100000) begin
                   @(posedge clk);
-                   $fwrite(file,"%d\n",rand8_0);
+                   $fwrite(file,"%d\n",rand16);
                end
                $fclose(file);
                
