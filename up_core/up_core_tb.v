@@ -160,6 +160,16 @@ module up_core_tb;
       load_code(); 
       #10000
 
+
+      ////////////
+      // RANDOM //
+      ////////////
+      $display("\n\n\n--- RANDOM ---");
+      $readmemh("code/rand.hex",code); 
+      load_code(); 
+      #10000
+
+
       $finish;
 	end
 
