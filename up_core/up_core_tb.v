@@ -167,7 +167,7 @@ module up_core_tb;
       $display("\n\n\n--- RANDOM ---");
       $readmemh("code/rand.hex",code); 
       load_code(); 
-      #10000
+      #1000000
 
 
       #10000

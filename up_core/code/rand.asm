@@ -2,7 +2,7 @@
 C2          #  R0 - Stash address
 00          #  R1 
 00          #  R2 
-8A          #  R3 - Seed
+AA          #  R3 - Seed
 
       # Setup
       SW01
@@ -156,7 +156,7 @@ C2          #  R0 - Stash address
          SW23
          POP
          SW12
-         POP
+         POP    
          BE       # Jump to 0xC3
          POP
          SW12
@@ -196,12 +196,16 @@ POPC
          SUB
          SUB
          SUB
-         NAND
-         NAND
-
-
-
-
+         POP
+         SW12
+         POP
+         REF
+         SW01
+         SW12
+         SW23
+         SW01
+         SW12
+         STW      # R0 = X                R1 = X                  R3 = (Seed << 1)        R3 = 0xC2 
 POPC     # End of loop
         
 
