@@ -1,0 +1,17 @@
+digraph {
+   splines=false;
+      
+   subgraph[shape=box] clusterX{
+      A;
+      B;
+   }
+   
+   subgraph clusterY {
+      C;
+      D;
+   } 
+   
+   A -> B;
+   B -> C [constraint=false];
+   C -> D [label=yadda];
+}
