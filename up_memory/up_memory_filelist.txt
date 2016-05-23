@@ -1,2 +1,0 @@
-up_memory.v
-up_memory_tb.v

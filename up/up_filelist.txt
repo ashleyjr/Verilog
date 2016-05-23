@@ -1,7 +1,0 @@
-up.v
-../up_core/up_core.v
-../up_controller/up_controller.v
-../up_datapath/up_datapath.v
-../up_memory/up_memory.v
-../uart_autobaud/uart_autobaud.v
-up_tb.v
