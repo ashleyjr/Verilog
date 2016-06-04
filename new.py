@@ -52,6 +52,7 @@ if "__main__" == __name__:
             v.close()
 
             tb = open(tb_name, "wb")
+            tb.write("`timescale 1ns/1ps\n");
             tb.write("module " + sim + "_tb;\n")
             tb.write("\n")
             tb.write("\tparameter CLK_PERIOD = 20;\n")
