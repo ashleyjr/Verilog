@@ -52,7 +52,7 @@ if "__main__" == __name__:
             v.close()
 
             tb = open(tb_name, "wb")
-            tb.write("`timescale 1ns/1ps\n");
+            tb.write("`timescale 1ns/1ps\n")
             tb.write("module " + sim + "_tb;\n")
             tb.write("\n")
             tb.write("\tparameter CLK_PERIOD = 20;\n")
@@ -85,6 +85,8 @@ if "__main__" == __name__:
             tb.write("\t\t\t$dumpfile(\"" + sim + ".vcd\");\n")
             tb.write("\t\t\t$dumpvars(0," + sim + "_tb);\n")
             tb.write("\t\t`endif\n")
+            tb.write("\t\t$display(\"                  TIME    nRst\");")
+            tb.write("\t\t$monitor(\"%tps       %d\",$time,nRst);")
             tb.write("\tend\n\n")
             tb.write("\tinitial begin\n")
             tb.write("\t\t\t\t\tnRst = 1;\n")
