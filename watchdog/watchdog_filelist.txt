@@ -1,2 +1,3 @@
 watchdog.v
+../timer/timer.v
 watchdog_tb.v
