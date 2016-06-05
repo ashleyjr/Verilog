@@ -8,12 +8,12 @@ module watchdog(
 
    parameter CLK_HZ  = 32'd50000000;
 
-   reg   petted;
+   reg   hit_last;
    wire  hit;
    
    timer timer(
       .clk              (clk              ),
-      .nRst             (nRst             ),
+      .nRst             (~pet & nRst      ),
       .period_ns        (time_ns          ),
       .clk_frequency_hz (CLK_HZ           ),
       .hit              (hit              )
@@ -21,21 +21,12 @@ module watchdog(
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-	      woof <= 1'b0;
+	      woof     <= 1'b0;
+         hit_last <= 1'b0;
 		end else begin
-         if(hit) begin
-            if(petted) begin
-               woof     <= 1'b0;
-               petted   <= 1'b0;
-            end else begin
-               woof <= 1'b1;
-            end
-         end else begin
-            if(pet) begin
-               petted   <= 1'b1;
-               woof     <= 1'b0;
-            end
-         end 
-		end
+         hit_last <= hit;                    // Rising edge on hit trigger a woof
+         if(hit & ~hit_last)  woof <= 1'b1;
+         if(pet)              woof <= 1'b0;  // Pet at anytime will stop a woof
+     end
 	end
 endmodule
