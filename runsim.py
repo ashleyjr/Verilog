@@ -12,7 +12,9 @@ def cmd_print(cmd):
 
 def main():
     parser = OptionParser(usage="runsim.py [-m module] [-s do a sim] [-w view waves]" )
+    parser.add_option("-i", "--ice", action="store_true", dest="ice", help="translate and deploy to icestick")
     parser.add_option("-m", "--module", dest="module", help="module to simulate - should not be defined if program is")
+    parser.add_option("-p", "--pnr", action="store_true", dest="pnr", help="place and route")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
     parser.add_option("-w", "--waves", action="store_true", dest="waves")
     parser.add_option("-x", "--synth",action="store_true", dest="synth")
@@ -100,6 +102,24 @@ def main():
 
     if(options.waves):
         cmd_print("gtkwave -S " + str(sim) + "_tb.tcl "+ str(sim) +".vcd")
+
+    if(options.pnr):
+        cmd_print("arachne-pnr -d 1k -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc")
+
+    if(options.ice):
+        filelist = open(str(sim) + "_filelist.txt","r")
+        files = filelist.read()
+        files = files.replace("\n"," ")
+        files = files.replace(str(sim) + "_tb.v","")
+        print "    Info: Synth"
+        cmd_print("yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + files + " > " + sim + "_syn.txt")
+        cmd_print("yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt")
+        print "    Info: Place and route"
+        cmd_print("arachne-pnr -d 1k -q -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc" )
+        print "    Info: Translate"
+        cmd_print("(icepack "+ str(sim) +".asc "+ str(sim) +".bin) > " + sim + "_pack.txt" )
+        print "    Info: Deploy to icestick"
+        cmd_print("iceprog "+ str(sim) +".bin")
 
     print
     print "DONE"
