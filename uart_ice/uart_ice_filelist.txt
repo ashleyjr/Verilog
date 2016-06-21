@@ -1,0 +1,3 @@
+uart_ice.v
+../uart_autobaud/uart_autobaud.v
+uart_ice_tb.v
