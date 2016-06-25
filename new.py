@@ -29,6 +29,7 @@ if "__main__" == __name__:
             v_name = sim + ".v"
             tb_name = sim + "_tb.v"
             tcl_name = sim + "_tb.tcl"
+            pcf_name = sim + ".pcf"
 
             txt = open(txt_name, "wb")
             txt.write(v_name + "\n")
@@ -37,15 +38,35 @@ if "__main__" == __name__:
 
             v = open(v_name, "wb")
             v.write("module " + sim + "(\n" )
-            v.write("\tinput\tclk,\n")
-            v.write("\tinput\tnRst\n")
+            v.write("\tinput\t\t\t\tclk,\n")
+            v.write("\tinput\t\t\t\tnRst,\n")
+            v.write("\tinput\t\t\t\trx,\n")
+            v.write("\tinput\t\t\t\tsw2,\n")
+            v.write("\tinput\t\t\t\tsw1,\n")
+            v.write("\tinput\t\t\t\tsw0,\n")
+            v.write("\toutput\treg\ttx,\n")
+            v.write("\toutput\treg\tled4,\n")
+            v.write("\toutput\treg\tled3,\n")
+            v.write("\toutput\treg\tled2,\n")
+            v.write("\toutput\treg\tled1,\n")
+            v.write("\toutput\treg\tled0\n")
             v.write(");"+ "\n")
             v.write("\n")
             v.write("\talways@(posedge clk or negedge nRst) begin\n")
             v.write("\t\tif(!nRst) begin\n")
-            v.write("\t\t\t// Reset code\n")
+            v.write("\t\t\ttx   <= 1'b0;\n")
+            v.write("\t\t\tled4 <= 1'b0;\n")
+            v.write("\t\t\tled3 <= 1'b0;\n")
+            v.write("\t\t\tled2 <= 1'b0;\n")
+            v.write("\t\t\tled1 <= 1'b0;\n")
+            v.write("\t\t\tled0 <= 1'b0;\n")
             v.write("\t\tend else begin\n")
-            v.write("\t\t\t// Active code\n")
+            v.write("\t\t\ttx   <= rx;\n")
+            v.write("\t\t\tled4 <= sw1;\n")
+            v.write("\t\t\tled3 <= 1'b1;\n")
+            v.write("\t\t\tled2 <= sw2;\n")
+            v.write("\t\t\tled1 <= 1'b1;\n")
+            v.write("\t\t\tled0 <= sw0;\n")
             v.write("\t\tend\n")
             v.write("\tend\n")
             v.write("endmodule\n")
@@ -108,6 +129,22 @@ if "__main__" == __name__:
             tcl.write("set added [ gtkwave::addSignalsFromList $sigs ]\n")
             tcl.write("gtkwave::/Time/Zoom/Zoom_Full\n")
             tcl.close()
+
+            pcf = open(pcf_name, "wb")
+            pcf.write("set_io clk   21\n\n")
+            pcf.write("set_io nRst  78\n\n")
+            pcf.write("set_io sw2   79\n")
+            pcf.write("set_io sw1   80\n")
+            pcf.write("set_io sw0   81\n\n")
+            pcf.write("set_io led4  95\n")
+            pcf.write("set_io led3  96\n")
+            pcf.write("set_io led2  97\n")
+            pcf.write("set_io led1  98\n")
+            pcf.write("set_io led0  99\n\n")
+            pcf.write("set_io tx    8\n")
+            pcf.write("set_io rx    9\n")
+            pcf.close()
+
 
         else:
             print "   Error: Module already exists!"
