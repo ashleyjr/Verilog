@@ -10,18 +10,15 @@ module pid(
 	output reg  [31:0]   drive
 );
 
-   wire  [31:0]   error;
-   wire  [31:0]   i_error;
-   wire  [31:0]   d_error;
+   signed wire  [31:0]   error
 
    assign error = target - process;
-
-   
+ 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
 	      drive <= 32'd0;	
 		end else begin
-         drive = (Kp*error) + (Ki*i_error) + (Kd*d_error);  
+         drive = (Kp*error);  
 		end
 	end
 endmodule

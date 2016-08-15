@@ -12,6 +12,10 @@ module pid_tb;
    reg   [31:0]   Kd;
    wire  [31:0]   drive;
 
+
+   integer           seed;
+   reg      [31:0]   rand;
+
 	pid pid(
 		`ifdef POST_SYNTHESIS
 		   
@@ -45,9 +49,30 @@ module pid_tb;
 		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
 	end
 
+
+   task plantUpdate;
+      input    [31:0]   v;       // Feedback from plant
+      input    [31:0]   u;       // Drive from controller
+      input    [31:0]   d;       // Simulated disturbance
+      output   [31:0]   next;
+      begin
+         next = (750*v) + (2000*u) + d;
+      end
+   endtask
+
 	initial begin
-					nRst		= 1;	
-		#100
+					nRst		= 1;
+               target   = 100;
+               process  = 0;
+      #100     Kp       = 100;
+               Ki       = 0;
+               Kd       = 0;
+               seed     = $time;
+               repeat(100) begin
+                  #100  rand = $random(seed);
+                        rand = rand >> 30;
+                        plantUpdate(process,drive,rand,process);
+               end
 		$finish;
 	end
 
