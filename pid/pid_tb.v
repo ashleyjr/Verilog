@@ -3,46 +3,27 @@ module pid_tb;
 
 	parameter CLK_PERIOD = 20;
 
-	reg	clk;
-	reg	nRst;
-	reg	rx;
-	reg	sw2;
-	reg	sw1;
-	reg	sw0;
-	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
+	reg	         clk;
+	reg	         nRst;
+	reg   [31:0]   target; 
+	reg   [31:0]   process;
+   reg   [31:0]   Kp;
+   reg   [31:0]   Ki;
+   reg   [31:0]   Kd;
+   wire  [31:0]   drive;
 
 	pid pid(
 		`ifdef POST_SYNTHESIS
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
+		   
 		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
+			.clk	   (clk     ),
+			.nRst	   (nRst    ),
+			.target	(target  ),
+			.process	(process ),
+			.Kp	   (Kp      ),
+			.Ki	   (Ki      ),
+			.Kd	   (Kd      ),
+			.drive	(drive   )	
 		`endif
 	);
 
@@ -65,22 +46,8 @@ module pid_tb;
 	end
 
 	initial begin
-					nRst		= 1;
-					rx			= 0;
-					sw2		= 0;
-					sw1		= 0;
-					sw0		= 0;
-		#17		nRst		= 0;
-		#17		nRst		= 1;
-		#17		sw0		= 1;
-		#17		sw1		= 1;
-		#17		sw2		= 1;
-		#17		rx			= 1;
-		#17		sw1		= 0;
-		#17		sw2		= 0;
-		#17		sw0		= 0;
-		#17		rx			= 0;
-		#10
+					nRst		= 1;	
+		#100
 		$finish;
 	end
 
