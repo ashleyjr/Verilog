@@ -1,16 +1,16 @@
 `timescale 1ns/1ps
 module pid(
-	input				      clk,
-	input				      nRst,
-	input       [31:0]   target,
-   input       [31:0]   process,
-   input       [31:0]   Kp,
-   input       [31:0]   Ki,
-   input       [31:0]   Kd,
-	output reg  [31:0]   drive
+	input				                  clk,
+	input				                  nRst,
+	input    wire  signed   [31:0]   target,
+   input    wire  signed   [31:0]   process,
+   input    wire  signed   [31:0]   Kp,
+   input    wire  signed   [31:0]   Ki,
+   input    wire  signed   [31:0]   Kd,
+	output   reg   signed   [31:0]   drive
 );
 
-   signed wire  [31:0]   error
+   wire  signed   [31:0]   error;
 
    assign error = target - process;
  
