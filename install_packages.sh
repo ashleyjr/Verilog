@@ -5,6 +5,7 @@ sudo apt-get install tcl-dev
 sudo apt-get install libreadline-dev
 sudo apt-get install bison
 sudo apt-get install flex
+sudo apt-get install g++
 sudo apt-get install libftdi-dev
 sudo apt-get install verilog
 sudo apt-get install gtkwave
