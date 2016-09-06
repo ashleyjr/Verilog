@@ -119,7 +119,7 @@ def main():
         print "    Info: Translate"
         cmd_print("(icepack "+ str(sim) +".asc "+ str(sim) +".bin) > " + sim + "_pack.txt" )
         print "    Info: Deploy to icestick"
-        cmd_print("iceprog "+ str(sim) +".bin")
+        cmd_print("sudo iceprog "+ str(sim) +".bin")
 
     print
     print "DONE"
