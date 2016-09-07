@@ -68,27 +68,29 @@ module pid_tb;
    endtask
 
 	initial begin
-      nRst		= 1'b1;
-      target   = 32'd10000; 
-      
-      // Sweep the I only
-      tune   = 32'd0;
-      repeat(21) begin
-                  process = 32'd0;
-         #1000    pidTest(tune,0,0);
-                  tune = tune + 32'd1;
-      end
+      #500  nRst		= 1'b1;
+      #500  nRst     = 1'b0;
+      #500  nRst     = 1'b1;
+            target   = 32'd10000; 
+            
+            // Sweep the I only
+            tune   = 32'd0;
+            repeat(21) begin
+                        process = 32'd0;
+               #1000    pidTest(tune,0,0);
+                        tune = tune + 32'd1;
+            end
 
-      // Sweep I with P fixed
-      tune   = 32'd0;
-      repeat(10) begin
-                  process = 32'd0;
-         #1000    pidTest(32'd10,tune,0);
-                  tune = tune + 32'd1;
-      end
+            // Sweep I with P fixed
+            tune   = 32'd0;
+            repeat(10) begin
+                        process = 32'd0;
+               #1000    pidTest(32'd7,tune,0);
+                        tune = tune + 32'd1;
+            end
 
 
-      $finish;
+            $finish;
 	end
 
 endmodule
