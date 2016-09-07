@@ -18,7 +18,7 @@ module pid(
 		if(!nRst) begin
 	      drive <= 32'd0;	
 		end else begin
-         drive = (Kp*error);  
+         drive <= (Kp*error);  
 		end
 	end
 endmodule
