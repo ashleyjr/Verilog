@@ -10,14 +10,10 @@ module uart2gpio_tb;
 	reg	sw1;
 	reg	sw0;
 	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
-
-	uart2gpio uart2gpio(
-		`ifdef POST_SYNTHESIS
+	wire  [4:0] led;
+   	
+   uart2gpio uart2gpio(
+		
 			.clk	(clk),
 			.nRst	(nRst),
 			.rx	(rx),
@@ -25,25 +21,8 @@ module uart2gpio_tb;
 			.sw1	(sw1),
 			.sw0	(sw0),
 			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`endif
+			.led	(led)
+		
 	);
 
 	initial begin

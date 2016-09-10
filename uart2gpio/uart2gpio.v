@@ -7,21 +7,17 @@ module uart2gpio(
 	input    sw1,
 	input    sw0,
 	output   tx,
-	output   led4,
-	output   led3,
-	output   led2,
-	output   led1,
-	output   led0
+	output   [4:0] led
 );
    wire        bounce;
    wire [7:0]  data_rx;
    wire [7:0]  data_tx;
 
-   assign led0 = data_rx[0];
-   assign led1 = data_rx[1];
-   assign led2 = data_rx[2];
-   assign led3 = data_rx[3];
-   assign led4 = data_rx[4];
+   assign led[0] = data_rx[0];
+   assign led[1] = data_rx[1];
+   assign led[2] = data_rx[2];
+   assign led[3] = data_rx[3];
+   assign led[4] = data_rx[4];
 
    assign data_tx = data_rx;
    //assign data_tx[0] = sw0;
