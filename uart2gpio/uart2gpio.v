@@ -1,13 +1,10 @@
 `timescale 1ns/1ps
 module uart2gpio(
-	input    clk,
-	input    nRst,
-	input    rx,
-	input    sw2,
-	input    sw1,
-	input    sw0,
-	output   tx,
-	output   [4:0] led
+	input                   clk,
+	input                   nRst,
+	input                   rx,	
+	output                  tx,
+   output   reg   [20:0]   bank1 
 );
    parameter   WAIT        = 5'd0;
    parameter   READ        = 5'd1;
@@ -29,12 +26,6 @@ module uart2gpio(
    wire        recieved;
    wire [7:0]  data_rx;
       
-   assign led[0] =   state[0]; 
-   assign led[1] =   state[1];
-   assign led[2] =   state[2];
-   assign led[3] =   state[3];
-   assign led[4] = 1'b0; 
-   
    uart_autobaud uart_autobaud(
       .clk           (clk        ),
       .nRst          (nRst       ),
@@ -57,13 +48,12 @@ module uart2gpio(
             data_tx <= data_rx;
             case(state)
                WAIT:          case(data_rx)
-                                 8'd48:   state <= READ;
-                                 8'd49:   state <= WRITE;
-                                 8'd50:   state <= CONFIG;
+                                 8'd0:   state <= READ;
+                                 8'd1:   state <= WRITE;
+                                 8'd2:   state <= CONFIG;
                               endcase
                READ:          begin
-                                 state <= READ_BANK;
-                                 bank  <= data_rx; 
+                                 state <= READ_BANK; 
                               end
                READ_BANK:     begin
                                  state <= READ_PIN;
@@ -71,11 +61,9 @@ module uart2gpio(
                               end
                READ_PIN:      begin
                                  state <= WAIT;
-                                 data_tx <= 8'd51;
                               end
                WRITE:         begin
                                  state <= WRITE_BANK;
-                                 bank <= data_rx;
                               end
                WRITE_BANK:    begin
                                  state <= WRITE_PIN;
@@ -83,7 +71,7 @@ module uart2gpio(
                               end
                WRITE_PIN:     begin
                                  state <= WAIT;
-                                 data_tx <= 8'd52;
+                                 bank1[pin] <= data_rx[0]; 
                               end
                CONFIG:         begin
                                  state <= CONFIG_BANK;

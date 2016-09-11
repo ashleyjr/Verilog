@@ -1,17 +1,29 @@
 set_io clk   21
 set_io nRst  78
 
-set_io sw2   79
-set_io sw1   80
-set_io sw0   81
-
-set_io led[4]  95
-set_io led[3]  96
-set_io led[2]  97
-set_io led[1]  98
-set_io led[0]  99
-
 set_io tx    8
 set_io rx    9
 
-   
+set_io   bank1[0]    94    
+set_io   bank1[1]    93    
+#set_io  bank1[2]    78    # PIO1_02  # Used as nRst
+set_io   bank1[3]    79    # PIO1_03
+set_io   bank1[4]    80    # PIO1_04 
+set_io   bank1[5]    81    # PIO1_05
+set_io   bank1[6]    87    # PIO1_06
+set_io   bank1[7]    88    # PIO1_07
+set_io   bank1[8]    90    # PIO1_08
+set_io   bank1[9]    91    # PIO1_09
+set_io   bank1[10]   95    # LED4
+set_io   bank1[11]   96    # LED3
+set_io   bank1[12]   97    # LED2
+set_io   bank1[13]   98    # LED1
+set_io   bank1[14]   99    # LED0
+set_io   bank1[15]   101
+set_io   bank1[16]   102
+set_io   bank1[17]   104
+set_io   bank1[18]   105
+set_io   bank1[19]   106
+set_io   bank1[20]   107
+
+
