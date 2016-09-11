@@ -9,15 +9,18 @@ module uart2gpio(
 	output   tx,
 	output   [4:0] led
 );
-   parameter   WAIT        = 8'd0;
-   parameter   READ        = 8'd1;
-   parameter   READ_BANK   = 8'd2;
-   parameter   READ_PIN    = 8'd3;
-   parameter   WRITE       = 8'd4;
-   parameter   WRITE_BANK  = 8'd5;
-   parameter   WRITE_PIN   = 8'd6;
+   parameter   WAIT        = 5'd0;
+   parameter   READ        = 5'd1;
+   parameter   READ_BANK   = 5'd2;
+   parameter   READ_PIN    = 5'd3;
+   parameter   WRITE       = 5'd4;
+   parameter   WRITE_BANK  = 5'd5;
+   parameter   WRITE_PIN   = 5'd6;
+   parameter   CONFIG      = 5'd7;
+   parameter   CONFIG_BANK = 5'd8;
+   parameter   CONFIG_PIN  = 5'd9;
    
-   reg   [3:0] state;
+   reg   [4:0] state;
    reg   [7:0] bank;
    reg   [7:0] pin;
    reg   [7:0] data_tx;
@@ -53,34 +56,47 @@ module uart2gpio(
             transmit <= 1'b1;
             data_tx <= data_rx;
             case(state)
-               WAIT:       case(data_rx)
-                              8'd48:   state <= READ;
-                              8'd49:   state <= WRITE;
-                           endcase
-               READ:       begin
-                              state <= READ_BANK;
-                              bank  <= data_rx; 
-                           end
-               READ_BANK:  begin
-                              state <= READ_PIN;
-                              pin   <= data_rx;
-                           end
-               READ_PIN:   begin
-                              state <= WAIT;
-                              data_tx <= 8'd50;
-                           end
-               WRITE:      begin
-                              state <= WRITE_BANK;
-                              bank <= data_rx;
-                           end
-               WRITE_BANK: begin
-                              state <= WRITE_PIN;
-                              pin <= data_rx;
-                           end
-               WRITE_PIN:  begin
-                              state <= WAIT;
-                              data_tx <= 8'd51;
-                           end
+               WAIT:          case(data_rx)
+                                 8'd48:   state <= READ;
+                                 8'd49:   state <= WRITE;
+                                 8'd50:   state <= CONFIG;
+                              endcase
+               READ:          begin
+                                 state <= READ_BANK;
+                                 bank  <= data_rx; 
+                              end
+               READ_BANK:     begin
+                                 state <= READ_PIN;
+                                 pin   <= data_rx;
+                              end
+               READ_PIN:      begin
+                                 state <= WAIT;
+                                 data_tx <= 8'd51;
+                              end
+               WRITE:         begin
+                                 state <= WRITE_BANK;
+                                 bank <= data_rx;
+                              end
+               WRITE_BANK:    begin
+                                 state <= WRITE_PIN;
+                                 pin <= data_rx;
+                              end
+               WRITE_PIN:     begin
+                                 state <= WAIT;
+                                 data_tx <= 8'd52;
+                              end
+               CONFIG:         begin
+                                 state <= CONFIG_BANK;
+                                 bank <= data_rx;
+                              end
+               CONFIG_BANK:   begin
+                                 state <= CONFIG_PIN;
+                                 pin <= data_rx;
+                              end
+               CONFIG_PIN:    begin
+                                 state <= WAIT;
+                                 data_tx <= 8'd53;
+                              end
             endcase
          end else begin
             transmit <= 1'b0;
