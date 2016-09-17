@@ -1,0 +1,2 @@
+compare8.v
+compare8_tb.v
