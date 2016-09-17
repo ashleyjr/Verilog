@@ -1,0 +1,4 @@
+../counter8/counter8.v
+../compare8/compare8.v
+uart2pwm.v
+uart2pwm_tb.v
