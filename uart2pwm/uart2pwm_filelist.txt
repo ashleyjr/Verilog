@@ -1,3 +1,4 @@
+../uart_autobaud/uart_autobaud.v
 ../clk_div8/clk_div8.v
 ../counter8/counter8.v
 ../compare8/compare8.v

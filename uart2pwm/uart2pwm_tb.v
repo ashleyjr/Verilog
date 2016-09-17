@@ -10,8 +10,10 @@ module uart2pwm_tb;
    reg   [7:0]    div;
    reg	[7:0]    duty;
 	reg	         set_clk_div8;
-   reg            set_compare8;
-	wire	         pwm;
+   reg   [4:0]    set_compare8;
+   reg            rx;
+	wire  [4:0]    pwm;
+   wire           tx;
 		
    uart2pwm uart2pwm(
 		`ifdef POST_SYNTHESIS
@@ -30,11 +32,13 @@ module uart2pwm_tb;
 		`else
 			.clk	            (clk           ),
 			.nRst	            (nRst          ),
-			.div              (div           ),
+			.rx               (rx            ),
+         .div              (div           ),
          .duty             (duty          ),
          .set_clk_div8     (set_clk_div8  ),
          .set_compare8     (set_compare8  ),
-         .pwm              (pwm           )
+         .pwm              (pwm           ),
+         .tx               (tx            )
       `endif
 	);
 
@@ -72,12 +76,49 @@ module uart2pwm_tb;
       #100     set_clk_div8   = 0;
 
 
-      repeat(300) begin
-         #10000    set_compare8   = 1;
-                  duty           = duty + 1;
-         #100     set_compare8   = 0;
-      end
-		$finish;
+      #1000000   set_compare8   = 5'b00001;
+               duty           = 8'h11;
+      #100     set_compare8   = 5'd0;
+      
+
+      #1000000   set_compare8   = 5'b00010;
+               duty           = 8'h22;
+      #100     set_compare8   = 5'd0;
+		
+      
+      #1000000   set_compare8   = 5'b00100;
+               duty           = 8'h33;
+      #100     set_compare8   = 5'd0;
+      
+      #1000000   set_compare8   = 5'b01000;
+               duty           = 8'h44;
+      #100     set_compare8   = 5'd0;
+      
+      #1000000   set_compare8   = 5'b10000;
+               duty           = 8'h55;
+      #100     set_compare8   = 5'd0;
+      
+      #1000000   set_compare8   = 5'b00001;
+               duty           = 8'h66;
+      #100     set_compare8   = 5'd0;
+      
+      #1000000   set_compare8   = 5'b00010;
+               duty           = 8'h77;
+      #100     set_compare8   = 5'd0;
+     
+
+
+
+
+
+
+
+
+
+
+
+
+      $finish;
 	end
 
 endmodule
