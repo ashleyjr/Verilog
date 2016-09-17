@@ -11,7 +11,40 @@ module uart2pwm(
    output         tx
 );
 
+   parameter   WAIT     = 8'h00,
+               PERIOD   = 8'h01,
+               DUTY     = 8'h02;
+   
+   reg   [7:0] state;
+   reg   [6:0] addr;
+
+   wire  [7:0] data_rx;
    wire  [7:0] cmp;
+   wire        recieved;
+
+   always@(posedge clk or negedge nRst) begin
+      if(!nRst) begin
+         state <= WAIT;
+      end else begin
+         if(recieved)
+            casex({state,data_rx[7]})
+               {WAIT,1'b1}:   begin
+                                 state <= PERIOD;
+                                 addr <= data_rx[6:0];
+                              end
+               {WAIT,1'b0}:   begin
+                                 state <= DUTY;
+                                 addr <= data_rx[6:0];
+                              end
+               {PERIOD,1'bX}: begin
+                                 state <= WAIT;
+                              end
+               {DUTY,1'bX}:   begin
+                                 state <= WAIT;
+                              end
+            endcase
+      end
+   end
 
    uart_autobaud uart_autobaud(
       .clk        (clk),
@@ -21,8 +54,8 @@ module uart2pwm(
       .rx         (rx),
       .busy_tx    (),
       .busy_tx    (),
-      .recieved   (),
-      .data_rx    (),
+      .recieved   (recieved),
+      .data_rx    (data_rx),
       .tx         (tx)
    );
 
