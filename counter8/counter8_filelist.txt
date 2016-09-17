@@ -1,0 +1,2 @@
+counter8.v
+counter8_tb.v
