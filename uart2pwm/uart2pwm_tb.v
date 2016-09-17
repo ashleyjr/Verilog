@@ -7,8 +7,10 @@ module uart2pwm_tb;
 	reg	         clk;
 	reg	         nRst;
 	reg	         clk_div;
-	reg	[7:0]    duty;
-	reg	         set;
+   reg   [7:0]    div;
+   reg	[7:0]    duty;
+	reg	         set_clk_div8;
+   reg            set_compare8;
 	wire	         pwm;
 		
    uart2pwm uart2pwm(
@@ -26,12 +28,13 @@ module uart2pwm_tb;
 			.led1	(led1),
 			.led0	(led0)
 		`else
-			.clk	   (clk     ),
-			.nRst	   (nRst    ),
-			.clk_div (clk_div ),
-         .duty    (duty    ),
-         .set     (set     ),
-         .pwm     (pwm     )
+			.clk	            (clk           ),
+			.nRst	            (nRst          ),
+			.div              (div           ),
+         .duty             (duty          ),
+         .set_clk_div8     (set_clk_div8  ),
+         .set_compare8     (set_compare8  ),
+         .pwm              (pwm           )
       `endif
 	);
 
@@ -41,14 +44,7 @@ module uart2pwm_tb;
 			#(CLK_PERIOD/2) clk = 1;
 		end
 	end
-   
-   initial begin
-		while(1) begin
-			#(CLK_DIV_PERIOD/2) clk_div = 0;
-			#(CLK_DIV_PERIOD/2) clk_div = 1;
-		end
-	end
-
+  
 
 	initial begin
 		`ifdef POST_SYNTHESIS
@@ -62,17 +58,25 @@ module uart2pwm_tb;
 	end
 
 	initial begin
-			      duty     = 8'h00;
-               set      = 1'b0;
-               nRst		= 1;
-	   #100     nRst     = 0;
-      #100     nRst     = 1;
-      
-      #100     duty     = 8'd128;
-               set      = 1'b1;
-      #100     set      = 1'b0;
-	
-      #1000000
+			      div            = 8'h00;
+               duty           = 8'h00;
+               set_clk_div8   = 1'b0;
+               set_compare8   = 1'b0;
+               nRst		      = 1;
+	   #100     nRst           = 0;
+      #100     nRst           = 1;
+ 
+
+      #100     set_clk_div8   = 1;
+               div            = 3;
+      #100     set_clk_div8   = 0;
+
+
+      repeat(300) begin
+         #10000    set_compare8   = 1;
+                  duty           = duty + 1;
+         #100     set_compare8   = 0;
+      end
 		$finish;
 	end
 
