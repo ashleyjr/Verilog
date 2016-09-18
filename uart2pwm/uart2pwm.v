@@ -7,12 +7,16 @@ module uart2pwm(
    output         tx
 );
 
-   parameter   WAIT     = 8'h00,
-               PERIOD   = 8'h01,
-               DUTY     = 8'h02;
+   parameter   CMD_PERIOD        = 8'hAA,
+               CMD_DUTY          = 8'hBB,
+               SM_WAIT           = 8'h00,
+               SM_PERIOD_ADDR    = 8'h01,
+               SM_PERIOD_SET     = 8'h02,
+               SM_DUTY_ADDR      = 8'h03,
+               SM_DUTY_SET       = 8'h04;
    
    reg   [7:0] state;
-   reg   [6:0] addr;
+   reg   [7:0] addr;
    reg   [4:0] set_compare8; 
    reg         set_clk_div8;
    reg   [7:0] div;
@@ -21,30 +25,38 @@ module uart2pwm(
    wire  [7:0] data_rx;
    wire  [7:0] cmp;
    wire        recieved;
+   wire  [7:0] data_tx;
+
+   assign data_tx = 
+      (state == SM_WAIT       ) ? data_rx + 1  :
+      (state == SM_DUTY_ADDR  ) ? data_rx + 2  :
+                                 data_rx + 3;
+
+
 
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
-         state          <= WAIT;
+         state          <= SM_WAIT;
+         addr           <= 8'h00;
          set_compare8   <= 5'd0;
       end else begin
-         if(recieved)
-            casex({state,data_rx[7]})
-               {WAIT,1'b1}:   begin
-                                 state <= PERIOD;
-                                 addr <= data_rx[6:0];
-                              end
-               {WAIT,1'b0}:   begin
-                                 state <= DUTY;
-                                 addr <= data_rx[6:0];
-                              end
-               {PERIOD,1'bX}: begin
-                                 state <= WAIT;
-                              end
-               {DUTY,1'bX}:   begin
-                                 state                <= WAIT;
-                                 set_compare8[addr]   <= 1'b1;
-                              end
+         if(recieved) begin
+            casex({state,data_rx})
+               {SM_WAIT,CMD_DUTY}:        begin
+                                             state                <= SM_DUTY_ADDR;
+                                          end
+               {SM_DUTY_ADDR,8'hXX}:      begin
+                                             addr                 <= data_rx;
+                                             state                <= SM_DUTY_SET;
+                                          end
+               {SM_DUTY_SET,8'hXX}:       begin
+                                             set_compare8[addr]   <= 1'b1;
+                                             state                <= SM_WAIT;
+                                          end
             endcase
+         end else begin
+            set_compare8 <= 5'd0;
+         end
       end
    end
 
@@ -52,7 +64,7 @@ module uart2pwm(
             .clk        (clk              ),
             .nRst       (nRst             ),
             .transmit   (recieved         ),
-            .data_tx    (data_rx          ),
+            .data_tx    (data_tx          ),
             .rx         (rx               ),
             .busy_tx    (                 ),
             .busy_tx    (                 ),
