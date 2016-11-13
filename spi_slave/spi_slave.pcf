@@ -1,0 +1,7 @@
+set_io clk     21
+set_io nRst    78
+
+set_io sclk    61
+set_io mosi    60
+set_io nCs     56
+set_io miso    62
