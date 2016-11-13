@@ -1,0 +1,3 @@
+../spi_slave/spi_slave.v
+spi_slave_regs.v
+spi_slave_regs_tb.v
