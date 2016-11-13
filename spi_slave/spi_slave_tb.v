@@ -3,12 +3,13 @@ module spi_slave_tb;
 
 	parameter CLK_PERIOD = 20;
 
-	reg	clk;
-	reg	nRst;
-	reg	nCs;
-	reg	sclk;
-	reg	mosi;
-	wire	miso;
+	reg	      clk;
+	reg	      nRst;
+	reg   	   nCs;
+	reg	      sclk;
+	reg	      mosi;
+	wire	      miso;
+   reg   [7:0] rx;
 
 	spi_slave spi_slave(
 		`ifdef POST_SYNTHESIS
@@ -46,10 +47,37 @@ module spi_slave_tb;
 		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
 	end
 
+   task swap;
+      input    [7:0] tx;
+      output   [7:0] rx;
+      integer        i;
+      begin
+         #100  sclk  = 0;
+               nCs   = 1;
+         #100  nCs   = 0;
+         for(i=0;i<=7;i=i+1) begin   
+                  mosi = tx[i];
+            #100  sclk = ~sclk;
+                  rx[i] = miso;
+            #100  sclk = ~sclk;
+         end
+         #100  nCs   = 1;
+      end
+   endtask
+
+   integer j;
+
 	initial begin
 					nRst		= 1;
-	   #10
-		$finish;
+	   #100     nRst     = 0;
+      #100     nRst     = 1;
+               j = 0;
+               repeat(500) begin
+                  #100  swap(j,rx);
+                        j = j + 1;
+               end	
+		#1000
+      $finish;
 	end
 
 endmodule
