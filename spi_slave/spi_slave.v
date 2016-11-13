@@ -10,22 +10,24 @@ module spi_slave(
 
    reg         sclk_last;
    reg   [2:0] ptr;
-   reg   [7:0] data;
+   reg   [7:0] tx;
+   reg   [7:0] rx;
 
-   assign miso = data[ptr];
+   assign miso = tx[ptr];
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
-         data        <= 8'd0;
+         tx          <= 8'd0;
+         rx          <= 8'd0;
 		   sclk_last   <= 1'b0;
          ptr         <= 3'd0; 
       end else begin
          sclk_last <= sclk;
          if(!nCs) begin 
-            if(~sclk_last && sclk) begin
-			      data[ptr]   <= mosi; 
-               ptr         <= ptr + 3'b1;
-            end
+            if(~sclk_last && sclk)  rx[ptr]     <= mosi; 
+            if(sclk_last && ~sclk)  ptr         <= ptr + 3'b1;
+         end else begin
+            tx <= rx;
          end
 		end
 	end
