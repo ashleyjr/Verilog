@@ -8,8 +8,11 @@ module spi_slave_tb;
 	reg   	   nCs;
 	reg	      sclk;
 	reg	      mosi;
+   reg   [7:0] txData;
+   reg         tx;
 	wire	      miso;
-   reg   [7:0] rx;
+   wire  [7:0] rxData;
+   wire        rx;
 
 	spi_slave spi_slave(
 		`ifdef POST_SYNTHESIS
@@ -20,12 +23,16 @@ module spi_slave_tb;
 			.mosi	(mosi),
 			.miso	(miso)
 		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.nCs	(nCs),
-			.sclk	(sclk),
-			.mosi	(mosi),
-			.miso	(miso)
+			.clk	   (clk     ),
+			.nRst	   (nRst    ),
+			.nCs	   (nCs     ),
+			.sclk	   (sclk    ),
+			.mosi	   (mosi    ),
+         .txData  (txData  ),
+         .tx      (tx      ),
+			.miso	   (miso    ),
+         .rxData  (rxData  ),
+         .rx      (rx      )
 		`endif
 	);
 
@@ -48,32 +55,39 @@ module spi_slave_tb;
 	end
 
    task swap;
-      input    [7:0] tx;
-      output   [7:0] rx;
-      integer        i;
+      input    [7:0] put;
+      output   [7:0] get;
+      reg      [2:0] ptr;
       begin
          #100  sclk  = 0;
                nCs   = 1;
          #100  nCs   = 0;
-         for(i=0;i<=7;i=i+1) begin   
-                  mosi = tx[i];
-            #100  sclk = ~sclk;
-                  rx[i] = miso;
-            #100  sclk = ~sclk;
+         ptr = 7;
+         repeat(8) begin   
+                  mosi     = put[ptr];
+            #100  sclk     = ~sclk;
+                  get[ptr] = miso;
+            #100  sclk     = ~sclk;
+                  ptr      = ptr - 1;
          end
          #100  nCs   = 1;
       end
    endtask
 
-   integer j;
+   reg   [7:0] j;
+   reg   [7:0] k;
 
 	initial begin
 					nRst		= 1;
 	   #100     nRst     = 0;
       #100     nRst     = 1;
+               tx       = 0;
                j = 0;
                repeat(500) begin
-                  #100  swap(j,rx);
+                  #1000 swap(j,k);        // get fresh data
+                  #500  txData = 8'h01 + k;
+                  #100  tx = 1;
+                  #100  tx = 0;
                         j = j + 1;
                end	
 		#1000
