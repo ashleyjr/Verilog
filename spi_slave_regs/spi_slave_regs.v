@@ -21,19 +21,23 @@ module spi_slave_regs(
    reg         rx_last;
    reg   [6:0] addr;
    reg   [7:0] mem   [7:0];
-   
+
+   assign txData = (state == READ) ? mem[addr] : 8'h00;
+
    always@(posedge clk or negedge nRst) begin
       if(!nRst) begin
          state    <= IDLE;
          rx_last  <= 1'b0;
       end else begin
+         tx       <= 1'b0;
          rx_last  <= rx;
          if(rx && ~rx_last) begin
+            tx <= 1'b1;
             case(state)
                IDLE:    begin
                            addr = rxData[6:0];
-                           if(rxData[7]) state <= READ;
-                           else        state <= WRITE;
+                           if(rxData[7])  state <= READ;
+                           else           state <= WRITE;
                         end
                WRITE:   begin
                            mem[addr] <= rxData;
@@ -54,7 +58,7 @@ module spi_slave_regs(
 	   .nCs	   (nCs     ),
 	   .sclk	   (sclk    ),
 	   .mosi	   (mosi    ),
-      .txData  (mem[addr]),
+      .txData  (txData  ),
       .tx      (tx      ),
 	   .miso	   (miso    ),
       .rxData  (rxData  ),
