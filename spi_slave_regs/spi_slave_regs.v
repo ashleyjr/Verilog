@@ -20,7 +20,7 @@ module spi_slave_regs(
    reg   [1:0] state;
    reg         rx_last;
    reg   [6:0] addr;
-   reg   [7:0] mem   [7:0];
+   reg   [7:0] mem   [1:0];
 
    assign txData = (state == READ) ? mem[addr] : 8'h00;
 
