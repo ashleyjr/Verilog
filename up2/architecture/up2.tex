@@ -16,6 +16,10 @@
 
 \section{}
 
+% No need to have a JF and JB if ADDI ? = +1 + Imm can force the flag
+% Link register can exist with PC and can be shift register loaded. ULB << << << ULS
+% Relative jumps link to static jumps so a branch can be static
+% Enought room to hold static jump over the table in 0x04..0x07
 
 \begin{table}[]
     \centering
@@ -23,24 +27,24 @@
     \label{my-label}
     \begin{tabular}{|l|l|l|l|l|l|l|}
         \hline
-        \textbf{Opcode}     &   \textbf{Opcode} &                       &                           &                       &                                       &           \\ \hline
-        \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Mux Control}    &   \textbf{Immediate}  &   \textbf{Description}                &           \\ \hline
-        0x0                 &   0000            &   ADDI                &   Enabled                 &   Enabled             &   <R0,R1,R2,?> = <+1,R0> + Imm        &           \\ \hline
-        0x1                 &   0001            &   ADD                 &   Enabled                 &   Disabled            &   <R0,R1,R2,?> = <+1,R0> + <R1,R2>    &           \\ \hline
-        0x2                 &   0010            &   BNEF                &   Disabled                &   Enabled             &   PC = PC + Imm           &           \\ \hline
-        0x3                 &   0011            &   BNEB                &   Disabled                &   Enabled             &   PC = PC - Imm           &           \\ \hline
-        0x4                 &   0100            &   NAND                &   Enabled                 &           &           &           \\ \hline
-        0x5                 &   0101            &   LOAD                &   Enabled                 &                       &   DATA[<R0,R1,R2,Imm>] = <R0,R1,R2,Imm>           &           \\ \hline
-        0x6                 &   0110            &   STORE               &   Enabled                 &                       &   <R0,R1,R2,Imm> = DATA[<R0,R1,R2,Imm>]           &           \\ \hline
-        0x7                 &   0111            &                       &           &           &           &           \\ \hline
-        0x8                 &   1000            &                       &           &           &           &           \\ \hline
-        0x9                 &   1001            &                       &           &           &           &           \\ \hline
-        0xA                 &   1010            &                       &           &           &           &           \\ \hline
-        0xB                 &   1011            &                       &           &           &           &           \\ \hline
-        0xC                 &   1100            &                       &           &           &           &           \\ \hline
-        0xD                 &   1101            &                       &           &           &           &           \\ \hline
-        0xE                 &   1110            &   PUSH                &           &           &           &           \\ \hline
-        0xF                 &   1111            &   RET                 &           &           &           &           \\ \hline
+        \textbf{Opcode}     &   \textbf{Opcode} &                       &                       &                       &                                       &           \\ \hline
+        \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Trailers}   &    &   \textbf{Description}                &           \\ \hline
+        0x0                 &   0000            &   ADDI                &   2                   &               &   <R0,R1,R2,?> = <+1,R0> + Imm        &           \\ \hline
+        0x1                 &   0001            &   ADD                 &   1                   &               &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>    &           \\ \hline
+        0x2                 &   0010            &   SUB                 &   1                   &               &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>           &           \\ \hline
+        0x3                 &   0011            &   JB                &   1                   &               &   PC = PC - Imm           &           \\ \hline
+        0x4                 &   0100            &   NAND                &  1             &           &           &           \\ \hline
+        0x5                 &   0101            &   LOAD                &   1                   &              &   DATA[<R0,R1,R2>] = <R0,R1,R2>           &           \\ \hline
+        0x6                 &   0110            &   STORE               &  1               &                       &   <R0,R1,R2> = DATA[<R0,R1,R2>]           &           \\ \hline
+        0x7                 &   0111            &   LINK                &   0           &           &   LR = PC          &           \\ \hline
+        0x8                 &   1000            &   BNE                 &  0            &           &   if(z != 0) PC = PC + 2          &           \\ \hline
+        0x9                 &   1001            &   BE                  &  0         &           &  if(z != 1) PC = PC + 2         &           \\ \hline
+        0xA                 &   1010            &   JF                  &  1         &           &  PC = PC + Imm         &           \\ \hline
+        0xB                 &   1011            &   JB                  &  1         &           &  PC = PC - Imm           &           \\ \hline
+        0xC                 &   1100            &   PUSH                &  1         &           &  DATA_STACK[DSP] = <R0,R1,R2,?>;      DSP = DSP - 1;          &           \\ \hline
+        0xD                 &   1101            &   POP                 &  1         &           &  <R0,R1,R2,?> = DATA_STACK[DSP+1];    DSP = DSP + 1;           &           \\ \hline
+        0xE                 &   1110            &   PCPUSH              &  0         &           &  ADDRESS_STACK[ASP] = PC;             ASP = ASP - 1;           &           \\ \hline
+        0xF                 &   1111            &   PCPOP               &  0         &           &  PC = ADDRESS_STACK[ASP+1];           ASP = ASP + 1;            &           \\ \hline
     \end{tabular}
 \end{table}
 \end{document}
