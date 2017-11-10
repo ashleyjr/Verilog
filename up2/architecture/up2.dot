@@ -6,20 +6,20 @@ digraph structs {
    # struct1:f1 -> struct2:f0;
    # struct1:f2 -> struct3:here;
 
-   # subgraph cluster_0 {
-   # style=filled;
-   # color=lightgrey;
-   # node [style=filled,color=white];
-   # a0 -> a1 -> a2 -> a3;
-   # label = "process #1";
-   # }
-   # 
-   # subgraph cluster_1 {
-   # node [style=filled];
-   # b0 -> b1 -> b2 -> b3;
-   # label = "process #2";
-   # color=blue
-   # }
+    #subgraph cluster_0 {
+    #style=filled;
+    #color=lightgrey;
+    #node [style=filled,color=white];
+    #a0 -> a1 -> a2 -> a3;
+    #label = "process #1";
+    #}
+    #
+    #subgraph cluster_1 {
+    #node [style=filled];
+    #b0 -> b1 -> b2 -> b3;
+    #label = "process #2";
+    #color=blue
+    #}
    # start -> a0;
    # start -> b0;
    # a1 -> b3;
@@ -31,14 +31,11 @@ digraph structs {
    # start [shape=Mdiamond];
    # end [shape=Msquare];
    
-    # Stack pointer
-    sp [label="SP",shape=record]
-    sp -> pc_out_mux
-    alu_out_mux -> sp
-
-    # Program counter
-    pc [label="PC",shape=record] 
+    # Stack pointers
+    dsp [label="DSP",shape=record]
+    alu_out_mux -> dsp
     
+   
     # Registers
     regs [label="<1> +1|<R0> R0|<R1> R1|<R2> R2|<dead> ?",shape=record];
 
@@ -83,14 +80,10 @@ digraph structs {
 
     reg_out_mux_2 -> plus_one_mux
     reg_out_mux_1 -> pc_out_mux
-   
-    pc -> pc_out_mux
-    pc_out_mux -> alu
+      pc_out_mux -> alu
     alu -> alu_out_mux
     alu_out_mux -> reg_in_mux
-    alu_out_mux -> pc
-
-
+  
 
 
     data_mem[label="Data",shape=record]
@@ -98,11 +91,46 @@ digraph structs {
     alu_out_mux -> data_addr
     data_addr -> data_mem
     alu_out_mux -> data_mem
-
-
-
-
-
-
+    
+    subgraph cluster_a {
+        label="Fetch and decode"
+        subgraph cluster_0 {
+            label = "WIDTH = N";
+            style=filled;
+            color=lightgrey; 
+            pc[label="PC",shape=record]
+            pc_plus_one[label="+1",shape=circle]
+            pc_plus[label="+",shape=circle]
+            pc_update_mux[label="MUX",shape=diamond]
+            pc_add_mux[label="MUX",shape=diamond] 
+            pc_plus_one -> pc_add_mux -> pc_plus -> pc_update_mux -> pc 
+            pc -> pc_plus 
+        } 
+        subgraph cluster_1 {
+            label = "WIDTH = 4\nDEPTH = 2^N";
+            style=filled;
+            color=lightgrey;  
+            code_space[label="Code Space",shape=record]
+        }
+        subgraph cluster_2 {
+            label = "WIDTH = 4";
+            style=filled;
+            color=lightgrey;  
+            ir[label="IR",shape=record]
+        }
+        subgraph cluster_3 {
+            label = "WIDTH = N";
+            style=filled;
+            color=lightgrey;  
+            ir_trail[label="TR(shift)",shape=record] 
+        }
+        bigger[label="{..}",shape=circle]
+        ir -> ir_trail[label="[2:0]"]
+        ir -> bigger[label="[3:0]"]
+        bigger -> pc_add_mux[label="N"]
+        pc -> code_space[label="N"]
+        code_space -> ir[label="4"]
+        ir_trail -> pc_update_mux[label="N"]
+    }
 }
 
