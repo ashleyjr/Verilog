@@ -31,69 +31,88 @@ digraph structs {
    # start [shape=Mdiamond];
    # end [shape=Msquare];
    
-    # Stack pointers
-    dsp [label="DSP",shape=record]
-    alu_out_mux -> dsp
-    
    
-    # Registers
-    regs [label="<1> +1|<R0> R0|<R1> R1|<R2> R2|<dead> ?",shape=record];
 
-    # Muxes
-    reg_in_mux [label="MUX",shape=circle]
-    reg_out_mux_1 [label="MUX",shape=circle]
-    reg_out_mux_2 [label="MUX",shape=circle]
-    pc_out_mux [label="MUX",shape=diamond] 
-    plus_one_mux [label="MUX",shape=diamond]
-    alu_out_mux [label="MUX",shape=diamond]
-
-
-    # Alu
-    alu [label="ALU",shape=trapezium] 
-
-
-    # Mux control
-    #mux_ctrl[label="MUX Control", shape=record]
-    #mux_ctrl -> reg_in_mux
-    #mux_ctrl -> reg_out_mux_1
-    #mux_ctrl -> reg_out_mux_2
-
-    # Wiring
-    reg_in_mux -> regs:R0    
-    reg_in_mux -> regs:R1
-    reg_in_mux -> regs:R2
-    reg_in_mux -> regs:dead
-
-    #regs:R0 -> reg_out_mux_1
-    #regs:R1 -> reg_out_mux_1
-    regs:R1 -> reg_out_mux_1
-    regs:R2 -> reg_out_mux_1
-
-    regs:1 -> reg_out_mux_2
-    regs:R0 -> reg_out_mux_2
-    #regs:R2 -> reg_out_mux_2
-    #regs:R3 -> reg_out_mux_2
-
-    regs:1 -> plus_one_mux
-
-    plus_one_mux -> alu
-
-    reg_out_mux_2 -> plus_one_mux
-    reg_out_mux_1 -> pc_out_mux
-      pc_out_mux -> alu
-    alu -> alu_out_mux
-    alu_out_mux -> reg_in_mux
-  
-
-
-    data_mem[label="Data",shape=record]
-    data_addr[label="Address latch",shape=record]
-    alu_out_mux -> data_addr
-    data_addr -> data_mem
-    alu_out_mux -> data_mem
-    
     subgraph cluster_a {
-        label="Fetch and decode"
+        label="Execute"
+
+        # Registers
+        regs [label="<1> +1|<R0> R0|<R1> R1|<R2> R2|<dead> ?",shape=record];
+
+        # Muxes
+        reg_in_mux [label="MUX",shape=circle]
+        reg_out_mux_1 [label="MUX",shape=circle]
+        reg_out_mux_2 [label="MUX",shape=circle]
+        pc_out_mux [label="MUX",shape=diamond] 
+        plus_one_mux [label="MUX",shape=diamond]
+        alu_out_mux [label="MUX",shape=diamond]
+
+
+        # Alu
+        alu [label="ALU",shape=trapezium] 
+
+
+        # Mux control
+        #mux_ctrl[label="MUX Control", shape=record]
+        #mux_ctrl -> reg_in_mux
+        #mux_ctrl -> reg_out_mux_1
+        #mux_ctrl -> reg_out_mux_2
+
+        # Wiring
+        reg_in_mux -> regs:R0    
+        reg_in_mux -> regs:R1
+        reg_in_mux -> regs:R2
+        reg_in_mux -> regs:dead
+        
+        regs:R1 -> reg_out_mux_1
+        regs:R2 -> reg_out_mux_1
+
+        regs:1 -> reg_out_mux_2
+        regs:R0 -> reg_out_mux_2
+               regs:1 -> plus_one_mux
+
+        plus_one_mux -> alu
+
+        reg_out_mux_2 -> plus_one_mux
+        reg_out_mux_1 -> pc_out_mux
+          pc_out_mux -> alu
+        alu -> alu_out_mux
+        alu_out_mux -> reg_in_mux
+  
+         
+        reg_out_mux_1 -> data_addr
+        reg_out_mux_2 -> data_mem
+        data_mem -> alu_out_mux
+
+
+    
+    }
+
+     subgraph cluster_b {
+        label="Memory"
+         
+        subgraph cluster_0 {
+            label = "WIDTH = 4\nDEPTH = 16";
+            style=filled;
+            color=lightgrey; 
+            data_mem[label="Data",shape=record]
+            data_addr[label="Address",shape=record]
+        } 
+    }
+    
+    subgraph cluster_c {
+        label="Register stack"  
+        subgraph cluster_0 {
+            label = "WIDTH = 12\nDEPTH = 16";
+            style=filled;
+            color=lightgrey; 
+            stack_mem[label="Data",shape=record]
+        } 
+    }
+
+
+    subgraph cluster_d {
+        label="Fetch (N >= 4)"
         subgraph cluster_0 {
             label = "WIDTH = N";
             style=filled;
