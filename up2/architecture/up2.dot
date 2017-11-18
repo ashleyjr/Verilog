@@ -79,42 +79,37 @@ digraph structs {
         alu -> alu_out_mux
         alu_out_mux -> reg_in_mux
   
-         
-        reg_out_mux_1 -> data_addr
-        reg_out_mux_2 -> data_mem
-        data_mem -> alu_out_mux
-
-
-    
+          
     }
-
-     subgraph cluster_b {
-        label="Memory"
          
-        subgraph cluster_0 {
-            label = "WIDTH = 4\nDEPTH = 16";
-            style=filled;
-            color=lightgrey; 
-            data_mem[label="Data",shape=record]
-            data_addr[label="Address",shape=record]
-        } 
-    }
-    
     subgraph cluster_c {
         label="Register stack"  
         subgraph cluster_0 {
-            label = "WIDTH = 12\nDEPTH = 16";
+            label = "WIDTH = 12\nDEPTH = M";
             style=filled;
             color=lightgrey; 
-            stack_mem[label="Data",shape=record]
-        } 
+            stack_mem[label="Data",shape=record] 
+        }
+        subgraph cluster_1 {
+            label = "WIDTH = ceil(log2(M))";
+            style=filled;
+            color=lightgrey; 
+            stack_ptr[label="Ptr",shape=record] 
+            stack_ptr_plus[label="+1",shape=circle] 
+            stack_ptr_minus[label="-1",shape=circle] 
+            stack_ptr_mux[label="MUX",shape=diamond]    
+            stack_ptr -> stack_ptr_plus -> stack_ptr_mux
+            stack_ptr -> stack_ptr_minus -> stack_ptr_mux
+            stack_ptr_mux -> stack_ptr
+        }
+        stack_ptr -> stack_mem
     }
 
 
     subgraph cluster_d {
-        label="Fetch (N >= 4)"
+        label="Fetch (N >= 16)"
         subgraph cluster_0 {
-            label = "WIDTH = N";
+            label = "WIDTH = ceil(log2(N))";
             style=filled;
             color=lightgrey; 
             pc[label="PC",shape=record]
@@ -126,7 +121,7 @@ digraph structs {
             pc -> pc_plus 
         } 
         subgraph cluster_1 {
-            label = "WIDTH = 4\nDEPTH = 2^N";
+            label = "WIDTH = 4\nDEPTH = N";
             style=filled;
             color=lightgrey;  
             code_space[label="Code Space",shape=record]
@@ -138,7 +133,7 @@ digraph structs {
             ir[label="IR",shape=record]
         }
         subgraph cluster_3 {
-            label = "WIDTH = N";
+            label = "WIDTH = ceil(log2(N))";
             style=filled;
             color=lightgrey;  
             ir_trail[label="TR(shift)",shape=record] 
