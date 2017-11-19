@@ -1,62 +1,18 @@
-digraph structs {
-   # node [shape=record];
-   # struct1 [label="<f0> left|<f1> mid&#92; dle|<f2> right"];
-   # struct2 [label="<f0> one|<f1> two"];
-   # struct3 [label="hello&#92;nworld |{ b |{c|<here> d|e}| f}| g | h"];
-   # struct1:f1 -> struct2:f0;
-   # struct1:f2 -> struct3:here;
-
-    #subgraph cluster_0 {
-    #style=filled;
-    #color=lightgrey;
-    #node [style=filled,color=white];
-    #a0 -> a1 -> a2 -> a3;
-    #label = "process #1";
-    #}
-    #
-    #subgraph cluster_1 {
-    #node [style=filled];
-    #b0 -> b1 -> b2 -> b3;
-    #label = "process #2";
-    #color=blue
-    #}
-   # start -> a0;
-   # start -> b0;
-   # a1 -> b3;
-   # b2 -> a3;
-   # a3 -> a0;
-   # a3 -> end;
-   # b3 -> end;
-   # 
-   # start [shape=Mdiamond];
-   # end [shape=Msquare];
+digraph up2 {
    
-   
-
     subgraph cluster_a {
         label="Execute"
 
         # Registers
         regs [label="<1> +1|<R0> R0|<R1> R1|<R2> R2|<dead> ?",shape=record];
 
-        # Muxes
+        # Mux
         reg_in_mux [label="MUX",shape=circle]
         reg_out_mux_1 [label="MUX",shape=circle]
         reg_out_mux_2 [label="MUX",shape=circle]
-        pc_out_mux [label="MUX",shape=diamond] 
-        plus_one_mux [label="MUX",shape=diamond]
-        alu_out_mux [label="MUX",shape=diamond]
-
-
+    
         # Alu
         alu [label="ALU",shape=trapezium] 
-
-
-        # Mux control
-        #mux_ctrl[label="MUX Control", shape=record]
-        #mux_ctrl -> reg_in_mux
-        #mux_ctrl -> reg_out_mux_1
-        #mux_ctrl -> reg_out_mux_2
 
         # Wiring
         reg_in_mux -> regs:R0    
@@ -69,20 +25,16 @@ digraph structs {
 
         regs:1 -> reg_out_mux_2
         regs:R0 -> reg_out_mux_2
-               regs:1 -> plus_one_mux
+        
+        reg_out_mux_2 -> alu
+        reg_out_mux_1 -> alu
 
-        plus_one_mux -> alu
-
-        reg_out_mux_2 -> plus_one_mux
-        reg_out_mux_1 -> pc_out_mux
-          pc_out_mux -> alu
-        alu -> alu_out_mux
-        alu_out_mux -> reg_in_mux
-  
+        alu -> reg_in_mux
+          
           
     }
          
-    subgraph cluster_c {
+    subgraph cluster_b {
         label="Register stack"  
         subgraph cluster_0 {
             label = "WIDTH = 12\nDEPTH = M";
@@ -106,7 +58,7 @@ digraph structs {
     }
 
 
-    subgraph cluster_d {
+    subgraph cluster_c {
         label="Fetch (N >= 16)"
         subgraph cluster_0 {
             label = "WIDTH = ceil(log2(N))";
