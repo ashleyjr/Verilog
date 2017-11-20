@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import random
 
-class up2_execute:
+class up2Execute:
     ''' Model of the up2 processor execute section '''
 
     def __init__(self):
@@ -58,14 +58,77 @@ class up2_execute:
     def setRegInCmp(self):
         self.c = 4
 
+class up2RegStack:
+    ''' Model of the up2 processor register section '''
+
+    def __init__(self):
+        self.stack = []
+        self.p = 0
+
+    def push(self, reg):
+        if len(self.stack) == self.p:
+            self.stack.append(reg)
+        else:
+            self.stack[self.p] = reg
+        self.p += 1
+
+    def pop(self):
+        if 0 < self.p:
+            self.p -= 1
+        reg = self.stack[self.p]
+        return reg
+
+    def ptr(self):
+        return self.p
+
+class up2RegStackTestbench:
+    ''' Testbench for regsiter stack section only '''
+
+    def __init__(self):
+        self.e = up2RegStack()
+
+        ''' Model assertions '''
+        assert self.e.ptr() >= 0, 'Stack out of range'
+
+    def randReg(self):
+        reg = []
+        for i in range(0,5):
+            reg.append(random.randint(0,15))
+        return reg
+
+    def randRun(self, runs):
+        maxi = 0
+        self.e.push(self.randReg())
+        for run in range(0,runs):
+            if self.e.ptr() > maxi:
+                maxi = self.e.ptr()
+            print   str(run) + "\t" + \
+                    str(runs) + "\t" + \
+                    str(self.e.ptr()) + "\t" +\
+                    str(maxi),
+            if random.randint(0,1):
+                reg = self.randReg()
+                self.e.push(reg)
+                print "\tPUSH: " + str(reg)
+            else:
+                print "\tPOP:  " + str(self.e.pop())
+
 class up2_execute_testbench:
     ''' Testbench for execute section only '''
 
     def __init__(self):
-        self.e = up2_execute()
+        self.e = up2Execute()
+
+        ''' Model coverage '''
         self.coverage = []
-        for i in range(0,3):
+        for i in range(0,5):
             self.coverage.append([False] * 16)
+
+        ''' Model assertions '''
+        assert self.e.readRegs()[0] == 1, 'Fixed +1 reg assigned'
+        for i in range(1,5):
+            assert self.e.readRegs()[i] < 16,'Overflow'
+            assert self.e.readRegs()[i] >= 0, 'Underflow'
 
     def op(self, op):
         ''' Execute an op'''
@@ -91,33 +154,40 @@ class up2_execute_testbench:
             self.e.setRegInCmp()
 
     def updateCoverage(self):
-        for i in range(0,3):
+        for i in range(0,5):
             self.coverage[i][self.e.readRegs()[i]] = True
 
     def calcCoverage(self):
         total = 0
         covered = 0
-        for i in range(0,3):
+        for i in range(1,5):
             for j in range(0,16):
                 if self.coverage[i][j]:
                     covered += 1
                 total += 1
         return float(covered)/float(total)
 
-    def randRun(self, its):
-        assert self.e.readRegs()[0] == 1, 'Fixed +1 reg assigned'
-        for i in range(0,5):
-            assert self.e.readRegs()[0] < 16,'Overflow'
-            assert self.e.readRegs()[0] > 0, 'Underflow'
-        for i in range(0,its):
+    def printCoverage(self):
+        print "Reg\tValue\tCoverage"
+        for i in range(1,5):
+            for j in range(0,16):
+                print str(i) + "\t" + str(j) + "\t" +  str(self.coverage[i][j])
+
+    def randRun(self):
+        run = 0
+        while self.calcCoverage() < 1:
             op = random.randint(0,9)
             self.op(op)
             self.updateCoverage()
-            print self.calcCoverage()
+            print run,op,self.e.readRegs(),self.calcCoverage()
+            run += 1
 
 def main():
-    up2 = up2_execute_testbench()
-    up2.randRun(1000000)
+    execute = up2_execute_testbench()
+    execute.randRun()
+
+    stack = up2RegStackTestbench()
+    stack.randRun(1024)
 
 if "__main__" == __name__:
     main()
