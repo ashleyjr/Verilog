@@ -16,6 +16,12 @@ class up2Execute:
         self.b = random.randint(2,3)
         self.c = random.randint(1,4)
 
+        ''' Model assertions '''
+        assert self.regs[0] == 1, 'Fixed +1 reg assigned'
+        for i in range(1,5):
+            assert self.regs[i] < 16,'Overflow'
+            assert self.regs[i] >= 0, 'Underflow'
+
     def writeRegs(self, regs):
         self.regs[1:3] = regs
 
@@ -65,6 +71,9 @@ class up2RegStack:
         self.stack = []
         self.p = 0
 
+        ''' Model assertions '''
+        assert self.p >= 0, 'Stack out of range'
+
     def push(self, reg):
         if len(self.stack) == self.p:
             self.stack.append(reg)
@@ -86,9 +95,6 @@ class up2RegStackTestbench:
 
     def __init__(self):
         self.e = up2RegStack()
-
-        ''' Model assertions '''
-        assert self.e.ptr() >= 0, 'Stack out of range'
 
     def randReg(self):
         reg = []
@@ -123,12 +129,6 @@ class up2_execute_testbench:
         self.coverage = []
         for i in range(0,5):
             self.coverage.append([False] * 16)
-
-        ''' Model assertions '''
-        assert self.e.readRegs()[0] == 1, 'Fixed +1 reg assigned'
-        for i in range(1,5):
-            assert self.e.readRegs()[i] < 16,'Overflow'
-            assert self.e.readRegs()[i] >= 0, 'Underflow'
 
     def op(self, op):
         ''' Execute an op'''
