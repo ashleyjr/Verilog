@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random
+from up2Utils import *
 from up2 import *
 
 class up2RegStackTestbench:
@@ -16,7 +17,7 @@ class up2RegStackTestbench:
 
     def randRun(self, runs):
         maxi = 0
-        self.e.push(self.randReg())
+        self.e.push(utils..randReg(15,5))
         for run in range(0,runs):
             if self.e.ptr() > maxi:
                 maxi = self.e.ptr()
@@ -93,3 +94,43 @@ class up2ExecuteTestbench:
             self.updateCoverage()
             print run,op,self.e.readRegs(),self.calcCoverage()
             run += 1
+
+class up2ExecuteRegStackTestbench:
+    ''' Testbench for execute and register stack section only '''
+
+    def __init__(self):
+        self.e = up2Execute()
+        self.r = up2RegStack()
+
+    def op(self, op):
+        ''' Execute an op'''
+        if(0 == op):
+            self.e.add()
+        elif(1 == op):
+            self.e.sub()
+        elif(2 == op):
+            self.e.setRegOut1()
+        elif(3 == op):
+            self.e.setRegOutR0()
+        elif(4 == op):
+            self.e.setRegOutR1()
+        elif(5 == op):
+            self.e.setRegOutR2()
+        elif(6 == op):
+            self.e.setRegInR0()
+        elif(7 == op):
+            self.e.setRegInR1()
+        elif(8 == op):
+            self.e.setRegInR2()
+        elif(9 == op):
+            self.e.setRegInCmp()
+        elif(10 == op):
+            self.r.push(self.e.readRegs())
+        elif(11 == op):
+            self.e.writeRegs(self.r.pop())
+
+
+    def randRun(self):
+        for i in range(0,16):
+            self.op(random.randint(0,11))
+            print self.e.readRegs()

@@ -9,5 +9,8 @@ def main():
     stack = up2RegStackTestbench()
     stack.randRun(1024)
 
+    dp = up2ExecuteRegStackTestbench()
+    dp.randRun()
+
 if "__main__" == __name__:
     main()
