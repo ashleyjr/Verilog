@@ -16,6 +16,9 @@ class up2Execute:
         self.b = random.randint(2,3)
         self.c = random.randint(1,4)
 
+        ''' Flags '''
+        self.z = 0
+
         ''' Model assertions '''
         assert self.regs[0] == 1, 'Fixed +1 reg assigned'
         for i in range(1,5):
@@ -33,12 +36,24 @@ class up2Execute:
         self.regs[self.c] = self.regs[self.b] + self.regs[self.a]
         if self.regs[self.c] > 15:
             self.regs[self.c] -= 16
+        self.updateZeroFlag()
 
     def sub(self):
         ''' Sub with underflow wrap around '''
         self.regs[self.c] = self.regs[self.b] - self.regs[self.a]
         if self.regs[self.c] < 0:
             self.regs[self.c] += 16
+        self.updateZeroFlag()
+
+    def updateZeroFlag(self):
+        '''Flag after ALU update '''
+        if 0 == self.regs[self.c]:
+            self.z = 1
+        else:
+            self.z = 0
+
+    def readZeroFLag(self):
+        return self.z
 
     def setRegOut1(self):
         self.a = 0
