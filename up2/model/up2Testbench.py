@@ -132,3 +132,43 @@ class up2ExecuteRegStackTestbench:
             op = random.randint(0,11)
             self.op(op)
             print op,self.e.readRegs()
+
+class up2FetchTestbench:
+    ''' Testbench for fectch section only '''
+
+    def test(self):
+
+        self.f = up2Fetch("777777777777")
+        self.f.printCode()
+        for i in range(0,4):
+            print "incPc: ",
+            self.f.printState()
+            self.f.incPc()
+
+        self.f = up2Fetch("11111111111")
+        self.f.printCode()
+        for i in range(0,10):
+            print "relPc: ",
+            self.f.printState()
+            self.f.relPc()
+
+        self.f = up2Fetch("111211111111")
+        self.f.printCode()
+        for i in range(0,10):
+            print "relPc: ",
+            self.f.printState()
+            self.f.relPc()
+
+        self.f = up2Fetch("170000020000")
+        self.f.printCode()
+        for i in range(0,10):
+            print "relPc: ",
+            self.f.printState()
+            self.f.absPc()
+
+
+
+
+
+
+

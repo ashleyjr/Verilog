@@ -10,5 +10,15 @@ class up2Utils:
             reg.append(random.randint(0,(math.pow(2,bits)-1)))
         return reg
 
+    def clog2(self, num):
+        return int(math.ceil(math.log(num,2)))
 
+    def fit(self, num, chunk):
+        return int(math.ceil(self.clog2(num)/chunk))
+
+    def padding(self, length):
+        space = ""
+        for j in range(0,length):
+            space += " "
+        return space
 

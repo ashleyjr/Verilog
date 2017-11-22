@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random
+from up2Utils import *
 
 class up2Execute:
     ''' Model of the up2 processor execute section '''
@@ -109,4 +110,66 @@ class up2RegStack:
 
     def printStack(self):
         print self.stack
+
+class up2Fetch:
+    ''' Model of the up2 processor fetch section '''
+
+    def __init__(self, codes):
+        self.u = up2Utils()
+        self.N = len(codes)
+        self.pc = 0
+        self.index = 0
+        self.code = [0] * self.N
+
+        ''' Turn input string in to array '''
+        i = 0
+        for code in codes:
+            self.code[i] = int(code,16)
+            i += 1
+
+        ''' Model assertions '''
+        assert (self.pc + self.index) < len(self.code), 'Entered invalid code space'
+
+    def ir(self, index):
+        self.index = index
+        return self.code[self.pc + self.index]
+
+    def incPc(self):
+        self.pc += 1
+
+    def relPc(self):
+        self.pc += self.ir(1)
+
+    def absPc(self):
+        self.pc = self.calcAbsPc()
+
+    def calcAbsPc(self):
+        pc = 0
+        for i in range(0, self.u.fit(self.N,4)):
+            pc = (pc << 4) + self.ir(i+1)
+        return pc
+
+    def printCode(self):
+        print "        POS:",
+        for i in range(0,len(self.code)):
+            print i,
+            #self.u.padding(len(str(i)))
+        print
+        print "       CODE:",
+        for i in range(0,len(self.code)):
+            print str(self.code[i]) + self.u.padding(len(str(i))-1),
+        print
+        print "CODE LENGTH: " + str(len(self.code))
+        print "      CLOG2: " + str(self.u.clog2(len(self.code)))
+
+    def printState(self):
+        print "N=" + str(self.N),
+        print "PC=" + str(self.pc),
+        print "IR0=" + str(self.ir(0)),
+        print "ABS=" + str(self.calcAbsPc()),
+        print
+
+
+
+
 
