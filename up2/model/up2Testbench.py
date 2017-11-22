@@ -8,16 +8,11 @@ class up2RegStackTestbench:
 
     def __init__(self):
         self.e = up2RegStack()
-
-    def randReg(self):
-        reg = []
-        for i in range(0,5):
-            reg.append(random.randint(0,15))
-        return reg
+        self.u = up2Utils()
 
     def randRun(self, runs):
         maxi = 0
-        self.e.push(utils..randReg(15,5))
+        self.e.push(self.u.randReg(4,5))
         for run in range(0,runs):
             if self.e.ptr() > maxi:
                 maxi = self.e.ptr()
@@ -26,7 +21,7 @@ class up2RegStackTestbench:
                     str(self.e.ptr()) + "\t" +\
                     str(maxi),
             if random.randint(0,1):
-                reg = self.randReg()
+                reg = self.u.randReg(4,5)
                 self.e.push(reg)
                 print "\tPUSH: " + str(reg)
             else:
@@ -101,6 +96,7 @@ class up2ExecuteRegStackTestbench:
     def __init__(self):
         self.e = up2Execute()
         self.r = up2RegStack()
+        self.u = up2Utils()
 
     def op(self, op):
         ''' Execute an op'''
@@ -131,6 +127,8 @@ class up2ExecuteRegStackTestbench:
 
 
     def randRun(self):
-        for i in range(0,16):
-            self.op(random.randint(0,11))
-            print self.e.readRegs()
+        self.r.push(self.u.randReg(4,5))
+        for i in range(0,32):
+            op = random.randint(0,11)
+            self.op(op)
+            print op,self.e.readRegs()

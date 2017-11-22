@@ -20,13 +20,14 @@ class up2Execute:
         self.z = 0
 
         ''' Model assertions '''
+        assert len(self.regs) == 5, 'Fixed length of registers'
         assert self.regs[0] == 1, 'Fixed +1 reg assigned'
         for i in range(1,5):
             assert self.regs[i] < 16,'Overflow'
             assert self.regs[i] >= 0, 'Underflow'
 
     def writeRegs(self, regs):
-        self.regs[1:3] = regs
+        self.regs = regs
 
     def readRegs(self):
         return self.regs
@@ -89,6 +90,7 @@ class up2RegStack:
         ''' Model assertions '''
         assert self.p >= 0, 'Stack out of range'
 
+
     def push(self, reg):
         if len(self.stack) == self.p:
             self.stack.append(reg)
@@ -104,3 +106,7 @@ class up2RegStack:
 
     def ptr(self):
         return self.p
+
+    def printStack(self):
+        print self.stack
+
