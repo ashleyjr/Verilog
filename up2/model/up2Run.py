@@ -13,9 +13,20 @@ def main():
     dp = up2ExecuteRegStackTestbench()
     dp.randRun()
 
+    ''' Specific test vectors to execute fecth section '''
     fetch = up2FetchTestbench()
-    fetch.test()
-
+    fetch.test(     # Increment over pc with 4
+        "0123456789ABCEDF",
+        "00000000000000"
+    )
+    fetch.test(     # Increment over pc width 5
+        "0123456789ABCDEF0",
+        "00000000000000"
+    )
+    fetch.test(     # Increment over pc width 6
+        "0123456789ABCDEF0123456789ABCDEF0",
+        "000000000000000000000000000000"
+    )
 
 if "__main__" == __name__:
     main()

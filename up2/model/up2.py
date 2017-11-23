@@ -145,8 +145,8 @@ class up2Fetch:
 
     def calcAbsPc(self):
         pc = 0
-        for i in range(0, self.u.fit(self.N,4)):
-            pc = (pc << 4) + self.ir(i+1)
+        for i in range(1, self.u.fit(self.N,4)+1):
+            pc = (pc << 4) + self.ir(i)
         return pc
 
     def printCode(self):
@@ -157,13 +157,14 @@ class up2Fetch:
         print
         print "       CODE:",
         for i in range(0,len(self.code)):
-            print str(self.code[i]) + self.u.padding(len(str(i))-1),
+            print str(self.code[i]) + self.u.padding(len(str(i))-len(str(self.code[i]))-1),
         print
         print "CODE LENGTH: " + str(len(self.code))
         print "      CLOG2: " + str(self.u.clog2(len(self.code)))
 
     def printState(self):
         print "N=" + str(self.N),
+        print "FIT=" + str(self.u.fit(self.N,4)),
         print "PC=" + str(self.pc),
         print "IR0=" + str(self.ir(0)),
         print "ABS=" + str(self.calcAbsPc()),

@@ -136,36 +136,26 @@ class up2ExecuteRegStackTestbench:
 class up2FetchTestbench:
     ''' Testbench for fectch section only '''
 
-    def test(self):
-
-        self.f = up2Fetch("777777777777")
-        self.f.printCode()
-        for i in range(0,4):
+    def op(self, op):
+        ''' Execute an op'''
+        if(0 == op):
             print "incPc: ",
-            self.f.printState()
             self.f.incPc()
-
-        self.f = up2Fetch("11111111111")
-        self.f.printCode()
-        for i in range(0,10):
+        elif(2 == op):
             print "relPc: ",
-            self.f.printState()
             self.f.relPc()
-
-        self.f = up2Fetch("111211111111")
-        self.f.printCode()
-        for i in range(0,10):
-            print "relPc: ",
-            self.f.printState()
-            self.f.relPc()
-
-        self.f = up2Fetch("170000020000")
-        self.f.printCode()
-        for i in range(0,10):
-            print "relPc: ",
-            self.f.printState()
+        elif(3 == op):
+            print "absPc: ",
             self.f.absPc()
 
+    def test(self, code, ops):
+        self.f = up2Fetch(code)
+        self.f.printCode()
+        print "       ",
+        self.f.printState()
+        for op in ops:
+            self.op(int(op))
+            self.f.printState()
 
 
 

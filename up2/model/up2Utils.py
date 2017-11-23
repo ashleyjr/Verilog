@@ -14,7 +14,7 @@ class up2Utils:
         return int(math.ceil(math.log(num,2)))
 
     def fit(self, num, chunk):
-        return int(math.ceil(self.clog2(num)/chunk))
+        return int(math.ceil(float(self.clog2(num))/float(chunk)))
 
     def padding(self, length):
         space = ""
