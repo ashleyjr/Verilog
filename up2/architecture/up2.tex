@@ -16,36 +16,113 @@
 
 \section{}
 
-% No need to have a JF and JB if ADDI ? = +1 + Imm can force the flag
-% Link register can exist with PC and can be shift register loaded. ULB << << << ULS
-% Relative jumps link to static jumps so a branch can be static
-% Enought room to hold static jump over the table in 0x04..0x07
-% Could the LR just be the IR? So intrustions shifted in can be as wide as the PC and address width
-
 \begin{table}[]
     \centering
     \caption{My caption}
     \label{my-label}
-    \begin{tabular}{|l|l|l|l|l|l|l|}
+    \begin{tabular}{|l|l|l|l|l|l|}
         \hline
-        \textbf{Opcode}     &   \textbf{Opcode} &                       &                       &                       &                                       &           \\ \hline
-        \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Trailers}   &    &   \textbf{Description}                &           \\ \hline
-        0x0                 &   0000            &   ADDI                &   1                   &               &   R1 = Imm        &           \\ \hline
-        0x1                 &   0001            &   ADD                 &   1                   &               &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>    &           \\ \hline
-        0x2                 &   0010            &   SUB                 &   1                   &               &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>           &           \\ \hline
-        0x3                 &   0011            &   JB                &   1                   &               &   PC = PC - Imm           &           \\ \hline
-        0x4                 &   0100            &   NAND                &  1             &           &           &           \\ \hline
-        0x5                 &   0101            &   LOAD                &   1                   &              &   DATA[<R0,R1,R2>] = <R0,R1,R2>           &           \\ \hline
-        0x6                 &   0110            &   STORE               &  1               &                       &   <R0,R1,R2> = DATA[<R0,R1,R2>]           &           \\ \hline
-        0x7                 &   0111            &   LINK                &   0           &           &   LR = PC          &           \\ \hline
-        0x8                 &   1000            &   BNE                 &  0            &           &   if(z != 0) PC = PC + 2          &           \\ \hline
-        0x9                 &   1001            &   BE                  &  0         &           &  if(z != 1) PC = PC + 2         &           \\ \hline
-        0xA                 &   1010            &   JF                  &  1         &           &  PC = PC + Imm         &           \\ \hline
-        0xB                 &   1011            &   JB                  &  1         &           &  PC = PC - Imm           &           \\ \hline
-        0xC                 &   1100            &   PUSH                &  1         &           &  DATA_STACK[DSP] = <R0,R1,R2,?>;      DSP = DSP - 1;          &           \\ \hline
-        0xD                 &   1101            &   POP                 &  1         &           &  <R0,R1,R2,?> = DATA_STACK[DSP+1];    DSP = DSP + 1;           &           \\ \hline
-        0xE                 &   1110            &   PCPUSH              &  0         &           &  ADDRESS_STACK[ASP] = PC;             ASP = ASP - 1;           &           \\ \hline
-        0xF                 &   1111            &   PCPOP               &  0         &           &  PC = ADDRESS_STACK[ASP+1];           ASP = ASP + 1;            &           \\ \hline
+        \textbf{Opcode}     &   \textbf{Opcode} &                       &                       &                                           &                           \\ \hline  
+        \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Use MX}     &   \textbf{Description}                    &   \textbf{Flags set}      \\ \hline  
+        0x0                 &   0000            &   ADD                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>        &   Z                       \\ \hline  
+        0x1                 &   0001            &   SUB                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>        &   Z                       \\ \hline  
+        0x2                 &   0010            &   OR                  &   Yes                 &   <R0,R1,R2,?> = <R1,R2> OR <+1,R0>       &   Z                       \\ \hline  
+        0x3                 &   0011            &   NOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NOR <+1,R0>      &   Z                       \\ \hline  
+        0x4                 &   0100            &   XOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> XOR <+1,R0>      &   Z                       \\ \hline  
+        0x5                 &   0101            &   NAND                &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NAND <+1,R0>     &   Z                       \\ \hline 
+        0x6                 &   0110            &   LSL                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> << 1             &   Z                       \\ \hline 
+        0x7                 &   0111            &   LSR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> >> 1             &   Z                       \\ \hline  
+        0x8                 &   1000            &   BNE                 &   No                  &   if(Z != 1) PC += W                      &                           \\ \hline  
+        0x9                 &   1001            &   BE                  &   No                  &   if(Z == 1) PC += W                      &                           \\ \hline  
+        0xA                 &   1010            &   JMP                 &   No                  &   PC = CS[PC]                             &                           \\ \hline  
+        0xB                 &   1011            &   INT                 &   No                  &   Enable ints                             &                           \\ \hline  
+        0xC                 &   1100            &   DDS                 &   No                  &   DSP -= 1                                &                           \\ \hline  
+        0xD                 &   1101            &   IDS                 &   No                  &   DSP += 1                                &                           \\ \hline  
+        0xE                 &   1110            &   DPS                 &   No                  &   PSP -= 1                                &                           \\ \hline  
+        0xF                 &   1111            &   IPS                 &   No                  &   PSP += 1                                &                           \\ \hline  
     \end{tabular}
 \end{table}
+
+
+\section{}
+
+\subsection{ADD}
+
+\subsection{SUB}
+
+\subsection{OR}
+
+\subsection{NOR}
+
+\subsection{XOR}
+
+\subsection{NAND}
+
+\subsection{LSL}
+
+Logical Shift Left
+
+\subsection{LSR}
+Logical Shift Right
+
+\subsection{BNE}
+Branch Not Equals
+
+\subsection{BE}
+Branch Equals
+
+\subsection{JMP}
+Jump 
+
+\subsection{INT}
+Enable/Disable interrupts
+
+\subsection{DDS}
+Decrement Data Stack Pointer
+
+\subsection{IDS}
+Increment Data Stack Pointer
+
+\subsection{DPS}
+Decrement Program Counter Stack Pointer
+
+\subsection{IPS}
+Increment Program Counter Stack Pointer
+
+\section{Programming Tips}
+
+\subsection{Zero a register}
+
+Objective: Set R1 to zero
+
+
+LSL,R1,R1
+LSL,R1,R1
+LSL,R1,R1
+LSL,R1,R1
+
+\subsection{Load Immediate}
+
+Objective: Load 0xA(1010) in to R2
+
+
+OR,R1,R1,+1
+LSL
+LSL
+OR,R1,R1,+1
+LSL
+
+
+\subsection{Swapping registers}
+
+Objective: Swap R0 and R1
+
+XOR,R0,R1,R0
+XOR,R1,R1,R0
+XOR,R0,R1,R0
+
+
+
+
+
 \end{document}

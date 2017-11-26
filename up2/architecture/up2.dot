@@ -37,16 +37,16 @@ digraph up2 {
     subgraph cluster_b {
         label="Register stack"  
         subgraph cluster_0 {
-            label = "WIDTH = 12\nDEPTH = M";
+            label = "WIDTH = 12\nDEPTH = A";
             style=filled;
             color=lightgrey; 
-            stack_mem[label="Data",shape=record] 
+            stack_mem[label="Reg container",shape=record] 
         }
         subgraph cluster_1 {
-            label = "WIDTH = ceil(log2(M))";
+            label = "WIDTH = ceil(log2(A))";
             style=filled;
             color=lightgrey; 
-            stack_ptr[label="Ptr",shape=record] 
+            stack_ptr[label="DSP",shape=record] 
             stack_ptr_plus[label="+1",shape=circle] 
             stack_ptr_minus[label="-1",shape=circle] 
             stack_ptr_mux[label="MUX",shape=diamond]    
@@ -59,21 +59,27 @@ digraph up2 {
 
 
     subgraph cluster_c {
-        label="Fetch (N >= 16)"
+        label="Fetch (B >= 16)"
         subgraph cluster_0 {
-            label = "WIDTH = ceil(log2(N))";
+            label = "WIDTH = ceil(log2(B))";
             style=filled;
             color=lightgrey; 
             pc[label="PC",shape=record]
             pc_plus_one[label="+1",shape=circle]
+            pc_plus_two[label="+2",shape=circle]
+            pc_plus_w[label="+W",shape=circle]
+            pc_plus_int[label="I",shape=circle]
             pc_plus[label="+",shape=circle]
             pc_update_mux[label="MUX",shape=diamond]
             pc_add_mux[label="MUX",shape=diamond] 
-            pc_plus_one -> pc_add_mux -> pc_plus -> pc_update_mux -> pc 
-            pc -> pc_plus 
+            pc_plus_one -> pc_add_mux 
+            pc_plus_two -> pc_add_mux
+            pc_plus_w -> pc_add_mux
+            pc_plus_int -> pc_add_mux
+            pc_add_mux -> pc_plus -> pc_update_mux -> pc -> pc_plus 
         } 
         subgraph cluster_1 {
-            label = "WIDTH = 4\nDEPTH = N";
+            label = "WIDTH = 4\nDEPTH = B";
             style=filled;
             color=lightgrey;  
             code_space[label="Code Space",shape=record]
@@ -83,20 +89,35 @@ digraph up2 {
             style=filled;
             color=lightgrey;  
             ir[label="IR",shape=record]
-        }
-        subgraph cluster_3 {
-            label = "WIDTH = ceil(log2(N))";
-            style=filled;
-            color=lightgrey;  
-            ir_trail[label="TR(shift)",shape=record] 
-        }
-        bigger[label="{..}",shape=circle]
-        ir -> ir_trail[label="[2:0]"]
-        ir -> bigger[label="[3:0]"]
-        bigger -> pc_add_mux[label="N"]
-        pc -> code_space[label="N"]
+            mx[label="MX",shape=record]
+        }  
+        pc -> code_space[label="W"]
         code_space -> ir[label="4"]
-        ir_trail -> pc_update_mux[label="N"]
+        code_space -> pc_update_mux[label="W"]
+        code_space -> mx[label="4"]
+    }
+
+    subgraph cluster_d {
+        label="PC stack"  
+        subgraph cluster_0 {
+            label = "WIDTH = 12\nDEPTH = C";
+            style=filled;
+            color=lightgrey; 
+            pc_mem[label="PC container",shape=record] 
+        }
+        subgraph cluster_1 {
+            label = "WIDTH = ceil(log2(C))";
+            style=filled;
+            color=lightgrey; 
+            pc_ptr[label="ASP",shape=record] 
+            pc_ptr_plus[label="+1",shape=circle] 
+            pc_ptr_minus[label="-1",shape=circle] 
+            pc_ptr_mux[label="MUX",shape=diamond]    
+            pc_ptr -> pc_ptr_plus -> pc_ptr_mux
+            pc_ptr -> pc_ptr_minus -> pc_ptr_mux
+            pc_ptr_mux -> pc_ptr
+        }
+        pc_ptr -> pc_mem
     }
 }
 
