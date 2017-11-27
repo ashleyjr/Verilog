@@ -38,10 +38,10 @@
         0x9                 &   1001            &   BE                  &   No                  &   if(Z == 1) PC += W                      &                           \\ \hline  
         0xA                 &   1010            &   JMP                 &   No                  &   PC = CS[PC]                             &                           \\ \hline  
         0xB                 &   1011            &   INT                 &   No                  &   Enable ints                             &                           \\ \hline  
-        0xC                 &   1100            &   DDS                 &   No                  &   DSP -= 1                                &                           \\ \hline  
-        0xD                 &   1101            &   IDS                 &   No                  &   DSP += 1                                &                           \\ \hline  
-        0xE                 &   1110            &   DPS                 &   No                  &   PSP -= 1                                &                           \\ \hline  
-        0xF                 &   1111            &   IPS                 &   No                  &   PSP += 1                                &                           \\ \hline  
+        0xC                 &   1100            &   SHM                 &   No                  &   R0 << MEM << ADDR << R0                 &                           \\ \hline  
+        0xD                 &   1101            &   MEM                 &   No                  &   DATA = MEM[ADDR] = DATA                 &                           \\ \hline  
+        0xE                 &   1110            &   DSP                 &   Yes                 &   DSP = (MX == 0) ? DSP - 1 : DSP + 1     &                           \\ \hline  
+        0xF                 &   1111            &   PSP                 &   Yes                 &   PSP = (MX == 0) ? PSP - 1 : PSP + 1     &                           \\ \hline  
     \end{tabular}
 \end{table}
 
