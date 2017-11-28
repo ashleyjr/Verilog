@@ -7,7 +7,7 @@ class up2RegStackTestbench:
     ''' Testbench for regsiter stack section only '''
 
     def __init__(self):
-        self.e = up2RegStack()
+        self.e = up2Stack()
         self.u = up2Utils()
 
     def randRun(self, runs):
@@ -26,6 +26,31 @@ class up2RegStackTestbench:
                 print "\tPUSH: " + str(reg)
             else:
                 print "\tPOP:  " + str(self.e.pop())
+
+class up2PcStackTestbench:
+    ''' Testbench for PC stack section only '''
+
+    def __init__(self):
+        self.e = up2Stack()
+        self.u = up2Utils()
+
+    def randRun(self, runs):
+        maxi = 0
+        self.e.push(self.u.randReg(4,2))
+        for run in range(0,runs):
+            if self.e.ptr() > maxi:
+                maxi = self.e.ptr()
+            print   str(run) + "\t" + \
+                    str(runs) + "\t" + \
+                    str(self.e.ptr()) + "\t" +\
+                    str(maxi),
+            if random.randint(0,1):
+                reg = self.u.randReg(4,2)
+                self.e.push(reg)
+                print "\tPUSH: " + str(reg)
+            else:
+                print "\tPOP:  " + str(self.e.pop())
+
 
 class up2ExecuteTestbench:
     ''' Testbench for execute section only '''
@@ -95,7 +120,7 @@ class up2ExecuteRegStackTestbench:
 
     def __init__(self):
         self.e = up2Execute()
-        self.r = up2RegStack()
+        self.r = up2Stack()
         self.u = up2Utils()
 
     def op(self, op):

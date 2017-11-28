@@ -7,8 +7,11 @@ def main():
     execute = up2ExecuteTestbench()
     execute.randRun()
 
-    stack = up2RegStackTestbench()
-    stack.randRun(1024)
+    reg_stack = up2RegStackTestbench()
+    reg_stack.randRun(1024)
+
+    pc_stack = up2PcStackTestbench()
+    pc_stack.randRun(1024)
 
     dp = up2ExecuteRegStackTestbench()
     dp.randRun()

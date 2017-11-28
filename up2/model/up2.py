@@ -81,8 +81,8 @@ class up2Execute:
     def setRegInCmp(self):
         self.c = 4
 
-class up2RegStack:
-    ''' Model of the up2 processor register section '''
+class up2Stack:
+    ''' Model of the up2 processor stack sections '''
 
     def __init__(self):
         self.stack = []
@@ -90,7 +90,6 @@ class up2RegStack:
 
         ''' Model assertions '''
         assert self.p >= 0, 'Stack out of range'
-
 
     def push(self, reg):
         if len(self.stack) == self.p:
