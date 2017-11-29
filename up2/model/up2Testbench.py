@@ -182,6 +182,29 @@ class up2FetchTestbench:
             self.op(int(op))
             self.f.printState()
 
+class up2MainTestbench:
+    ''' Testbench for main memory section only '''
+
+    def __init__(self):
+        self.m = up2Main(4,4)
+        self.m.swap()
+        self.m.printMain()
+
+
+        self.m.shift(int("A",16))
+        self.m.shift(int("5",16))
+        self.m.shift(int("C",16))
+        self.m.shift(int("D",16))
+        self.m.shift(int("2",16))
+
+
+        #data = int("FFFF",16)
+        #print data
+        #print self.m.mask(data)
+
+
+
+
 
 
 

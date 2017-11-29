@@ -31,5 +31,7 @@ def main():
         "000000000000000000000000000000"
     )
 
+    main = up2MainTestbench()
+
 if "__main__" == __name__:
     main()

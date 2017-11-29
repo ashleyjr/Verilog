@@ -22,3 +22,6 @@ class up2Utils:
             space += " "
         return space
 
+    def pow2(self, bits):
+        return math.pow(2, bits)
+

@@ -169,7 +169,61 @@ class up2Fetch:
         print "ABS=" + str(self.calcAbsPc()),
         print
 
+class up2Main:
+    ''' Model of the up2 processor main memory section '''
 
+    def __init__(self, addr_nibbles, data_nibbles):
+        self.u = up2Utils()
+        self.mem_addr = int(self.u.pow2(addr_nibbles * 4))
+        self.mem_data = int(self.u.pow2(data_nibbles * 4))
+        self.mem = [0] * self.mem_addr
+        self.addr_nibbles = addr_nibbles
+        self.data_nibbles = data_nibbles
+        self.addr = 0
+        self.data = 0
+
+        ''' Model Asertions '''
+        assert self.addr < self.mem_addr, "Address out of range"
+        assert self.data < self.mem_data, "Data out of range"
+
+    #def mask(self, data, nibbles):
+    #    mask = 0
+    #    for i in range(0, (nibbles * 4)):
+    #        mask = mask | (1 << i)
+
+    #def shiftUpNibble(data, new_nibble, nibbles):
+    #    out = data << 4
+    #    out = out | new_nibble
+
+    def shift(self, data):
+        # Access top nibble
+        out = self.addr >> (4 * (self.addr_nibbles - 1))
+        # Create mask
+        mask = int(self.u.pow2(self.addr_nibbles*4) - 1)
+        # Take shifted out away from address
+        self.addr = ((self.addr << 4) & (mask)) | data
+
+        print hex(self.addr)
+        print hex(mask)
+        return out
+
+
+
+        # Take shifted out away from address
+        self.addr = self.addr
+        # Shift up by a nibble and drop top nibble
+        self.data = self.data
+        self.addr = ((self.addr << 4) | data)
+        return se
+
+    def swap(self):
+        data = self.mem[self.addr]
+        self.mem[self.addr] = self.data
+        self.data = data
+
+    def printMain(self):
+        for i in range(0, len(self.mem)):
+            print hex(i), hex(self.mem[i])
 
 
 
