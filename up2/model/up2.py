@@ -196,15 +196,19 @@ class up2Main:
     #    out = out | new_nibble
 
     def shift(self, data):
-        # Access top nibble
-        out = self.addr >> (4 * (self.addr_nibbles - 1))
-        # Create mask
-        mask = int(self.u.pow2(self.addr_nibbles*4) - 1)
-        # Take shifted out away from address
-        self.addr = ((self.addr << 4) & (mask)) | data
+        # Create masks
+        addr_mask = int(self.u.pow2(self.addr_nibbles*4) - 1)
+        data_mask = int(self.u.pow2(self.data_nibbles*4) - 1)
+        # Access top nibbles
+        out_addr = self.addr >> (4 * (self.addr_nibbles - 1))
+        out = self.data >> (4 * (self.data_nibbles - 1))
+        # Shift in new data
+        self.addr = ((self.addr << 4) & (addr_mask)) | data
+        self.data = ((self.data << 4) & (data_mask)) | out_addr
 
+
+        print hex(self.data),
         print hex(self.addr)
-        print hex(mask)
         return out
 
 
@@ -222,8 +226,9 @@ class up2Main:
         self.data = data
 
     def printMain(self):
+        print "==========="
         for i in range(0, len(self.mem)):
             print hex(i), hex(self.mem[i])
-
+        print "==========="
 
 

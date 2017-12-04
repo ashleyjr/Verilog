@@ -186,17 +186,27 @@ class up2MainTestbench:
     ''' Testbench for main memory section only '''
 
     def __init__(self):
-        self.m = up2Main(4,4)
+        self.m = up2Main(1,4)
         self.m.swap()
         self.m.printMain()
 
 
-        self.m.shift(int("A",16))
-        self.m.shift(int("5",16))
-        self.m.shift(int("C",16))
+        self.m.shift(int("D",16))
+        self.m.shift(int("D",16))
+        self.m.shift(int("D",16))
         self.m.shift(int("D",16))
         self.m.shift(int("2",16))
+        self.m.swap()
 
+        self.m.shift(int("A",16))
+        self.m.shift(int("A",16))
+        self.m.shift(int("A",16))
+        self.m.shift(int("A",16))
+        self.m.shift(int("1",16))
+        self.m.swap()
+
+
+        self.m.printMain()
 
         #data = int("FFFF",16)
         #print data
