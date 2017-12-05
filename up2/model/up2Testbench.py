@@ -186,33 +186,32 @@ class up2MainTestbench:
     ''' Testbench for main memory section only '''
 
     def __init__(self):
+
+        # Create 1 nibble deep, 4 nibble wide main mem
+        # Set all to 0xFFFF
         self.m = up2Main(1,4)
-        self.m.swap()
+        for i in range(0,16):
+            self.m.printMain()
+            self.load("FFFF" + hex(i).split('x')[1])
         self.m.printMain()
 
 
-        self.m.shift(int("D",16))
-        self.m.shift(int("D",16))
-        self.m.shift(int("D",16))
-        self.m.shift(int("D",16))
-        self.m.shift(int("2",16))
-        self.m.swap()
-
-        self.m.shift(int("A",16))
-        self.m.shift(int("A",16))
-        self.m.shift(int("A",16))
-        self.m.shift(int("A",16))
-        self.m.shift(int("1",16))
-        self.m.swap()
-
-
+        # Create 4 nibble deep, 8 nibble wide main mem
+        # Set all to 0xAAAAAAAA
+        self.m = up2Main(2,8)
+        for i in range(0,256):
+            self.m.printMain()
+            self.load("AAAAAAAA" + hex(i).split('x')[1])
         self.m.printMain()
 
-        #data = int("FFFF",16)
-        #print data
-        #print self.m.mask(data)
+    def load(self, hex_str):
+        for i in hex_str:
+            self.shiftPrint(int(i,16))
+        self.m.swap()
 
-
+    def shiftPrint(self, data):
+        self.m.shift(data)
+        self.m.printShift()
 
 
 

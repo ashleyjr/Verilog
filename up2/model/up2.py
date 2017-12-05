@@ -186,15 +186,6 @@ class up2Main:
         assert self.addr < self.mem_addr, "Address out of range"
         assert self.data < self.mem_data, "Data out of range"
 
-    #def mask(self, data, nibbles):
-    #    mask = 0
-    #    for i in range(0, (nibbles * 4)):
-    #        mask = mask | (1 << i)
-
-    #def shiftUpNibble(data, new_nibble, nibbles):
-    #    out = data << 4
-    #    out = out | new_nibble
-
     def shift(self, data):
         # Create masks
         addr_mask = int(self.u.pow2(self.addr_nibbles*4) - 1)
@@ -206,29 +197,19 @@ class up2Main:
         self.addr = ((self.addr << 4) & (addr_mask)) | data
         self.data = ((self.data << 4) & (data_mask)) | out_addr
 
-
-        print hex(self.data),
-        print hex(self.addr)
-        return out
-
-
-
-        # Take shifted out away from address
-        self.addr = self.addr
-        # Shift up by a nibble and drop top nibble
-        self.data = self.data
-        self.addr = ((self.addr << 4) | data)
-        return se
-
     def swap(self):
         data = self.mem[self.addr]
         self.mem[self.addr] = self.data
         self.data = data
 
+    def printShift(self):
+        print "Addr: " + str(hex(self.addr)) + "\t",
+        print "Data: " + str(hex(self.data))
+
     def printMain(self):
-        print "==========="
+        print "== Main =="
         for i in range(0, len(self.mem)):
             print hex(i), hex(self.mem[i])
-        print "==========="
+        print "=========="
 
 
