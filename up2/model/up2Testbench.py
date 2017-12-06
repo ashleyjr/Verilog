@@ -204,14 +204,41 @@ class up2MainTestbench:
             self.load("AAAAAAAA" + hex(i).split('x')[1])
         self.m.printMain()
 
+        # Create 1 nibble deep, 8 nibble (32 bit) wide main mem
+        # Set all to 0xAAAAAAAA
+        self.m = up2Main(1,8)
+        for i in range(0,16):
+            self.m.printMain()
+            self.load("AAAAAAAA" + hex(i).split('x')[1])
+        # Set top half to 0xDDDDDDDD
+        for i in range(15,7,-1):
+            self.m.printMain()
+            self.load("DDDDDDDD" + hex(i).split('x')[1])
+        self.m.printMain()
+        # Read all
+        for i in range(0,16):
+            self.m.printMain()
+            self.shiftPrint(i)
+            self.m.swap()
+            self.printShift(i)
+            self.m.printMain()
+            self.m.swap()
+            r = 0
+            for i in range(0,8):
+                r = self.shiftPrint(r)
+                print r
+            self.m.printShift()
+        self.m.printMain()
+
     def load(self, hex_str):
         for i in hex_str:
             self.shiftPrint(int(i,16))
         self.m.swap()
 
     def shiftPrint(self, data):
-        self.m.shift(data)
+        r = self.m.shift(data)
         self.m.printShift()
+        return r
 
 
 

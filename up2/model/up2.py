@@ -196,6 +196,7 @@ class up2Main:
         # Shift in new data
         self.addr = ((self.addr << 4) & (addr_mask)) | data
         self.data = ((self.data << 4) & (data_mask)) | out_addr
+        return out
 
     def swap(self):
         data = self.mem[self.addr]
@@ -203,6 +204,7 @@ class up2Main:
         self.data = data
 
     def printShift(self):
+        print "Shift: ",
         print "Addr: " + str(hex(self.addr)) + "\t",
         print "Data: " + str(hex(self.data))
 
