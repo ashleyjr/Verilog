@@ -33,5 +33,8 @@ def main():
 
     main = up2MainTestbench()
 
+    dpwm = up2ExecuteMainRegStackTestbench()
+    dpwm.run()
+
 if "__main__" == __name__:
     main()

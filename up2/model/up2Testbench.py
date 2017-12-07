@@ -238,7 +238,50 @@ class up2MainTestbench:
         self.m.printShift()
         return r
 
+class up2ExecuteMainRegStackTestbench:
+    ''' Testbench for execute, main mem, register stack section only '''
 
+    def __init__(self):
+        self.e = up2Execute()
+        self.m = up2Main(1,4)
+        self.r = up2Stack()
+        self.u = up2Utils()
+
+    def op(self, op):
+        ''' Execute an op'''
+        if(0 == op):
+            self.e.add()
+        elif(1 == op):
+            self.e.sub()
+        elif(2 == op):
+            self.e.setRegOut1()
+        elif(3 == op):
+            self.e.setRegOutR0()
+        elif(4 == op):
+            self.e.setRegOutR1()
+        elif(5 == op):
+            self.e.setRegOutR2()
+        elif(6 == op):
+            self.e.setRegInR0()
+        elif(7 == op):
+            self.e.setRegInR1()
+        elif(8 == op):
+            self.e.setRegInR2()
+        elif(9 == op):
+            self.e.setRegInCmp()
+        elif(10 == op):
+            self.r.push(self.e.readRegs())
+        elif(11 == op):
+            self.e.writeRegs(self.r.pop())
+
+    def shift(self):
+        regs = self.e.readRegs()
+        regs[1] = self.m.shift(regs[1])
+        self.e.writeRegs(regs)
+
+    def run(self):
+        self.m.printShift()
+        self.shift()
 
 
 
