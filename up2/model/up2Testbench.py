@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import random
 from up2Utils import *
-from up2 import *
+from up2Components import *
 
 class up2RegStackTestbench:
     ''' Testbench for regsiter stack section only '''
