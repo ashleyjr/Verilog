@@ -199,6 +199,7 @@ class up2Main:
         return out
 
     def swap(self):
+        print "Swap"
         data = self.mem[self.addr]
         self.mem[self.addr] = self.data
         self.data = data

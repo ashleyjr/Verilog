@@ -216,18 +216,16 @@ class up2MainTestbench:
             self.load("DDDDDDDD" + hex(i).split('x')[1])
         self.m.printMain()
         # Read all
-        for i in range(0,16):
+        for i in range(15,-1,-1):
             self.m.printMain()
             self.shiftPrint(i)
             self.m.swap()
-            self.printShift(i)
-            self.m.printMain()
-            self.m.swap()
-            r = 0
-            for i in range(0,8):
-                r = self.shiftPrint(r)
-                print r
             self.m.printShift()
+            r = 0
+            for i in range(0,10):
+                print "r = " + hex(r)
+                r = self.shiftPrint(r)
+            self.m.swap()
         self.m.printMain()
 
     def load(self, hex_str):
