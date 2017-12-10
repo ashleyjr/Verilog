@@ -1,16 +1,128 @@
-ADD
-SUB
-OR
-NOR
-XOR
-NAND
-LSL
-LSR
-BNE
-BE
-JMP
-INT
-SHM
-MEM
-DSP
-PSP
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+ADD     R0,1,R1     # Add
+SUB     R0,1,R1
+OR      R0,1,R1     # Or this
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1
+LSL     R0,1,R1
+LSR     R0,1,R1
+NOR     R0,1,R1
+XOR     R0,1,R1
+NAND    R0,1,R1

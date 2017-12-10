@@ -2,6 +2,9 @@
 import random
 import math
 
+
+
+
 class up2Utils:
 
     def randReg(self,bits,length):
@@ -24,4 +27,5 @@ class up2Utils:
 
     def pow2(self, bits):
         return math.pow(2, bits)
+
 

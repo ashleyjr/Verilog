@@ -59,10 +59,11 @@ def main():
     elif(options.datapath):
         dpwm = ExecuteMainRegStackTestbench()
         dpwm.run()
+
     elif(options.assemble):
         a = up2Assemble(options.in_file,options.out_file)
         a.printStats()
-        a.printCode()
+        a.assemble()
 
 if "__main__" == __name__:
     main()
