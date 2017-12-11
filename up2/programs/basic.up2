@@ -126,3 +126,6 @@ LSR     R0,1,R1
 NOR     R0,1,R1
 XOR     R0,1,R1
 NAND    R0,1,R1
+BNE     TEST
+BE      TEST
+JMP     FOO

@@ -98,6 +98,11 @@ class up2Assemble:
                             self.out += t.muxes[mux]
                     else:
                         self.printError("Operation requires 3 mux arguments")
+                elif cmd in t.use_address:
+                    label = line[len(cmd):]
+                    self.printInfo("Adding label (" + label + ") to linker")
+                    self.out += t.cmds[cmd]
+
             ptr += 1
         if(False == self.error):
             self.writeHex()

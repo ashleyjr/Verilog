@@ -50,3 +50,9 @@ class up2Translate:
         "LSL",
         "LSR"
     }
+
+    use_address={
+        "BNE",
+        "BE",
+        "JMP"
+    }
