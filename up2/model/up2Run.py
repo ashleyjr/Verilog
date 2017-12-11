@@ -62,7 +62,6 @@ def main():
 
     elif(options.assemble):
         a = up2Assemble(options.in_file,options.out_file)
-        a.printStats()
         a.assemble()
 
 if "__main__" == __name__:
