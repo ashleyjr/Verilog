@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import re
 from up2Translate import up2Translate as t
 
 class up2Assemble:
@@ -27,10 +28,10 @@ class up2Assemble:
 
     def printFinish(self):
         ''' Last line depends on errors and warnings '''
+        print "FINISHED:",
         if(self.error):
             print "ERROR"
         else:
-            print "FINISHED:",
             if(0 == self.warning):
                 print "No warnings",
             elif(1 == self.warning):
@@ -73,13 +74,23 @@ class up2Assemble:
         ''' Run the assembler sequence '''
         self.printStart()
         self.resetErrorsAndWarnings()
+        labels_set = {}
         self.out = ""
         ptr = 0
         lines = self.code.split("\n")
         while ptr < len(lines) - 1 and not self.error:
+            ''' Prepare line '''
             line = lines[ptr]
             self.printInfo("Assembling line " + str(ptr) + " "+ str(line))
             line = self.removeWhiteSpace(line.split("#")[0])
+            ''' Labels '''
+            if ":" in line:
+                label = line.split(":")[0]
+                line = line.split(":")[1]
+                address = len(self.out)
+                labels_set[label] = address
+                self.printInfo("Label: " + label + " assigned address " + str(hex(address)))
+            ''' Operations '''
             cmd = ""
             for i in range(0, len(line)+1):
                 if line[0:i] in t.cmds:
@@ -100,10 +111,37 @@ class up2Assemble:
                         self.printError("Operation requires 3 mux arguments")
                 elif cmd in t.use_address:
                     label = line[len(cmd):]
-                    self.printInfo("Adding label (" + label + ") to linker")
+                    self.printInfo("Found label \'" + label + "\'")
                     self.out += t.cmds[cmd]
+                    self.out += "<" + label + ">"
 
             ptr += 1
+        if(False == self.error):
+            self.printInfo("Running linker")
+            links = self.out.split("<")
+            link_str = str(len(links) - 1)
+            if int(link_str) > 1:
+                link_str += " links found"
+            else:
+                link_str += " link found"
+            for label in labels_set:
+                if label in self.out:
+                    old = "<" + label + ">"
+                    new =  str(hex(labels_set[label])[2:])
+                    used = self.out.count(old)
+                    swap_str = "Found " + str(used)
+                    if used > 1:
+                        swap_str += " references of "
+                    else:
+                        swap_str += " reference of "
+                    swap_str += label
+                    self.printInfo(swap_str)
+                    self.out = self.out.replace(old,new)
+                else:
+                    self.printWarning("Label \'" + label + "\' has origin but no reference")
+            left = self.out.split("<")[1:]
+            if left:
+                self.printError("Label \'" + left[0].split(">")[0] + "\' referenced but no origin set")
         if(False == self.error):
             self.writeHex()
             self.printInfo("Lines assembled = " + str(len(lines)))
