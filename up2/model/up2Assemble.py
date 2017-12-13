@@ -1,11 +1,13 @@
 #!/usr/bin/python
 import re
+from up2Utils import up2Utils as u
 from up2Translate import up2Translate as t
 
 class up2Assemble:
     ''' Assembler for up2 files '''
 
     def __init__(self, in_file, out_file):
+        self.u = u()
         self.in_file = in_file
         self.out_file = out_file
         self.code = open(in_file, "r").read()
@@ -116,6 +118,10 @@ class up2Assemble:
                     self.out += "<" + label + ">"
 
             ptr += 1
+        self.printInfo("Hex length before linking is " +str(len(self.out)))
+        ''' Use length before linking to set the depth '''
+        nibbles = self.u.fit(len(self.out),4)
+        self.printInfo("Requires " + str(nibbles) + " nibble address width")
         if(False == self.error):
             self.printInfo("Running linker")
             links = self.out.split("<")
@@ -124,6 +130,33 @@ class up2Assemble:
                 link_str += " links found"
             else:
                 link_str += " link found"
+            self.printInfo(link_str)
+            ''' Iterate out and process labels so addresses align '''
+            while i < len(self.out):
+                if "<" == self.out[i]:
+                    ''' Find the label '''
+                    address = i
+                    label = ""
+                    i += 1
+                    while ">" != self.out[i]:
+                        label += self.out[i]
+                        i += 1
+                    ''' Replace the label with a number '''
+                    if label in labels_set:
+                        self.printInfo("Found label origin for \'" + str(label) + "\'")
+
+
+                        ''' Problems '''
+                        # Position of label origin will change as nibble width is unkown
+                        # Position of labels will change as nibble width in unkown
+
+                        # Iterate over the assembler with all values of nibbles
+                        # Trying 1 nibbles ... won't fit
+                        # Trying 2 nibbles, etc...
+
+
+
+                i += 1
             for label in labels_set:
                 if label in self.out:
                     old = "<" + label + ">"
