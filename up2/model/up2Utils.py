@@ -19,6 +19,9 @@ class up2Utils:
     def fit(self, num, chunk):
         return int(math.ceil(float(self.clog2(num))/float(chunk)))
 
+    def fitNibbles(self, width):
+        return int(math.ceil(float(width) / 4))
+
     def padding(self, length):
         space = ""
         for j in range(0,length):

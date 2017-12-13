@@ -76,118 +76,75 @@ class up2Assemble:
         ''' Run the assembler sequence '''
         self.printStart()
         self.resetErrorsAndWarnings()
-        labels_set = {}
+        code = self.code.split("\n")
         self.out = ""
-        ptr = 0
-        lines = self.code.split("\n")
-        while ptr < len(lines) - 1 and not self.error:
-            ''' Prepare line '''
-            line = lines[ptr]
-            self.printInfo("Assembling line " + str(ptr) + " "+ str(line))
-            line = self.removeWhiteSpace(line.split("#")[0])
-            ''' Labels '''
-            if ":" in line:
-                label = line.split(":")[0]
-                line = line.split(":")[1]
-                address = len(self.out)
-                labels_set[label] = address
-                self.printInfo("Label: " + label + " assigned address " + str(hex(address)))
-            ''' Operations '''
-            cmd = ""
-            for i in range(0, len(line)+1):
-                if line[0:i] in t.cmds:
-                    cmd = line[0:i]
-                    break
-            if "" == cmd:
-                self.printError(str(cmd) + "not a valid operation")
+
+        ''' Determine suitable memory size to use'''
+        mem_size = 16
+        done = False
+        while not done:
+            labels = {}
+            address_width = self.u.clog2(mem_size)
+            nibbles = self.u.fitNibbles(address_width)
+            self.printInfo("Using a width of " + str(address_width) + " inside " + str(nibbles) + " nibbles to provide a memory size of " + str(mem_size))
+            required_mem_size = 0
+            for line in code:
+                line = self.removeWhiteSpace(line.split("#")[0])
+                if ":" in line:
+                    label = line.split(':')[0]
+                    if label in labels:
+                        self.printError("label \'" + label + "\' declared more than once")
+                        done = True
+                    labels[label] = required_mem_size
+                for mux in t.use_muxes:
+                    if mux in line:
+                        required_mem_size += 2
+                for address in t.use_address:
+                    if address in line:
+                        required_mem_size += (1 + nibbles)
+            if self.error:
+                done = True
             else:
-                if cmd in t.use_muxes:
-                    mux = line[len(cmd):]
-                    if 3 == len(mux.split(",")):
-                        if mux not in t.muxes:
-                            self.printError("Line " + str(ptr) + " \"" + str(line) + "\" does not contain correct arguments")
-                        else:
-                            self.out += t.cmds[cmd]
-                            self.out += t.muxes[mux]
-                    else:
-                        self.printError("Operation requires 3 mux arguments")
-                elif cmd in t.use_address:
-                    label = line[len(cmd):]
-                    self.printInfo("Found label \'" + label + "\'")
-                    self.out += t.cmds[cmd]
-                    self.out += "<" + label + ">"
-
-            ptr += 1
-        self.printInfo("Hex length before linking is " +str(len(self.out)))
-        ''' Use length before linking to set the depth '''
-        nibbles = self.u.fit(len(self.out),4)
-        self.printInfo("Requires " + str(nibbles) + " nibble address width")
-        if(False == self.error):
-            self.printInfo("Running linker")
-            links = self.out.split("<")
-            link_str = str(len(links) - 1)
-            if int(link_str) > 1:
-                link_str += " links found"
-            else:
-                link_str += " link found"
-            self.printInfo(link_str)
-            ''' Iterate out and process labels so addresses align '''
-            while i < len(self.out):
-                if "<" == self.out[i]:
-                    ''' Find the label '''
-                    address = i
-                    label = ""
-                    i += 1
-                    while ">" != self.out[i]:
-                        label += self.out[i]
-                        i += 1
-                    ''' Replace the label with a number '''
-                    if label in labels_set:
-                        self.printInfo("Found label origin for \'" + str(label) + "\'")
-
-
-                        ''' Problems '''
-                        # Position of label origin will change as nibble width is unkown
-                        # Position of labels will change as nibble width in unkown
-
-                        # Iterate over the assembler with all values of nibbles
-                        # Trying 1 nibbles ... won't fit
-                        # Trying 2 nibbles, etc...
-
-
-
-                i += 1
-            for label in labels_set:
-                if label in self.out:
-                    old = "<" + label + ">"
-                    new =  str(hex(labels_set[label])[2:])
-                    used = self.out.count(old)
-                    swap_str = "Found " + str(used)
-                    if used > 1:
-                        swap_str += " references of "
-                    else:
-                        swap_str += " reference of "
-                    swap_str += label
-                    self.printInfo(swap_str)
-                    self.out = self.out.replace(old,new)
+                if required_mem_size <= mem_size:
+                    for label in labels:
+                        self.printInfo("Label \'" + label + "\' assigned address " + str(labels[label]))
+                    done = True
                 else:
-                    self.printWarning("Label \'" + label + "\' has origin but no reference")
-            left = self.out.split("<")[1:]
-            if left:
-                self.printError("Label \'" + left[0].split(">")[0] + "\' referenced but no origin set")
+                    self.printInfo("Required memory size calculated as " + str(required_mem_size))
+                    mem_size = required_mem_size
+
+        ''' Turn operations in to hex '''
+        for ptr in range(0,len(code)):
+            line = code[ptr]
+            self.printInfo("Assembling line " + str(ptr))
+            self.printInfo(line)
+
+            ''' Mux operation '''
+            for op in t.use_muxes:
+                for mux in t.muxes:
+                    if (op in line) and (mux in line):
+                        add = t.cmds[op] + t.muxes[mux]
+                        self.out += add
+                        self.printInfo("Appending output hex with " + add)
+
+            ''' Address operations '''
+            for address in t.use_address:
+                for label in labels:
+                    if (label in line) and (address in line):
+                        self.printInfo("Label \'" + label + "\' points to address " + str(labels[label]))
+                        add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
+                        self.out += add
+                        self.printInfo("Appending output hex with " + add)
+
         if(False == self.error):
             self.writeHex()
-            self.printInfo("Lines assembled = " + str(len(lines)))
         self.printFinish()
 
 
-
-
-
-
-
-
-
+        # TODO
+        # Warnings for mixed up mux
+        # Warning for label dclared but unused
+        # Ops which don't use mux
 
 
 
