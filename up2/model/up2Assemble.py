@@ -67,7 +67,6 @@ class up2Assemble:
     def writeHex(self):
         self.printInfo("Writing " + str(self.out_file))
         open(self.out_file, "w").write(self.out)
-        self.printHex()
 
     def removeWhiteSpace(self, line):
         return line.replace(" ","").replace("\t","")
@@ -115,36 +114,64 @@ class up2Assemble:
 
         ''' Turn operations in to hex '''
         for ptr in range(0,len(code)):
-            line = code[ptr]
-            self.printInfo("Assembling line " + str(ptr))
-            self.printInfo(line)
+            if False == self.error:
+                line = code[ptr]
+                self.printInfo("Assembling line " + str(ptr))
+                found = 0
 
-            ''' Mux operation '''
-            for op in t.use_muxes:
-                for mux in t.muxes:
-                    if (op in line) and (mux in line):
-                        add = t.cmds[op] + t.muxes[mux]
-                        self.out += add
-                        self.printInfo("Appending output hex with " + add)
+                ''' Remove white space '''
+                line = self.removeWhiteSpace(line)
+                self.printInfo("\t" + line)
 
-            ''' Address operations '''
-            for address in t.use_address:
-                for label in labels:
-                    if (label in line) and (address in line):
-                        self.printInfo("Label \'" + label + "\' points to address " + str(labels[label]))
-                        add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
+                ''' Remove comments '''
+                if 1 < len(line.split('#')):
+                    self.printInfo("\tRemoving comment")
+                    line = line.split('#')[0]
+                    self.printInfo("\t" + line)
+
+                ''' Mux operation '''
+                for op in t.use_muxes:
+                    for mux in t.muxes:
+                        if (op in line) and (mux in line):
+                            add = t.cmds[op] + t.muxes[mux]
+                            self.out += add
+                            self.printInfo("\tAppending output hex with " + add)
+                            found += 1
+
+                ''' Address operations '''
+                for address in t.use_address:
+                    for label in labels:
+                        if (label in line) and (address in line):
+                            self.printInfo("\tLabel \'" + label + "\' points to address " + str(labels[label]))
+                            add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
+                            self.out += add
+                            self.printInfo("\tAppending output hex with " + add)
+                            found += 1
+
+                ''' Single nibble operations '''
+                for single in t.is_single:
+                    if single in line:
+                        add = t.cmds[single]
                         self.out += add
-                        self.printInfo("Appending output hex with " + add)
+                        self.printInfo("\tAppending output hex with " + add)
+                        found += 1
+
+                ''' Check assembled as expected '''
+                if 1 != found:
+                    if 0 == len(line):
+                        self.printWarning("\tEmpty line")
+                    else:
+                        self.printError("\tMalformed assembly")
 
         if(False == self.error):
             self.writeHex()
+            self.printHex()
         self.printFinish()
 
 
         # TODO
         # Warnings for mixed up mux
         # Warning for label dclared but unused
-        # Ops which don't use mux
 
 
 

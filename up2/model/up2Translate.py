@@ -5,14 +5,14 @@ class up2Translate:
     cmds={
         "ADD"           :   "0",
         "SUB"           :   "1",
-        "OR"            :   "2",
+        "OOR"           :   "2",
         "NOR"           :   "3",
         "XOR"           :   "4",
-        "NAND"          :   "5",
+        "NAN"           :   "5",
         "LSL"           :   "6",
         "LSR"           :   "7",
         "BNE"           :   "8",
-        "BE"            :   "9",
+        "BEQ"           :   "9",
         "JMP"           :   "A",
         "INT"           :   "B",
         "SHM"           :   "C",
@@ -23,36 +23,44 @@ class up2Translate:
 
     muxes={
         "R0,1,R1"       :   "0",
-        "R1,1,R2"       :   "1",
-        "R2,R0,R1"      :   "2",
-        "R?,R0,R2"      :   "3",
-        "R0,1,R1"       :   "4",
-        "R1,1,R2"       :   "5",
+        "R1,1,R1"       :   "1",
+        "R2,1,R1"       :   "2",
+        "R?,1,R1"       :   "3",
+        "R0,R0,R1"      :   "4",
+        "R1,R0,R1"      :   "5",
         "R2,R0,R1"      :   "6",
-        "R?,R0,R2"      :   "7",
-        "R0,1,R1"       :   "8",
+        "R?,R0,R1"      :   "7",
+        "R0,1,R2"       :   "8",
         "R1,1,R2"       :   "9",
-        "R2,R0,R1"      :   "A",
-        "R?,R0,R2"      :   "B",
-        "R0,1,R1"       :   "C",
-        "R1,1,R2"       :   "D",
+        "R2,1,R2"       :   "A",
+        "R?,1,R2"       :   "B",
+        "R0,R0,R1"      :   "C",
+        "R1,R0,R1"      :   "D",
         "R2,R0,R1"      :   "E",
-        "R?,R0,R2"      :   "F"
+        "R?,R0,R1"      :   "F"
     }
 
     use_muxes={
         "ADD",
         "SUB",
-        "OR",
+        "OOR",
         "NOR",
         "XOR",
-        "NAND",
+        "NAN",
         "LSL",
         "LSR"
     }
 
     use_address={
         "BNE",
-        "BE",
+        "BEQ",
         "JMP"
+    }
+
+    is_single={
+        "INT",
+        "SHM",
+        "MEM",
+        "DSP",
+        "PSP"
     }
