@@ -33,6 +33,7 @@ class up2Assemble:
         print "FINISHED:",
         if(self.error):
             print "ERROR"
+            return False
         else:
             if(0 == self.warning):
                 print "No warnings",
@@ -40,6 +41,7 @@ class up2Assemble:
                 print "1 warning",
             else:
                 print str(self.warning) + " warnings",
+            return True
 
     def printStart(self):
         print "   START: up2 assembler"
@@ -199,7 +201,8 @@ class up2Assemble:
         if(False == self.error):
             self.writeHex()
             self.printHex()
-        self.printFinish()
+
+        return self.printFinish()
 
 
 

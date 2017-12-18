@@ -3,7 +3,7 @@ from optparse import OptionParser
 from up2Testbench import *
 from up2Utils import *
 from up2Assemble import *
-
+from up2 import *
 
 def main():
     parser = OptionParser(usage="./up2Run.py [single argument]" )
@@ -17,8 +17,8 @@ def main():
     parser.add_option("-a", "--assemble",       action="store_true",    dest="assemble",    help="Assemble supplied up2lang (.up2) file")
     parser.add_option("-x", "--hex",            action="store_true",    dest="run",         help="Run supplied hex file")
     parser.add_option("-g", "--go",             action="store_true",    dest="go",          help="Assemble and run the machine code")
-    parser.add_option("-i", "--in",               dest="in_file",     help="Code file to be assembled in")
-    parser.add_option("-o", "--out",              dest="out_file",    help="Machine code file out")
+    parser.add_option("-i", "--in",                                     dest="in_file",     help="Code file to be assembled in")
+    parser.add_option("-o", "--out",                                    dest="out_file",    help="Machine code file out")
     (options, args) = parser.parse_args()
 
     if(options.execute != None):
@@ -63,6 +63,13 @@ def main():
     elif(options.assemble):
         a = up2Assemble(options.in_file,options.out_file)
         a.assemble()
+
+    elif(options.go):
+        a = up2Assemble(options.in_file,options.out_file)
+        a.assemble()
+
+        u = up2(options.out_file)
+        u.run(100)
 
 if "__main__" == __name__:
     main()

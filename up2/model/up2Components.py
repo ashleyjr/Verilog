@@ -47,6 +47,18 @@ class up2Execute:
             self.regs[self.c] += 16
         self.updateZeroFlag()
 
+    def xor(self):
+        ''' XOR '''
+        self.regs[self.c] = self.regs[self.b] ^ self.regs[self.a]
+        self.updateZeroFlag()
+
+
+    def lsl(self):
+        ''' Logical shift left '''
+        self.regs[self.c] = int("F",16) & (self.regs[self.a] << 1)
+        self.updateZeroFlag()
+
+
     def updateZeroFlag(self):
         '''Flag after ALU update '''
         if 0 == self.regs[self.c]:
@@ -80,6 +92,7 @@ class up2Execute:
 
     def setRegInCmp(self):
         self.c = 4
+
 
 class up2Stack:
     ''' Model of the up2 processor stack sections '''
@@ -129,9 +142,14 @@ class up2Fetch:
         ''' Model assertions '''
         assert (self.pc + self.index) < len(self.code), 'Entered invalid code space'
 
-    def ir(self, index):
-        self.index = index
+    def ir(self):
         return self.code[self.pc + self.index]
+
+    def getNibble(self):
+        return self.code[self.pc]
+
+    def getPc(self):
+        return self.pc
 
     def incPc(self):
         self.pc += 1
