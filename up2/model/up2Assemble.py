@@ -112,6 +112,9 @@ class up2Assemble:
                     self.printInfo("Required memory size calculated as " + str(required_mem_size))
                     mem_size = required_mem_size
 
+        ''' Keep track of labels used '''
+        unused_labels = labels.copy()
+
         ''' Turn operations in to hex '''
         for ptr in range(0,len(code)):
             if False == self.error:
@@ -146,6 +149,7 @@ class up2Assemble:
                             add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
                             self.out += add
                             self.printInfo("\tAppending output hex with " + add)
+                            del unused_labels[label]
                             found += 1
 
                 ''' Single nibble operations '''
@@ -158,11 +162,14 @@ class up2Assemble:
 
                 ''' Check assembled as expected '''
                 if 1 != found:
-                    if 0 == len(line):
-                        self.printWarning("\tEmpty line")
-                    else:
+                    if 0 != len(line):
                         self.printError("\tMalformed assembly")
 
+        ''' Check labels used '''
+        for label in unused_labels:
+            self.printWarning("Label \'" + label + "\' decalred but not referenced")
+
+        ''' Output file if no errors '''
         if(False == self.error):
             self.writeHex()
             self.printHex()
@@ -171,7 +178,6 @@ class up2Assemble:
 
         # TODO
         # Warnings for mixed up mux
-        # Warning for label dclared but unused
 
 
 
