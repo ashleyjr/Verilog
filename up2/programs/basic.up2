@@ -13,13 +13,14 @@ MAIN:       ADD     R0,1,R1     # Add
             OOR     R0,1,R1     # Or this 
 
 
-THE:        ADD     R0,1,R1     # Add
+THE:        ADD     R0,R1,R0     # Add
             SUB     R0,1,R1
             OOR     R0,1,R1     # Or this
             NOR     R0,1,R1
             XOR     R0,1,R1
             NAN     R0,1,R1
-            
+            ADD     R0,R1,1
+
             LSL     R0,1,R1
             
             LSR     R0,1,R1

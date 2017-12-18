@@ -141,6 +141,31 @@ class up2Assemble:
                             self.printInfo("\tAppending output hex with " + add)
                             found += 1
 
+                    ''' Try looking for shorts '''
+                    if 0 == found:
+                        for short in t.short_muxes:
+                            if (op in line) and (short in line):
+                                swap = t.short_muxes[short]
+                                self.printInfo("\tReplacing " + short + " with" + swap)
+                                add = t.cmds[op] + t.muxes[swap]
+                                self.out += add
+                                self.printInfo("\tAppending output hex with " + add)
+                                found += 1
+
+                    ''' Try mixing the mux select '''
+                    if 0 == found:
+                        for mux in t.muxes:
+                            seg = mux.split(",")
+                            mix = seg[0] + "," + seg[2] + "," + seg[1]
+                            if (op in line) and (mix in line):
+                                add = t.cmds[op] + t.muxes[mux]
+                                self.out += add
+                                self.printWarning("\tUsing " + mux + " instead of " + mix)
+                                self.printInfo("\tAppending output hex with " + add)
+                                temp_line = line.replace(mix,mux)
+                                self.printInfo("\t" + temp_line)
+                                found += 1
+
                 ''' Address operations '''
                 for address in t.use_address:
                     for label in labels:
@@ -149,7 +174,8 @@ class up2Assemble:
                             add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
                             self.out += add
                             self.printInfo("\tAppending output hex with " + add)
-                            del unused_labels[label]
+                            if label in unused_labels:
+                                del unused_labels[label]
                             found += 1
 
                 ''' Single nibble operations '''
@@ -174,11 +200,6 @@ class up2Assemble:
             self.writeHex()
             self.printHex()
         self.printFinish()
-
-
-        # TODO
-        # Warnings for mixed up mux
-
 
 
 

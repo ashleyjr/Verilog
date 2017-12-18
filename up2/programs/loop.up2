@@ -1,0 +1,34 @@
+INITIAL:    LSL     R0, R0          
+            LSL     R0, R0
+            LSL     R0, R0
+            LSL     R0, R0          # R0 = 0
+            XOR     R0, R0, R1 
+            XOR     R1, R0, R1
+            XOR     R0, R0, R1      # R0 = ?, R1 = 0
+            LSL     R0, R0          
+            LSL     R0, R0
+            LSL     R0, R0
+            LSL     R0, R0          # R0 = 0
+            XOR     R0, R0, R2 
+            XOR     R2, R0, R2
+            XOR     R0, R0, R2      # R0 = ?, R2 = 0
+            LSL     R0, R0          
+            LSL     R0, R0
+            LSL     R0, R0
+            LSL     R0, R0          # R0 = 0 
+
+            # R0 = 0
+            # R1 = 0
+            # R2 = 0   
+
+ONE:        ADD     R1, 1,  R1      # Increment R1
+            SUB     R?, R0, R1      # Compare against zero
+            BEQ     TWO
+            JMP     ONE
+
+TWO:        ADD     R2, 1,  R2      # Increment R2
+            SUB     R?, R0, R2      # Comapre against zero
+            BNE     ONE
+            JMP     TWO
+
+
