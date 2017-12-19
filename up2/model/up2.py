@@ -19,11 +19,13 @@ class up2:
         print "R1=" + str(hex(r[2])),
         print "R2=" + str(hex(r[3])),
 
-    def run(self, count):
+    def run(self, count, print_option):
         print "\nModel run for " + str(count) + " ops"
+        last_regs = str(self.e.readRegs())
         for i in range(0, count):
 
-            self.printStatus()
+            if print_option == "ALL":
+                self.printStatus()
 
             ''' Get current op '''
             for cmd in t.cmds:
@@ -64,6 +66,7 @@ class up2:
                 address = self.f.getNibble() << 4
                 self.f.incPc()
                 address = address | self.f.getNibble()
+                address -= 1
 
             ''' Execute operation '''
             if "ADD" == c:
@@ -77,14 +80,25 @@ class up2:
             elif "BEQ" == c:
                 if self.e.readZeroFLag():
                     self.f.setPc(address)
+            elif "BNE" == c:
+                if not self.e.readZeroFLag():
+                    self.f.setPc(address)
             elif "JMP" == c:
                 self.f.setPc(address)
 
             self.f.incPc()
 
-            print "> " + c + " " + m + " > ",
-            self.printStatus()
-            print
+            if print_option == "ALL":
+                print "> " + c + " " + m + " > ",
+                self.printStatus()
+                print
+
+            if print_option == "CHANGE":
+                if last_regs != str(self.e.readRegs()):
+                    self.printStatus()
+                    print
+                    last_regs = str(self.e.readRegs())
+
 
 
 

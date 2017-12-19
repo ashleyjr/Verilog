@@ -108,7 +108,7 @@ class up2Assemble:
             else:
                 if required_mem_size <= mem_size:
                     for label in labels:
-                        self.printInfo("Label \'" + label + "\' assigned address " + str(labels[label]))
+                        self.printInfo("Label \'" + label + "\' assigned address " + str(hex(labels[label])))
                     done = True
                 else:
                     self.printInfo("Required memory size calculated as " + str(required_mem_size))
