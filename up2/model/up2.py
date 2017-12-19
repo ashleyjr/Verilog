@@ -11,15 +11,23 @@ class up2:
         self.e = up2Execute()                           # Execute
         self.f = up2Fetch(open(code_file, "r").read())  # Fetch
 
+    def printStatus(self):
+        r = self.e.readRegs()
+        pc = self.f.getPc()
+        print "PC=" + str(hex(pc)),
+        print "R0=" + str(hex(r[1])),
+        print "R1=" + str(hex(r[2])),
+        print "R2=" + str(hex(r[3])),
+
     def run(self, count):
         print "\nModel run for " + str(count) + " ops"
         for i in range(0, count):
-            start_r = self.e.readRegs()
-            start_pc = self.f.getPc()
+
+            self.printStatus()
 
             ''' Get current op '''
             for cmd in t.cmds:
-                if str(t.cmds[cmd]) == str(self.f.getNibble()):
+                if str(t.cmds[cmd]) == self.f.getStrNibble():
                     c = cmd
                     break
 
@@ -28,7 +36,7 @@ class up2:
                 ''' Decode '''
                 self.f.incPc()
                 for mux in t.muxes:
-                    if str(t.muxes[mux]) == str(self.f.getNibble()):
+                    if str(t.muxes[mux]) == self.f.getStrNibble():
                         m = mux
                         break
                 ''' Set '''
@@ -50,6 +58,13 @@ class up2:
                 elif segs[2] == "R2":
                     self.e.setRegOutR2()
 
+            ''' Get address '''
+            if c in t.use_address:
+                self.f.incPc()
+                address = self.f.getNibble() << 4
+                self.f.incPc()
+                address = address | self.f.getNibble()
+
             ''' Execute operation '''
             if "ADD" == c:
                 self.e.add()
@@ -59,22 +74,17 @@ class up2:
                 self.e.xor()
             elif "LSL" == c:
                 self.e.lsl()
+            elif "BEQ" == c:
+                if self.e.readZeroFLag():
+                    self.f.setPc(address)
+            elif "JMP" == c:
+                self.f.setPc(address)
 
             self.f.incPc()
 
-            ''' Print status '''
-            r = self.e.readRegs()
-            print "PC=" + str(hex(start_pc)),
-            print "R0=" + str(hex(start_r[1])),
-            print "R1=" + str(hex(start_r[2])),
-            print "R2=" + str(hex(start_r[3])),
             print "> " + c + " " + m + " > ",
-            print "PC=" + str(hex(self.f.getPc())),
-            print "R0=" + str(hex(r[1])),
-            print "R1=" + str(hex(r[2])),
-            print "R2=" + str(hex(r[3]))
-
-
+            self.printStatus()
+            print
 
 
 

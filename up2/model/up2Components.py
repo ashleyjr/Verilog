@@ -148,6 +148,9 @@ class up2Fetch:
     def getNibble(self):
         return self.code[self.pc]
 
+    def getStrNibble(self):
+        return str(hex(self.code[self.pc])[2]).upper()
+
     def getPc(self):
         return self.pc
 
@@ -165,6 +168,9 @@ class up2Fetch:
         for i in range(1, self.u.fit(self.N,4)+1):
             pc = (pc << 4) + self.ir(i)
         return pc
+
+    def setPc(self, pc):
+        self.pc = pc
 
     def printCode(self):
         print "        POS:",
