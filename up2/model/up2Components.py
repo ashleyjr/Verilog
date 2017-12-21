@@ -111,10 +111,11 @@ class up2Execute:
     def setRegInCmp(self):
         self.c = 4
 
-    def swapR0(self, new):
-        old = self.regs[1]
-        self.regs[1] = new
-        return old
+    def getR0(self):
+        return self.regs[1]
+
+    def setR0(self, data):
+        self.regs[1] = data
 
 class up2Stack:
     ''' Model of the up2 processor stack sections '''
@@ -245,7 +246,6 @@ class up2Main:
         return out
 
     def swap(self):
-        print "Swap"
         data = self.mem[self.addr]
         self.mem[self.addr] = self.data
         self.data = data

@@ -100,6 +100,9 @@ class up2Assemble:
                 for mux in t.use_muxes:
                     if mux in line:
                         required_mem_size += 2
+                for single in t.is_single:
+                    if single in line:
+                        required_mem_size += 1
                 for address in t.use_address:
                     if address in line:
                         required_mem_size += (1 + nibbles)
@@ -146,7 +149,7 @@ class up2Assemble:
                     ''' Try looking for shorts '''
                     if 0 == found:
                         for short in t.short_muxes:
-                            if (op in line) and (short in line):
+                            if (op in line) and (short in line) and (2 == len(line.split(","))):
                                 swap = t.short_muxes[short]
                                 self.printInfo("\tReplacing " + short + " with" + swap)
                                 add = t.cmds[op] + t.muxes[swap]

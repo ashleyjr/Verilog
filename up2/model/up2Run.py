@@ -4,6 +4,7 @@ from up2Testbench import *
 from up2Utils import *
 from up2Assemble import *
 from up2 import *
+import os
 
 def main():
     parser = OptionParser(usage="./up2Run.py [single argument]" )
@@ -65,11 +66,15 @@ def main():
         a.assemble()
 
     elif(options.go):
+
+        if os.path.isfile(options.out_file):
+            os.remove(options.out_file)
+
         a = up2Assemble(options.in_file,options.out_file)
         a.assemble()
 
         u = up2(options.out_file)
-        u.run(1000,"ALL")
+        u.run(300,"ALL MEM")
 
 if "__main__" == __name__:
     main()

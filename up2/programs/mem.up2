@@ -1,19 +1,19 @@
-ZERO_ALL:   LSR R0,R0
+# Writes addresses to memory
+            LSR R0,R0
             LSR R0,R0
             LSR R0,R0
             LSR R0,R0
             XOR R0,R0,R1
             XOR R1,R0,R1
+            XOR R0,R0,R1    # R1 set to Zero 
+LOOP:       ADD R0,1,R1
+            SHM
+            ADD R0,1,R1
+            SHM
+            MEM
+            SHM
+            SHM             
             XOR R0,R0,R1
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            XOR R0,R0,R2
-            XOR R2,R0,R2
-            XOR R0,R0,R2
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            
+            XOR R1,R0,R1
+            XOR R0,R0,R1    # Swap R0 and R2
+            JMP LOOP           

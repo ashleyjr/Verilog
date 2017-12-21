@@ -25,7 +25,7 @@ class up2:
         last_regs = str(self.e.readRegs())
         for i in range(0, count):
 
-            if print_option == "ALL":
+            if "ALL" in print_option:
                 self.printStatus()
 
             ''' Get current op '''
@@ -96,31 +96,47 @@ class up2:
             elif "BEQ" == c:
                 if self.e.readZeroFLag():
                     self.f.setPc(address)
+                else:
+                    self.f.incPc()
             elif "BNE" == c:
                 if not self.e.readZeroFLag():
                     self.f.setPc(address)
+                else:
+                    self.f.incPc()
             elif "JMP" == c:
                 self.f.setPc(address)
             elif "SHM" == c:
-                self.m.swapR0()
+                buf = self.e.getR0()
+                buf = self.m.shift(buf)
+                self.e.setR0(buf)
                 self.f.incPc()
             elif "MEM" == c:
                 self.m.swap()
                 self.f.incPc()
 
-            if print_option == "ALL":
-                print "> " + c + " " + m + " > ",
+
+            ''' Print '''
+            if "ALL" in print_option:
+                print "> " + c,
+                if (c not in t.use_address) and (c not in t.is_single):
+                    print m ,
+                else:
+                    print "\t",
+                print "\t> ",
                 self.printStatus()
                 print
 
-            if print_option == "CHANGE":
+            if "CHANGE" in print_option:
                 if last_regs != str(self.e.readRegs()):
                     self.printStatus()
                     print
                     last_regs = str(self.e.readRegs())
 
-
-
+            if "MEM" in print_option:
+                if "MEM" == c:
+                    self.m.printMain()
+                if "SHM" == c:
+                    self.m.printShift()
 
 
 
