@@ -1,0 +1,19 @@
+ZERO_ALL:   LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            XOR R0,R0,R1
+            XOR R1,R0,R1
+            XOR R0,R0,R1
+            LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            XOR R0,R0,R2
+            XOR R2,R0,R2
+            XOR R0,R0,R2
+            LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            LSR R0,R0
+            

@@ -47,17 +47,35 @@ class up2Execute:
             self.regs[self.c] += 16
         self.updateZeroFlag()
 
+    def oor(self):
+        ''' OR '''
+        self.regs[self.c] = self.regs[self.b] | self.regs[self.a]
+        self.updateZeroFlag()
+
+    def nor(self):
+        ''' NOR '''
+        self.regs[self.c] = ~(self.regs[self.b] ^ self.regs[self.a])
+        self.updateZeroFlag()
+
     def xor(self):
         ''' XOR '''
         self.regs[self.c] = self.regs[self.b] ^ self.regs[self.a]
         self.updateZeroFlag()
 
+    def nan(self):
+        ''' NAND '''
+        self.regs[self.c] = ~(self.regs[self.b] & self.regs[self.a])
+        self.updateZeroFlag()
 
     def lsl(self):
         ''' Logical shift left '''
         self.regs[self.c] = int("F",16) & (self.regs[self.a] << 1)
         self.updateZeroFlag()
 
+    def lsr(self):
+        ''' Logical shift right '''
+        self.regs[self.c] = int("F",16) & (self.regs[self.a] >> 1)
+        self.updateZeroFlag()
 
     def updateZeroFlag(self):
         '''Flag after ALU update '''
@@ -93,6 +111,10 @@ class up2Execute:
     def setRegInCmp(self):
         self.c = 4
 
+    def swapR0(self, new):
+        old = self.regs[1]
+        self.regs[1] = new
+        return old
 
 class up2Stack:
     ''' Model of the up2 processor stack sections '''

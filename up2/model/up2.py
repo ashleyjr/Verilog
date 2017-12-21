@@ -10,6 +10,7 @@ class up2:
         self.r = up2Stack()                             # Reg Stack
         self.e = up2Execute()                           # Execute
         self.f = up2Fetch(open(code_file, "r").read())  # Fetch
+        self.m = up2Main(1,1)                           # Main mem
 
     def printStatus(self):
         r = self.e.readRegs()
@@ -66,17 +67,32 @@ class up2:
                 address = self.f.getNibble() << 4
                 self.f.incPc()
                 address = address | self.f.getNibble()
-                address -= 1
 
             ''' Execute operation '''
             if "ADD" == c:
                 self.e.add()
+                self.f.incPc()
             elif "SUB" == c:
                 self.e.sub()
+                self.f.incPc()
+            elif "OOR" == c:
+                self.e.orr()
+                self.f.incPc()
+            elif "NOR" == c:
+                self.e.nor()
+                self.f.incPc()
             elif "XOR" == c:
                 self.e.xor()
+                self.f.incPc()
+            elif "NAN" == c:
+                self.e.nan()
+                self.f.incPc()
             elif "LSL" == c:
                 self.e.lsl()
+                self.f.incPc()
+            elif "LSR" == c:
+                self.e.lsr()
+                self.f.incPc()
             elif "BEQ" == c:
                 if self.e.readZeroFLag():
                     self.f.setPc(address)
@@ -85,8 +101,12 @@ class up2:
                     self.f.setPc(address)
             elif "JMP" == c:
                 self.f.setPc(address)
-
-            self.f.incPc()
+            elif "SHM" == c:
+                self.m.swapR0()
+                self.f.incPc()
+            elif "MEM" == c:
+                self.m.swap()
+                self.f.incPc()
 
             if print_option == "ALL":
                 print "> " + c + " " + m + " > ",

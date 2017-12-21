@@ -69,7 +69,7 @@ def main():
         a.assemble()
 
         u = up2(options.out_file)
-        u.run(1000,"CHANGE")
+        u.run(1000,"ALL")
 
 if "__main__" == __name__:
     main()
