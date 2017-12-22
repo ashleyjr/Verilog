@@ -1,35 +1,39 @@
-MAIN:       ADD     R0,1,R1     # Add
-            SUB     R0,1,R1
-            OOR     R0,1,R1     # Or this
-            NOR     R0,1,R1
-            XOR     R0,1,R1
-            NAN     R0,1,R1
-            
-            LSL     R0,1,R1
-            
-            LSR     R0,1,R1
-            ADD     R0,1,R1     # Add
-            SUB     R0,1,R1
-            OOR     R0,1,R1     # Or this 
-
-
-THE:        ADD     R0,R1,R0     # Add
-            SUB     R0,1,R1
-            OOR     R0,1,R1     # Or this
-            NOR     R0,1,R1
-            XOR     R0,1,R1
-            NAN     R0,1,R1
-            ADD     R0,R1,1
-
-            LSL     R0,1,R1
-            
-            LSR     R0,1,R1
-            ADD     R0,1,R1     # Add
-            SUB     R0,1,R1
-            INT
+# Writes addresses to memory
+# Address nibbles = 1
+# Data nibbles = 1
+            LSR R1,1    # R1 = 0
+            LSR R2,1    # R2 = 0
+LOOP:       ADD R0,1,R1
             SHM
+            BNE PLUS_1
+                SUB R0,1,R2
+                JMP SUB_1
+PLUS_1:     ADD R0,1,R2
+SUB_1:      SHM
+            ADD R0,1,R1
+            SHM
+            BNE PLUS_2
+                SUB R0,1,R2
+                JMP SUB_2
+PLUS_2:     ADD R0,1,R2
+SUB_2:      SHM
             MEM
-            DSP
-            PSP
-            JMP     THE
+            SHM
+            SHM
+            SHM
+            XOR R0,R0,R1
+            XOR R1,R0,R1
+            XOR R0,R0,R1
+            SHM             
+            XOR R0,R0,R2
+            XOR R2,R0,R2
+            XOR R0,R0,R2 
+            JMP LOOP           
+
+            
+            
+
+
+
+
 

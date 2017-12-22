@@ -5,12 +5,11 @@ from up2Translate import up2Translate as t
 class up2:
     ''' Model of the up2 processor '''
 
-    def __init__(self, code_file):
-        self.p = up2Stack()                             # PC Stack
-        self.r = up2Stack()                             # Reg Stack
+    def __init__(self, code_file,address_nibbles,data_nibbles):
+        self.r = up2RegStack(4)                         # Reg Stack
         self.e = up2Execute()                           # Execute
         self.f = up2Fetch(open(code_file, "r").read())  # Fetch
-        self.m = up2Main(1,1)                           # Main mem
+        self.m = up2Main(address_nibbles,data_nibbles)  # Main mem
 
     def printStatus(self):
         r = self.e.readRegs()
@@ -99,7 +98,7 @@ class up2:
                     self.f.incPc()
             elif "BNE" == c:
                 if not self.e.readZeroFLag():
-                    self.f.setPc(address)
+                    self.f.setPc(address )
                 else:
                     self.f.incPc()
             elif "JMP" == c:
@@ -111,6 +110,9 @@ class up2:
                 self.f.incPc()
             elif "MEM" == c:
                 self.m.swap()
+                self.f.incPc()
+            elif "DSP" == c:
+                self.e.writeRegs(self.r.swap(self.e.readRegs()))
                 self.f.incPc()
 
 

@@ -15,13 +15,15 @@ def main():
     parser.add_option("-f", "--fetch",          action="store_true",    dest="fetch")
     parser.add_option("-m", "--mem",            action="store_true",    dest="mem")
     parser.add_option("-d", "--datapath",       action="store_true",    dest="datapath")
-    parser.add_option("-a", "--assemble",       action="store_true",    dest="assemble",    help="Assemble supplied up2lang (.up2) file")
-    parser.add_option("-x", "--hex",            action="store_true",    dest="run",         help="Run supplied hex file")
-    parser.add_option("-g", "--go",             action="store_true",    dest="go",          help="Assemble and run the machine code")
-    parser.add_option("-i", "--in",                                     dest="in_file",     help="Code file to be assembled in")
-    parser.add_option("-o", "--out",                                    dest="out_file",    help="Machine code file out")
-    parser.add_option("-y", "--runs",                                   dest="runs",        help="Number of runs")
-    parser.add_option("-v", "--verbosity",                              dest="verbosity",   help="Output selection")
+    parser.add_option("-a", "--assemble",       action="store_true",    dest="assemble",        help="Assemble supplied up2lang (.up2) file")
+    parser.add_option("-x", "--hex",            action="store_true",    dest="run",             help="Run supplied hex file")
+    parser.add_option("-g", "--go",             action="store_true",    dest="go",              help="Assemble and run the machine code")
+    parser.add_option("-i", "--in",                                     dest="in_file",         help="Code file to be assembled in")
+    parser.add_option("-o", "--out",                                    dest="out_file",        help="Machine code file out")
+    parser.add_option("-y", "--runs",                                   dest="runs",            help="Number of runs")
+    parser.add_option("-v", "--verbosity",                              dest="verbosity",       help="Output selection")
+    parser.add_option("", "--address_nibbles",                          dest="address_nibbles", help="Number of address nibbles")
+    parser.add_option("", "--data_nibbles",                             dest="data_nibbles",    help="Number of data nibbles")
 
 
     (options, args) = parser.parse_args()
@@ -78,8 +80,13 @@ def main():
         if False == a.assemble(options.verbosity):
             return 0
 
-        u = up2(options.out_file)
-        u.run(int(options.runs),options.verbosity)
+        u = up2(    options.out_file,
+                    int(options.address_nibbles),
+                    int(options.data_nibbles)
+                )
+        u.run(  int(options.runs),
+                options.verbosity
+            )
 
 if "__main__" == __name__:
     main()

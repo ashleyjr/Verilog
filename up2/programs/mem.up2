@@ -1,4 +1,6 @@
 # Writes addresses to memory
+# Address nibbles = 1
+# Data nibbles = 1
             LSR R0,R0
             LSR R0,R0
             LSR R0,R0

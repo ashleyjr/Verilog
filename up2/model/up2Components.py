@@ -117,31 +117,25 @@ class up2Execute:
     def setR0(self, data):
         self.regs[1] = data
 
-class up2Stack:
-    ''' Model of the up2 processor stack sections '''
+class up2RegStack:
+    ''' Model of the up2 processor register stack sections '''
 
-    def __init__(self):
+    def __init__(self, length):
         self.stack = []
+        self.length = length
+        for i in range(0,self.length):
+            self.stack.append([1,0,0,0,0])
         self.p = 0
 
         ''' Model assertions '''
         assert self.p >= 0, 'Stack out of range'
 
-    def push(self, reg):
-        if len(self.stack) == self.p:
-            self.stack.append(reg)
-        else:
-            self.stack[self.p] = reg
+    def swap(self, reg):
+        self.stack[self.p] = reg
         self.p += 1
-
-    def pop(self):
-        if 0 < self.p:
-            self.p -= 1
-        reg = self.stack[self.p]
-        return reg
-
-    def ptr(self):
-        return self.p
+        if self.p == self.length:
+            self.p = 0
+        return self.stack[self.p]
 
     def printStack(self):
         print self.stack
