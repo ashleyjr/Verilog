@@ -256,9 +256,7 @@ class up2Main:
         print "Data: " + str(hex(self.data))
 
     def printMain(self):
-        print "== Main =="
         for i in range(0, len(self.mem)):
-            print hex(i), hex(self.mem[i])
-        print "=========="
+            print hex(i).split('x')[1].upper() , hex(self.mem[i]).split('x')[1].upper()
 
 
