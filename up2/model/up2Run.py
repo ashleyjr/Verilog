@@ -20,6 +20,10 @@ def main():
     parser.add_option("-g", "--go",             action="store_true",    dest="go",          help="Assemble and run the machine code")
     parser.add_option("-i", "--in",                                     dest="in_file",     help="Code file to be assembled in")
     parser.add_option("-o", "--out",                                    dest="out_file",    help="Machine code file out")
+    parser.add_option("-y", "--runs",                                   dest="runs",        help="Number of runs")
+    parser.add_option("-v", "--verbosity",                              dest="verbosity",   help="Output selection")
+
+
     (options, args) = parser.parse_args()
 
     if(options.execute != None):
@@ -71,10 +75,11 @@ def main():
             os.remove(options.out_file)
 
         a = up2Assemble(options.in_file,options.out_file)
-        a.assemble()
+        if False == a.assemble(options.verbosity):
+            return 0
 
         u = up2(options.out_file)
-        u.run(300,"ALL MEM")
+        u.run(int(options.runs),options.verbosity)
 
 if "__main__" == __name__:
     main()

@@ -18,10 +18,12 @@ class up2Assemble:
         self.warning = 0
 
     def printInfo(self, info):
-        print "    INFO: " + info
+        if "INFO" in self.print_option:
+            print "    INFO: " + info
 
     def printWarning(self, warn):
-        print " WARNING: " + warn
+        if "WARNING" in self.print_option:
+            print " WARNING: " + warn
         self.warning += 1
 
     def printError(self, err):
@@ -30,21 +32,24 @@ class up2Assemble:
 
     def printFinish(self):
         ''' Last line depends on errors and warnings '''
-        print "FINISHED:",
+        if "INFO" in self.print_option:
+            print "FINISHED:",
         if(self.error):
             print "ERROR"
             return False
         else:
-            if(0 == self.warning):
-                print "No warnings",
-            elif(1 == self.warning):
-                print "1 warning",
-            else:
-                print str(self.warning) + " warnings",
-            return True
+            if "INFO" in self.print_option:
+                if(0 == self.warning):
+                    print "No warnings",
+                elif(1 == self.warning):
+                    print "1 warning",
+                else:
+                    print str(self.warning) + " warnings",
+                return True
 
     def printStart(self):
-        print "   START: up2 assembler"
+        if "INFO" in self.print_option:
+            print "   START: up2 assembler"
 
     def printHex(self):
         ''' Print output hexadecimal in a 16 wide grid '''
@@ -73,7 +78,10 @@ class up2Assemble:
     def removeWhiteSpace(self, line):
         return line.replace(" ","").replace("\t","")
 
-    def assemble(self):
+    def assemble(self, print_option):
+        ''' Set print option '''
+        self.print_option = print_option
+
         ''' Run the assembler sequence '''
         self.printStart()
         self.resetErrorsAndWarnings()

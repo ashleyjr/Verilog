@@ -21,7 +21,6 @@ class up2:
         print "R2=" + str(hex(r[3])),
 
     def run(self, count, print_option):
-        print "\nModel run for " + str(count) + " ops"
         last_regs = str(self.e.readRegs())
         for i in range(0, count):
 
@@ -138,6 +137,8 @@ class up2:
                 if "SHM" == c:
                     self.m.printShift()
 
+        if "LAST" in print_option:
+            self.m.printMain()
 
 
 
