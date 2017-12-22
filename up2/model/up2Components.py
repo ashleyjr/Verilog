@@ -52,9 +52,9 @@ class up2Execute:
         self.regs[self.c] = self.regs[self.b] | self.regs[self.a]
         self.updateZeroFlag()
 
-    def nor(self):
-        ''' NOR '''
-        self.regs[self.c] = ~(self.regs[self.b] ^ self.regs[self.a])
+    def copy(self):
+        ''' COPY '''
+        self.regs[self.c] = self.regs[self.b]
         self.updateZeroFlag()
 
     def xor(self):

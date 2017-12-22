@@ -1,19 +1,20 @@
 # Writes addresses to memory
-# Address nibbles = 1
-# Data nibbles = 1
-            LSR R1,1    # R1 = 0
-            LSR R2,1    # R2 = 0
+# Address nibbles = 2
+# Data nibbles = 2
+# Does not write sequentially
+            LSR R1,1        # R1 = 0
+            LSR R2,1        # R2 = 0
 LOOP:       ADD R0,1,R1
             SHM
             BEQ PLUS_1
-                NOR R0,1,R2
+                COP R0,1,R2
                 JMP MIN_1
 PLUS_1:     ADD R0,1,R2
 MIN_1:      SHM
             ADD R0,1,R1
             SHM
             BEQ PLUS_2
-                NOR R0,1,R2
+                COP R0,1,R2
                 JMP MIN_2
 PLUS_2:     ADD R0,1,R2
 MIN_2:      SHM

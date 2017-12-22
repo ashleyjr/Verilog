@@ -124,6 +124,12 @@ class up2Assemble:
                 else:
                     self.printInfo("Required memory size calculated as " + str(required_mem_size))
                     mem_size = required_mem_size
+        ''' Check for invalid labels '''
+        for label in labels:
+            for c in t.cmds:
+                if c in label:
+                    self.printError("Invalid label")
+
 
         ''' Keep track of labels used '''
         unused_labels = labels.copy()

@@ -17,5 +17,6 @@ run_test()
     fi
 }
 
-run_test "mem" "200" "1" "1"
-run_test "loop" "100" "1" "1"
+run_test "mem"      "200"   "1"     "1"
+run_test "mem_2"    "8000"  "2"     "2"
+run_test "loop"     "100"   "1"     "1"

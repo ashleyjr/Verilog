@@ -74,10 +74,10 @@ class up2:
                 self.e.sub()
                 self.f.incPc()
             elif "OOR" == c:
-                self.e.orr()
+                self.e.oor()
                 self.f.incPc()
-            elif "NOR" == c:
-                self.e.nor()
+            elif "COP" == c:
+                self.e.copy()
                 self.f.incPc()
             elif "XOR" == c:
                 self.e.xor()
