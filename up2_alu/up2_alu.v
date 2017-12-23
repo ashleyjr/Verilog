@@ -11,7 +11,8 @@ module up2_alu(
     input   wire    [3:0]   i_alu_op,
 	output	wire	[3:0]   o_r0,
 	output	wire    [3:0]   o_r1,
-	output	wire    [3:0]   o_r2	
+	output	wire    [3:0]   o_r2,
+    output  wire            o_zero_flag
 );
 
     reg     [3:0]   r0;
@@ -35,13 +36,15 @@ module up2_alu(
     // ALU operations
     assign alu_out  = (4'h0 == i_alu_op)    ?   alu_a + alu_b   :
                                                 alu_a - alu_b   ;
+    // Zero flag
+    assign o_zero_flag = (4'h0 == alu_out);
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
 	        r0 <= 4'h0;
             r1 <= 4'h0;
             r2 <= 4'h0;
-		end else begin
+		end else begin 
             if(i_r_write) begin
 	            r0 <= i_r0;
                 r1 <= i_r1;
