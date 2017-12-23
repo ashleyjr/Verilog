@@ -1,0 +1,5 @@
+VCD info: dumpfile up2_mem.vcd opened for output.
+                  TIME    nRst
+                   0ps       1
+               17000ps       0
+               34000ps       1
