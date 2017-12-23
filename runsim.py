@@ -18,10 +18,12 @@ def main():
     parser.add_option("-n", "--new", dest="new", help="Creates new module with a given name")
     parser.add_option("-p", "--pnr", action="store_true", dest="pnr", help="place and route")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
+    parser.add_option("-a", "--all",action="store_true", dest="all")
     parser.add_option("-w", "--waves", action="store_true", dest="waves")
     parser.add_option("-x", "--synth",action="store_true", dest="synth")
     parser.add_option("-y", "--synth_sim",action="store_true", dest="syn_sim")
     parser.add_option("-z", "--synth_waves",action="store_true", dest="syn_waves")
+
     (options, args) = parser.parse_args()
 
     sim = str(options.module)
@@ -75,9 +77,10 @@ def main():
         count = 1
         for line in f:
             print "    Info: " + line,
-            count = count + 1
-            if(count > 15):
-                break
+            if not options.all:
+                count = count + 1
+                if(count > 15):
+                    break
 
     if(options.synth):
         os.chdir(sim)
