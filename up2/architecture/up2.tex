@@ -97,15 +97,22 @@ Increment Program Counter Stack Pointer
 
 Objective: Set R1 to zero
 
+LSR, R1, 1
 
-LSL,R1,R1
-LSL,R1,R1
-LSL,R1,R1
-LSL,R1,R1
+\subsection{Load Immediates}
 
-\subsection{Load Immediate}
+Objective: Load every possible immediate in to R2
 
-Objective: Load 0xA(1010) in to R2
+# 0x0
+LSR, R0, 1
+
+# 0x1
+
+
+LSL, R0, 1  
+LSL, R2, R0
+OOR, R0, 1, R2
+LSL, R2, R0
 
 
 OR,R1,R1,+1

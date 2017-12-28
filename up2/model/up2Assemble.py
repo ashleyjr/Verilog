@@ -151,6 +151,10 @@ class up2Assemble:
                     line = line.split('#')[0]
                     self.printInfo("\t" + line)
 
+                ''' Remove label declarations '''
+                if ":" in line:
+                    line = line.split(":")[1]
+
                 ''' Mux operation '''
                 for op in t.use_muxes:
                     for mux in t.muxes:

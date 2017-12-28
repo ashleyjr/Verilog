@@ -1,0 +1,79 @@
+# Load all possible immedites in to every register
+START:      JMP ELEVEN
+
+ZERO:       LSR R1, 1
+            JMP END
+
+ONE:        LSR R2, 1
+            ADD R2, 1, R2
+            JMP END
+
+TWO:        LSL R2, 1 
+            JMP END
+
+THREE:      LSL R2, 1
+            ADD R2, 1, R2
+            JMP END
+
+FOUR:       LSL R0, 1
+            LSL R2, R0
+            JMP END
+
+FIVE:       LSL R0, 1
+            LSL R2, R0
+            ADD R2, 1, R2
+            JMP END
+
+SIX:        LSL R0, 1
+            LSL R2, R0
+            ADD R2, 1, R2
+            JMP END
+SEVEN:      LSL R0, 1
+            LSL R0, R0
+            LSL R2, R0
+            SUB R2, 1, R2
+            
+            JMP END
+EIGHT:      LSL R0, 1
+            LSL R0, R0
+            LSL R2, R0
+            JMP END
+NINE:       LSL R0, 1
+            LSL R0, R0
+            LSL R2, R0
+            ADD R2, 1, R2
+            JMP END
+TEN:        LSL R0, 1
+            LSL R0, R0
+            JMP END
+ELEVEN:     LSR R2, 1
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            JMP END
+
+TWELVE:     LSR R2, 1
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            JMP END
+
+THIRTEEN:   LSR R2, 1
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            JMP END
+
+FOURTEEN:   LSR R2, 1
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            JMP END
+
+FIFTEEN:    LSR R2, 1
+            SUB R2, 1, R2
+            JMP END
+
+END:        JMP START
