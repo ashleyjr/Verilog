@@ -14,11 +14,11 @@ class up2Translate:
         "BNE"           :   "8",
         "BEQ"           :   "9",
         "JMP"           :   "A",
-        "INT"           :   "B",
+        "RET"           :   "B",
         "SHM"           :   "C",
         "MEM"           :   "D",
         "DSP"           :   "E",
-        "PSP"           :   "F"
+        "JPL"           :   "F"
     }
 
     muxes={
@@ -65,13 +65,13 @@ class up2Translate:
     use_address={
         "BNE",
         "BEQ",
-        "JMP"
+        "JMP",
+        "JPL"
     }
 
     is_single={
-        "INT",
+        "RET",
         "SHM",
         "MEM",
-        "DSP",
-        "PSP"
+        "DSP"
     }

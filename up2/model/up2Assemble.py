@@ -40,11 +40,11 @@ class up2Assemble:
         else:
             if "INFO" in self.print_option:
                 if(0 == self.warning):
-                    print "No warnings",
+                    print "No warnings"
                 elif(1 == self.warning):
-                    print "1 warning",
+                    print "1 warning"
                 else:
-                    print str(self.warning) + " warnings",
+                    print str(self.warning) + " warnings"
                 return True
 
     def printStart(self):
@@ -192,7 +192,7 @@ class up2Assemble:
                 ''' Address operations '''
                 for address in t.use_address:
                     for label in labels:
-                        if (label in line) and (address in line):
+                        if (address + label) == line:
                             self.printInfo("\tLabel \'" + label + "\' points to address " + str(labels[label]))
                             add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
                             self.out += add

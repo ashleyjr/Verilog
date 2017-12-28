@@ -1,79 +1,126 @@
-# Load all possible immedites in to every register
-START:      JMP ELEVEN
+# Load all possible immediates in to R2
+            
+JMP START
 
-ZERO:       LSR R1, 1
-            JMP END
+ZERO:       LSR R2, 1
+            RET
 
 ONE:        LSR R2, 1
             ADD R2, 1, R2
-            JMP END
+            RET
 
 TWO:        LSL R2, 1 
-            JMP END
+            RET
 
 THREE:      LSL R2, 1
             ADD R2, 1, R2
-            JMP END
+            RET
 
 FOUR:       LSL R0, 1
             LSL R2, R0
-            JMP END
+            RET
 
 FIVE:       LSL R0, 1
             LSL R2, R0
             ADD R2, 1, R2
-            JMP END
+            RET
 
 SIX:        LSL R0, 1
             LSL R2, R0
             ADD R2, 1, R2
-            JMP END
+            ADD R2, 1, R2
+            RET
+
 SEVEN:      LSL R0, 1
             LSL R0, R0
             LSL R2, R0
-            SUB R2, 1, R2
-            
-            JMP END
+            SUB R2, 1, R2 
+            RET
+
 EIGHT:      LSL R0, 1
             LSL R0, R0
             LSL R2, R0
-            JMP END
+            RET
+
 NINE:       LSL R0, 1
             LSL R0, R0
             LSL R2, R0
             ADD R2, 1, R2
-            JMP END
-TEN:        LSL R0, 1
-            LSL R0, R0
-            JMP END
+            RET
+
+TEN:        LSR R2, 1
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            SUB R2, 1, R2
+            RET
+
 ELEVEN:     LSR R2, 1
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
-            JMP END
+            RET
 
 TWELVE:     LSR R2, 1
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
-            JMP END
+            RET
 
 THIRTEEN:   LSR R2, 1
             SUB R2, 1, R2
             SUB R2, 1, R2
             SUB R2, 1, R2
-            JMP END
+            RET
 
 FOURTEEN:   LSR R2, 1
             SUB R2, 1, R2
             SUB R2, 1, R2
-            JMP END
+            RET
 
 FIFTEEN:    LSR R2, 1
             SUB R2, 1, R2
-            JMP END
+            RET
 
-END:        JMP START
+            # In order
+START:      JPL ZERO
+            JPL ONE
+            JPL TWO
+            JPL THREE
+            JPL FOUR
+            JPL FIVE
+            JPL SIX
+            JPL SEVEN
+            JPL EIGHT
+            JPL NINE
+            JPL TEN
+            JPL ELEVEN
+            JPL TWELVE
+            JPL THIRTEEN
+            JPL FOURTEEN
+            JPL FIFTEEN
+            
+            # Mix up
+            JPL TEN
+            JPL TWO
+            JPL NINE
+            JPL THREE
+            JPL ZERO
+            JPL SIX
+            JPL TWELVE
+            JPL ONE
+            JPL FOUR
+            JPL SEVEN
+            JPL FIVE
+            JPL THIRTEEN
+            JPL ELEVEN
+            JPL FIFTEEN
+            JPL FOURTEEN
+            JPL EIGHT
+
+STOP:       JMP STOP
