@@ -1,11 +1,5 @@
 `timescale 1ns/1ps
-module up2_mem#(
-    parameter                       addr_nibbles,
-    parameter                       data_nibbles,
-    parameter                       shift_width = 4*(addr_nibbles+data_nibbles),
-    parameter                       addr_width = (4*addr_nibbles),
-    parameter                       data_width = (4*data_nibbles)
-)(
+module up2_mem (
 	input				            clk,
 	input				            nRst,
 
@@ -16,72 +10,68 @@ module up2_mem#(
     input                           i_write_ack,
     output                          o_write_req,
     
-    output  [data_width-1:0]        i_data,
-    output  [addr_width-1:0]        o_addr,
-    output  [data_width-1:0]        o_data
+    input   [DATA_WIDTH-1:0]        i_data,
+    output  [ADDR_WIDTH-1:0]        o_addr,
+    output  [DATA_WIDTH-1:0]        o_data,
 
     // Regs side
     input                           i_shift,
     input   [3:0]                   i_shift_data,
     output  [3:0]                   o_shift_data,
     input                           i_swap_req,
-    output                          o_swap_ack,
+    output                          o_swap_ack
 );
 
-    parameter   ONE
-    parameter   TWO
-    parameter   THREE
+    parameter   ADDR_NIBBLES    = 1;
+    parameter   DATA_NIBBLES    = 1;
+    parameter   SHIFT_WIDTH     = 4 * (ADDR_NIBBLES+DATA_NIBBLES);
+    parameter   ADDR_WIDTH      = 4 * ADDR_NIBBLES;
+    parameter   DATA_WIDTH      = 4 * DATA_NIBBLES;
+    parameter   IDLE            = 2'b00;
+    parameter   READ_REQ_1      = 2'b01;
+    parameter   WRITE_REQ       = 2'b10;
+    parameter   READ_REQ_2      = 2'b11;
 
-    reg [shift_width-1:0] shift;
-    reg state
-    wire    [data_width-1]  shift_update;
+    reg     [SHIFT_WIDTH-1:0]   shift;
+    reg     [1:0]               state;
+    wire    [DATA_WIDTH-1:0]    shift_update;
 
-    assign  o_data          =   shift[data_width-1:0] ^ i_data;
-    assign  o_addr          =   shift[shift_width-1:data_width];
-    assign  o_shift         =   shift[3:0];
-    assign  shift_update    =   o_data ^ i_data;
+    assign  o_data              =   shift[DATA_WIDTH-1:0] ^ i_data;
+    assign  o_addr              =   shift[SHIFT_WIDTH-1:DATA_WIDTH];
+    assign  o_shift_data        =   shift[3:0];
+    assign  shift_update        =   o_data ^ i_data;
+    assign  o_read_req          =   (   ((state == IDLE)        && (i_swap_req))    ||
+                                        ((state == READ_REQ_1)  && (~i_read_ack))   ||
+                                        ((state == WRITE_REQ)   && (i_write_ack))   ||
+                                        ((state == READ_REQ_2)  && (~i_read_ack)));
+    assign  o_write_req         =   (   ((state == READ_REQ_1)  && (i_read_ack))    ||
+                                        ((state == WRITE_REQ)   && (~i_write_ack)));
+    assign  o_swap_ack          =   (   ( state == READ_REQ_2)  && (i_read_ack));
+
 
 	always@(posedge clk or negedge nRst) begin
 		if(!nRst) begin
 		    shift       <= 'd0;
+            state       <= IDLE;
         end else begin
-            o_read_req  <= 1'b0;
-            o_write_req <= 1'b0;
+            if(i_shift) begin
+                shift   <= {i_shift_data,shift[SHIFT_WIDTH-1:4]};
+            end 
             case(state)
-                IDLE:       begin
-                                if(i_shift) begin
-                                    shift       <= {i_shift,shift[shift_width-1:4]};
-                                end 
-                                if(i_swap) begin
-                                    o_read_req  <= 1'b1;
-                                    state       <= READ_REQ_1;
-                                end
+                IDLE:       if(i_swap_req) begin
+                                state                   <= READ_REQ_1;
                             end
-                READ_REQ_1: begin
-                                if(i_read_ack) begin
-                                    shift[data_width-1:0]   <= shift_update;
-                                    o_write_req             <= 1'b1;
-                                    state                   <= WRITE_REQ
-                                end else begin
-                                    o_read_req <= 1'b1
-                                end
-                            end
-                WRITE_REQ:  begin
-                                if(i_write_ack) begin
-                                    o_read_req              <= 1'b1;
-                                    state                   <= READ_REQ_2;
-                                end else begin
-                                    o_write_req             <= 1'b1;
-                                end
-                            end
-                READ_REQ_2: begin
-                                if(i_read_ack) begin
-                                    shift[data_width-1:0]   <= shift_update; 
-                                    state                   <= IDLE
-                                end else begin
-                                    o_read_req              <= 1'b1;
-                                end
-                            end
+                READ_REQ_1: if(i_read_ack) begin
+                                shift[DATA_WIDTH-1:0]   <= shift_update;
+                                state                   <= WRITE_REQ;
+                            end 
+                WRITE_REQ:  if(i_write_ack) begin
+                                state                   <= READ_REQ_2;
+                            end 
+                READ_REQ_2: if(i_read_ack) begin
+                                shift[DATA_WIDTH-1:0]   <= shift_update; 
+                                state                   <= IDLE;
+                            end 
             endcase
 		end
 	end
