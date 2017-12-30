@@ -48,7 +48,10 @@ class up2Translate:
         "R2,1"          :   "R2,1,R1",
         "R2,R0"         :   "R2,R0,R1",
         "R?,1"          :   "R?,1,R1",
-        "R?,R0"         :   "R?,R0,R1"
+        "R?,R0"         :   "R?,R0,R1",
+        "+"             :   "R0,1,R1",
+        "-"             :   "R0,1,R2",
+        "R0,R2"         :   "R0,1,R2"
     }
 
     use_muxes={
@@ -73,6 +76,5 @@ class up2Translate:
     is_single={
         "RET",
         "SHM",
-        "MEM",
-        "DSP"
+        "MEM"
     }

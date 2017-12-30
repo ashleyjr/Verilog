@@ -19,8 +19,9 @@ run_test()
     fi
 }
 
-run_test "mem"      "200"   "1"     "1"     "LAST"  ""
-run_test "mem_2"    "8000"  "2"     "2"     "LAST"  ""
-run_test "loop"     "100"   "1"     "1"     "LAST"  ""
-run_test "imm"      "1000"  "1"     "1"     "ALL"   "| grep \"RET\" | grep -o \"R2=0x..\""
+run_test "mem"          "200"       "1"     "1"     "LAST"  ""
+run_test "mem_2"        "8000"      "2"     "2"     "LAST"  ""
+run_test "loop"         "100"       "1"     "1"     "LAST"  ""
+run_test "imm"          "1000"      "1"     "1"     "ALL"   "| grep \"RET\" | grep -o \"R2=0x..\""
+run_test "reg_stack"    "200000"    "3"     "3"     "LAST"  ""
 

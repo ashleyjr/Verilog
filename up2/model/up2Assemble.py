@@ -167,7 +167,7 @@ class up2Assemble:
                     ''' Try looking for shorts '''
                     if 0 == found:
                         for short in t.short_muxes:
-                            if (op in line) and (short in line) and (2 == len(line.split(","))):
+                            if (op in line) and (short in line):
                                 swap = t.short_muxes[short]
                                 self.printInfo("\tReplacing " + short + " with" + swap)
                                 add = t.cmds[op] + t.muxes[swap]

@@ -57,8 +57,10 @@ class up2:
                     self.e.setRegOutR0()
                 if segs[2] == "R1":
                     self.e.setRegOutR1()
+                    self.r.setDec()
                 elif segs[2] == "R2":
                     self.e.setRegOutR2()
+                    self.r.setInc()
 
             ''' Get address '''
             if c in t.use_address:
@@ -142,8 +144,12 @@ class up2:
             if "MEM" in print_option:
                 if "MEM" == c:
                     self.m.printMain()
+
+            if "SHM" in print_option:
                 if "SHM" == c:
                     self.m.printShift()
+                if "MEM" == c:
+                    print "SWAP"
 
         if "LAST" in print_option:
             self.m.printMain()

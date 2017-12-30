@@ -130,13 +130,20 @@ class up2RegStack:
         ''' Model assertions '''
         assert self.p >= 0, 'Stack out of range'
 
+    def setInc(self):
+        self.p_new = self.p - 1
+
+    def setDec(self):
+        self.p_new = self.p + 1
+
     def swap(self, reg):
         self.stack[self.p] = reg
-        self.p += 1
+        self.p = self.p_new
         if self.p == self.length:
+            self.p = self.p - 1
+        if self.p == -1:
             self.p = 0
         return self.stack[self.p]
-
 
     def printStack(self):
         print self.stack
