@@ -137,6 +137,7 @@ class up2RegStack:
             self.p = 0
         return self.stack[self.p]
 
+
     def printStack(self):
         print self.stack
 

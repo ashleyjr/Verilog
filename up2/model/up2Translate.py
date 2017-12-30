@@ -59,7 +59,8 @@ class up2Translate:
         "XOR",
         "NAN",
         "LSL",
-        "LSR"
+        "LSR",
+        "DSP"
     }
 
     use_address={
