@@ -30,7 +30,22 @@ digraph up2 {
         reg_out_mux_1 -> alu
 
         alu -> reg_in_mux
-          
+       
+        # Flags
+        flags [label="<Z> Z|<O> O",shape=record];
+        flag [label="Flag",shape=record];
+
+    
+        alu -> flags:Z
+        alu -> flags:O
+
+        alu_flag_mux [label="MUX",shape=circle]
+
+        flags:Z -> alu_flag_mux
+        flags:O -> alu_flag_mux
+
+        alu_flag_mux -> flag
+
           
     }
          
