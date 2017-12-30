@@ -38,6 +38,9 @@ class up2Execute:
         self.regs[self.c] = self.regs[self.b] + self.regs[self.a]
         if self.regs[self.c] > 15:
             self.regs[self.c] -= 16
+            self.updateOverflowFlag(True)
+        else:
+            self.updateOverflowFlag(False)
         self.updateZeroFlag()
 
     def sub(self):
@@ -45,6 +48,9 @@ class up2Execute:
         self.regs[self.c] = self.regs[self.b] - self.regs[self.a]
         if self.regs[self.c] < 0:
             self.regs[self.c] += 16
+            self.updateUnderflowFlag(True)
+        else:
+            self.updateUnderflowFlag(False)
         self.updateZeroFlag()
 
     def oor(self):
@@ -69,11 +75,13 @@ class up2Execute:
 
     def lsl(self):
         ''' Logical shift left '''
+        self.updateOverflowFlag( self.regs[self.a] & 8)
         self.regs[self.c] = int("F",16) & (self.regs[self.a] << 1)
         self.updateZeroFlag()
 
     def lsr(self):
         ''' Logical shift right '''
+        self.updateUnderflowFlag( self.regs[self.a] & 1)
         self.regs[self.c] = int("F",16) & (self.regs[self.a] >> 1)
         self.updateZeroFlag()
 
@@ -84,8 +92,28 @@ class up2Execute:
         else:
             self.z = 0
 
+    def updateOverflowFlag(self, overflow):
+        ''' Flag after ALU update'''
+        if overflow:
+            self.o = 1
+        else:
+            self.o = 0
+
+    def updateUnderflowFlag(self, underflow):
+        ''' Flag after ALU update'''
+        if underflow:
+            self.u = 1
+        else:
+            self.u = 0
+
     def readZeroFLag(self):
         return self.z
+
+    def readOverflowFlag(self):
+        return self.o
+
+    def readUnderflowFlag(self):
+        return self.u
 
     def setRegOut1(self):
         self.a = 0

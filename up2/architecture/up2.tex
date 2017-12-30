@@ -26,14 +26,14 @@
         \hline
         \textbf{Opcode}     &   \textbf{Opcode} &                       &                       &                                           &                           \\ \hline  
         \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Use MX}     &   \textbf{Description}                    &   \textbf{Flags set}      \\ \hline  
-        0x0                 &   0000            &   ADD                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>        &   Z                       \\ \hline  
-        0x1                 &   0001            &   SUB                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>        &   Z                       \\ \hline  
+        0x0                 &   0000            &   ADD                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>        &   Z,O                     \\ \hline  
+        0x1                 &   0001            &   SUB                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>        &   Z,U                     \\ \hline  
         0x2                 &   0010            &   OOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> OR <+1,R0>       &   Z                       \\ \hline  
         0x3                 &   0011            &   COP                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2>                  &   Z                       \\ \hline  
         0x4                 &   0100            &   XOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> XOR <+1,R0>      &   Z                       \\ \hline  
         0x5                 &   0101            &   NAN                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NAND <+1,R0>     &   Z                       \\ \hline 
-        0x6                 &   0110            &   LSL                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> << 1             &   Z                       \\ \hline 
-        0x7                 &   0111            &   LSR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> >> 1             &   Z                       \\ \hline  
+        0x6                 &   0110            &   LSL                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> << 1             &   Z,U                     \\ \hline 
+        0x7                 &   0111            &   LSR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> >> 1             &   Z,O                     \\ \hline  
         0x8                 &   1000            &   BNE                 &   No                  &   if(Z != 1) PC += W                      &                           \\ \hline  
         0x9                 &   1001            &   BEQ                 &   No                  &   if(Z == 1) PC += W                      &                           \\ \hline  
         0xA                 &   1010            &   JMP                 &   No                  &   PC = CS[PC]                             &                           \\ \hline  
