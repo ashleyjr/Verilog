@@ -1,0 +1,28 @@
+# 12 bit counter
+START:              ADD R2, 1, R2
+                    BNE WRITE_DATA
+                    DSP +
+                    ADD R2, 1, R2
+                    BNE UNWIND_ONE
+                    DSP + 
+                    ADD R2, 1, R2 
+UNWIND_TWO:         DSP -
+UNWIND_ONE:         DSP -
+WRITE_DATA:         JPL SHIFT_REGS
+                    JPL SHIFT_REGS
+                    MEM
+                    JMP START
+SHIFT_REGS:         DSP +
+                    DSP +
+                    DSP +
+                    COP R0, R2
+                    SHM
+                    DSP -
+                    COP R0, R2
+                    SHM
+                    DSP -
+                    COP R0, R2 
+                    SHM
+                    RET
+
+

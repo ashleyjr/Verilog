@@ -4,7 +4,9 @@ run_test()
     RUNS=$2
     DATA=$3
     ADDR=$4
-    RUNME="./../model/up2Run.py -g -i ../programs/$TEST.up2 -o $TEST.hex --runs $RUNS --data_nibbles $DATA --address_nibbles $ADDR --verbosity "LAST" | diff -a --suppress-common-line -y $TEST.expected -"
+    VERB=$5
+    TRAIL=$6
+    RUNME="./../model/up2Run.py -g -i ../programs/$TEST.up2 -o $TEST.hex --runs $RUNS --data_nibbles $DATA --address_nibbles $ADDR --verbosity "$VERB" $TRAIL | diff -a --suppress-common-line -y $TEST.expected -"
     echo "$RUNME"
     PASS=$(eval $RUNME)
     if [ "$PASS" == "" ]
@@ -17,6 +19,9 @@ run_test()
     fi
 }
 
-run_test "mem"      "200"   "1"     "1"
-run_test "mem_2"    "8000"  "2"     "2"
-run_test "loop"     "100"   "1"     "1"
+run_test "mem"          "200"       "1"     "1"     "LAST"  ""
+run_test "mem_2"        "8000"      "2"     "2"     "LAST"  ""
+run_test "loop"         "100"       "1"     "1"     "LAST"  ""
+run_test "imm"          "1000"      "1"     "1"     "ALL"   "| grep \"RET\" | grep -o \"R2=0x..\""
+run_test "reg_stack"    "200000"    "3"     "3"     "LAST"  ""
+

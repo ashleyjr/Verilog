@@ -40,11 +40,11 @@ class up2Assemble:
         else:
             if "INFO" in self.print_option:
                 if(0 == self.warning):
-                    print "No warnings",
+                    print "No warnings"
                 elif(1 == self.warning):
-                    print "1 warning",
+                    print "1 warning"
                 else:
-                    print str(self.warning) + " warnings",
+                    print str(self.warning) + " warnings"
                 return True
 
     def printStart(self):
@@ -151,6 +151,10 @@ class up2Assemble:
                     line = line.split('#')[0]
                     self.printInfo("\t" + line)
 
+                ''' Remove label declarations '''
+                if ":" in line:
+                    line = line.split(":")[1]
+
                 ''' Mux operation '''
                 for op in t.use_muxes:
                     for mux in t.muxes:
@@ -163,7 +167,7 @@ class up2Assemble:
                     ''' Try looking for shorts '''
                     if 0 == found:
                         for short in t.short_muxes:
-                            if (op in line) and (short in line) and (2 == len(line.split(","))):
+                            if (op in line) and (short in line):
                                 swap = t.short_muxes[short]
                                 self.printInfo("\tReplacing " + short + " with" + swap)
                                 add = t.cmds[op] + t.muxes[swap]
@@ -188,7 +192,7 @@ class up2Assemble:
                 ''' Address operations '''
                 for address in t.use_address:
                     for label in labels:
-                        if (label in line) and (address in line):
+                        if (address + label) == line:
                             self.printInfo("\tLabel \'" + label + "\' points to address " + str(labels[label]))
                             add = t.cmds[address] + hex(labels[label])[2:].zfill(nibbles).upper()
                             self.out += add

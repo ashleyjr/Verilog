@@ -130,15 +130,53 @@ class up2RegStack:
         ''' Model assertions '''
         assert self.p >= 0, 'Stack out of range'
 
+    def setInc(self):
+        self.p_new = self.p - 1
+
+    def setDec(self):
+        self.p_new = self.p + 1
+
     def swap(self, reg):
+        self.stack[self.p] = reg
+        self.p = self.p_new
+        if self.p == self.length:
+            self.p = self.p - 1
+        if self.p == -1:
+            self.p = 0
+        return self.stack[self.p]
+
+    def printStack(self):
+        print self.stack
+
+class up2PcStack:
+    ''' Model of the up2 processor PC stack sections '''
+
+    def __init__(self, length):
+        self.stack = []
+        self.length = length
+        for i in range(0,self.length):
+            self.stack.append(0)
+        self.p = 0
+
+        ''' Model assertions '''
+        assert self.p >= 0, 'Stack out of range'
+
+    def push(self, reg):
         self.stack[self.p] = reg
         self.p += 1
         if self.p == self.length:
             self.p = 0
         return self.stack[self.p]
 
+    def pop(self):
+        self.p -= 1
+        if self.p == -1:
+            self.p = self.length -1
+        return self.stack[self.p]
+
     def printStack(self):
         print self.stack
+
 
 class up2Fetch:
     ''' Model of the up2 processor fetch section '''

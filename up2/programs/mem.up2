@@ -1,13 +1,7 @@
 # Writes addresses to memory
 # Address nibbles = 1
 # Data nibbles = 1
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            LSR R0,R0
-            XOR R0,R0,R1
-            XOR R1,R0,R1
-            XOR R0,R0,R1    # R1 set to Zero 
+            LSR R1,1        # R1 set to Zero 
 LOOP:       ADD R0,1,R1
             SHM
             ADD R0,1,R1

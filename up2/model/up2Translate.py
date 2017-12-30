@@ -14,11 +14,11 @@ class up2Translate:
         "BNE"           :   "8",
         "BEQ"           :   "9",
         "JMP"           :   "A",
-        "INT"           :   "B",
+        "RET"           :   "B",
         "SHM"           :   "C",
         "MEM"           :   "D",
         "DSP"           :   "E",
-        "PSP"           :   "F"
+        "JPL"           :   "F"
     }
 
     muxes={
@@ -48,7 +48,10 @@ class up2Translate:
         "R2,1"          :   "R2,1,R1",
         "R2,R0"         :   "R2,R0,R1",
         "R?,1"          :   "R?,1,R1",
-        "R?,R0"         :   "R?,R0,R1"
+        "R?,R0"         :   "R?,R0,R1",
+        "+"             :   "R0,1,R1",
+        "-"             :   "R0,1,R2",
+        "R0,R2"         :   "R0,1,R2"
     }
 
     use_muxes={
@@ -59,19 +62,19 @@ class up2Translate:
         "XOR",
         "NAN",
         "LSL",
-        "LSR"
+        "LSR",
+        "DSP"
     }
 
     use_address={
         "BNE",
         "BEQ",
-        "JMP"
+        "JMP",
+        "JPL"
     }
 
     is_single={
-        "INT",
+        "RET",
         "SHM",
-        "MEM",
-        "DSP",
-        "PSP"
+        "MEM"
     }

@@ -28,20 +28,20 @@
         \textbf{Hex}        &   \textbf{Binary} &   \textbf{Mnemonic}   &   \textbf{Use MX}     &   \textbf{Description}                    &   \textbf{Flags set}      \\ \hline  
         0x0                 &   0000            &   ADD                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> + <+1,R0>        &   Z                       \\ \hline  
         0x1                 &   0001            &   SUB                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> - <+1,R0>        &   Z                       \\ \hline  
-        0x2                 &   0010            &   OR                  &   Yes                 &   <R0,R1,R2,?> = <R1,R2> OR <+1,R0>       &   Z                       \\ \hline  
-        0x3                 &   0011            &   NOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NOR <+1,R0>      &   Z                       \\ \hline  
+        0x2                 &   0010            &   OOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> OR <+1,R0>       &   Z                       \\ \hline  
+        0x3                 &   0011            &   COP                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2>                  &   Z                       \\ \hline  
         0x4                 &   0100            &   XOR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> XOR <+1,R0>      &   Z                       \\ \hline  
-        0x5                 &   0101            &   NAND                &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NAND <+1,R0>     &   Z                       \\ \hline 
+        0x5                 &   0101            &   NAN                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> NAND <+1,R0>     &   Z                       \\ \hline 
         0x6                 &   0110            &   LSL                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> << 1             &   Z                       \\ \hline 
         0x7                 &   0111            &   LSR                 &   Yes                 &   <R0,R1,R2,?> = <R1,R2> >> 1             &   Z                       \\ \hline  
         0x8                 &   1000            &   BNE                 &   No                  &   if(Z != 1) PC += W                      &                           \\ \hline  
-        0x9                 &   1001            &   BE                  &   No                  &   if(Z == 1) PC += W                      &                           \\ \hline  
+        0x9                 &   1001            &   BEQ                 &   No                  &   if(Z == 1) PC += W                      &                           \\ \hline  
         0xA                 &   1010            &   JMP                 &   No                  &   PC = CS[PC]                             &                           \\ \hline  
-        0xB                 &   1011            &   INT                 &   No                  &   Enable ints                             &                           \\ \hline  
+        0xB                 &   1011            &   RET                 &   No                  &   PSP--;                             &                           \\ \hline  
         0xC                 &   1100            &   SHM                 &   No                  &   R0 << MEM << ADDR << R0                 &                           \\ \hline  
         0xD                 &   1101            &   MEM                 &   No                  &   DATA = MEM[ADDR] = DATA                 &                           \\ \hline  
-        0xE                 &   1110            &   DSP                 &   Yes                 &   DSP = (MX == 0) ? DSP - 1 : DSP + 1     &                           \\ \hline  
-        0xF                 &   1111            &   PSP                 &   Yes                 &   PSP = (MX == 0) ? PSP - 1 : PSP + 1     &                           \\ \hline  
+        0xE                 &   1110            &   DSP                 &   Yes                 &   DSP = (MX[0] == 0) ? DSP - 1 : DSP + 1     &                           \\ \hline  
+        0xF                 &   1111            &   JPL                 &   Yes                 &   PSP[++] = CS[PC]; PSP++;                     &                      \\ \hline  
     \end{tabular}
 \end{table}
 
@@ -97,15 +97,22 @@ Increment Program Counter Stack Pointer
 
 Objective: Set R1 to zero
 
+LSR, R1, 1
 
-LSL,R1,R1
-LSL,R1,R1
-LSL,R1,R1
-LSL,R1,R1
+\subsection{Load Immediates}
 
-\subsection{Load Immediate}
+Objective: Load every possible immediate in to R2
 
-Objective: Load 0xA(1010) in to R2
+# 0x0
+LSR, R0, 1
+
+# 0x1
+
+
+LSL, R0, 1  
+LSL, R2, R0
+OOR, R0, 1, R2
+LSL, R2, R0
 
 
 OR,R1,R1,+1

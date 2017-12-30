@@ -7,6 +7,7 @@ class up2:
 
     def __init__(self, code_file,address_nibbles,data_nibbles):
         self.r = up2RegStack(4)                         # Reg Stack
+        self.p = up2PcStack(4)                          # PC Stack
         self.e = up2Execute()                           # Execute
         self.f = up2Fetch(open(code_file, "r").read())  # Fetch
         self.m = up2Main(address_nibbles,data_nibbles)  # Main mem
@@ -56,8 +57,10 @@ class up2:
                     self.e.setRegOutR0()
                 if segs[2] == "R1":
                     self.e.setRegOutR1()
+                    self.r.setDec()
                 elif segs[2] == "R2":
                     self.e.setRegOutR2()
+                    self.r.setInc()
 
             ''' Get address '''
             if c in t.use_address:
@@ -103,6 +106,10 @@ class up2:
                     self.f.incPc()
             elif "JMP" == c:
                 self.f.setPc(address)
+            elif "JPL" == c:
+                self.f.incPc()
+                self.p.push(self.f.getPc())
+                self.f.setPc(address)
             elif "SHM" == c:
                 buf = self.e.getR0()
                 buf = self.m.shift(buf)
@@ -114,7 +121,8 @@ class up2:
             elif "DSP" == c:
                 self.e.writeRegs(self.r.swap(self.e.readRegs()))
                 self.f.incPc()
-
+            elif "RET" == c:
+                self.f.setPc(self.p.pop())
 
             ''' Print '''
             if "ALL" in print_option:
@@ -136,8 +144,12 @@ class up2:
             if "MEM" in print_option:
                 if "MEM" == c:
                     self.m.printMain()
+
+            if "SHM" in print_option:
                 if "SHM" == c:
                     self.m.printShift()
+                if "MEM" == c:
+                    print "SWAP"
 
         if "LAST" in print_option:
             self.m.printMain()
