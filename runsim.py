@@ -34,6 +34,8 @@ def main():
     yosys_blif = str(sim) + ".blif"
 
     no_op = True
+    if(options.ice != None):
+        no_op = False
     if(options.sim != None):
         no_op = False
     if(options.waves != None):
