@@ -1,0 +1,29 @@
+{
+   ExpandedHierarchyInLayout: "",
+   commentid: "",
+   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
+#  -string -flagsOSRD
+preplace port vga_h_sync_0 -pg 1 -y -80 -defaultsOSRD
+preplace port sys_clock -pg 1 -y 110 -defaultsOSRD
+preplace port R_0 -pg 1 -y -40 -defaultsOSRD
+preplace port B_0 -pg 1 -y 0 -defaultsOSRD
+preplace port vga_v_sync_0 -pg 1 -y -60 -defaultsOSRD
+preplace port G_0 -pg 1 -y -20 -defaultsOSRD
+preplace inst clk_wiz -pg 1 -lvl 2 -y 100 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 1 -y -120 -defaultsOSRD
+preplace inst vga_out_0 -pg 1 -lvl 2 -y -40 -defaultsOSRD
+preplace netloc vga_out_0_vga_v_sync 1 2 1 NJ
+preplace netloc nRst_1 1 1 1 150
+preplace netloc sys_clock_1 1 0 2 NJ 110 N
+preplace netloc vga_out_0_B 1 2 1 NJ
+preplace netloc vga_out_0_vga_h_sync 1 2 1 NJ
+preplace netloc vga_out_0_R 1 2 1 NJ
+preplace netloc vga_out_0_G 1 2 1 NJ
+preplace netloc clk_wiz_clk_out1 1 1 2 160 -130 440
+levelinfo -pg 1 -30 70 300 460 -top -170 -bot 260
+",
+}
+{
+   da_board_cnt: "3",
+   da_clkrst_cnt: "1",
+}

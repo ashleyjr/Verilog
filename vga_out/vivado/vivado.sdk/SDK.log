@@ -1,0 +1,21 @@
+11:38:01 INFO  : Registering command handlers for SDK TCF services
+11:38:04 INFO  : Launching XSCT server: xsct -n -interactive /home/ashley/Verilog/vga_out/vivado/vivado.sdk/temp_xsdb_launch_script.tcl
+11:38:06 INFO  : XSCT server has started successfully.
+11:38:06 INFO  : Successfully done setting XSCT server connection channel  
+11:38:07 INFO  : Successfully done setting SDK workspace  
+11:38:07 INFO  : Processing command line option -hwspec /home/ashley/Verilog/vga_out/vivado/vivado.sdk/top_wrapper.hdf.
+11:38:54 WARN  : Hardware project 'top_wrapper_hw_platform_0' doesn't have any processor instances.
+11:39:04 WARN  : Hardware project 'top_wrapper_hw_platform_0' doesn't have any processor instances.
+11:39:34 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+11:39:35 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Zybo 210279654355A" && level==0} -index 1' command is executed.
+11:39:38 INFO  : FPGA configured successfully with bitstream "/home/ashley/Verilog/vga_out/vivado/vivado.sdk/top_wrapper_hw_platform_0/top_wrapper.bit"
+11:40:43 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+11:40:44 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Zybo 210279654355A" && level==0} -index 1' command is executed.
+11:40:46 INFO  : FPGA configured successfully with bitstream "/home/ashley/Verilog/vga_out/vivado/vivado.sdk/top_wrapper_hw_platform_0/top_wrapper.bit"
+11:42:04 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+11:42:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Zybo 210279654355A" && level==0} -index 1' command is executed.
+11:42:09 ERROR : JTAG node is not accessible
+11:42:17 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+11:42:38 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+11:42:39 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Zybo 210279654355A" && level==0} -index 1' command is executed.
+11:42:42 INFO  : FPGA configured successfully with bitstream "/home/ashley/Verilog/vga_out/vivado/vivado.sdk/top_wrapper_hw_platform_0/top_wrapper.bit"

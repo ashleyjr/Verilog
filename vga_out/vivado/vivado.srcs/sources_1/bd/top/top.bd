@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<bd:repository xmlns:bd="http://www.xilinx.com/bd" bd:BoundaryCRC="0x4E9E2A63317AD3E" bd:device="xc7z010clg400-1" bd:isValidated="true" bd:synthFlowMode="Hierarchical" bd:tool_version="2017.4" bd:top="top" bd:version="1.00.a">
+
+  <spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009">
+    <spirit:vendor>xilinx.com</spirit:vendor>
+    <spirit:library>BlockDiagram</spirit:library>
+    <spirit:name>top</spirit:name>
+    <spirit:version>1.00.a</spirit:version>
+    <spirit:parameters>
+      <spirit:parameter>
+        <spirit:name>isTop</spirit:name>
+        <spirit:value spirit:format="bool" spirit:resolve="immediate">true</spirit:value>
+      </spirit:parameter>
+    </spirit:parameters>
+    <spirit:busInterfaces>
+      <spirit:busInterface>
+        <spirit:name>CLK.SYS_CLOCK</spirit:name>
+        <spirit:displayName>Clk</spirit:displayName>
+        <spirit:description>Clock</spirit:description>
+        <spirit:busType spirit:library="signal" spirit:name="clock" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+        <spirit:abstractionType spirit:library="signal" spirit:name="clock_rtl" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+        <spirit:slave/>
+        <spirit:portMaps>
+          <spirit:portMap>
+            <spirit:logicalPort>
+              <spirit:name>CLK</spirit:name>
+            </spirit:logicalPort>
+            <spirit:physicalPort>
+              <spirit:name>sys_clock</spirit:name>
+            </spirit:physicalPort>
+          </spirit:portMap>
+        </spirit:portMaps>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>FREQ_HZ</spirit:name>
+            <spirit:value>125000000</spirit:value>
+            <spirit:vendorExtensions>
+              <bd:configElementInfos>
+                <bd:configElementInfo bd:valueSource="user"/>
+              </bd:configElementInfos>
+            </spirit:vendorExtensions>
+          </spirit:parameter>
+          <spirit:parameter>
+            <spirit:name>PHASE</spirit:name>
+            <spirit:value>0.000</spirit:value>
+            <spirit:vendorExtensions>
+              <bd:configElementInfos>
+                <bd:configElementInfo bd:valueSource="user"/>
+              </bd:configElementInfos>
+            </spirit:vendorExtensions>
+          </spirit:parameter>
+          <spirit:parameter>
+            <spirit:name>CLK_DOMAIN</spirit:name>
+            <spirit:value>top_sys_clock</spirit:value>
+            <spirit:vendorExtensions>
+              <bd:configElementInfos>
+                <bd:configElementInfo bd:valueSource="default"/>
+              </bd:configElementInfos>
+            </spirit:vendorExtensions>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:busInterface>
+    </spirit:busInterfaces>
+    <spirit:model>
+      <spirit:views>
+        <spirit:view>
+          <spirit:name>BlockDiagram</spirit:name>
+          <spirit:envIdentifier>:vivado.xilinx.com:</spirit:envIdentifier>
+          <spirit:hierarchyRef spirit:library="BlockDiagram" spirit:name="top_imp" spirit:vendor="xilinx.com" spirit:version="1.00.a"/>
+        </spirit:view>
+      </spirit:views>
+      <spirit:ports>
+        <spirit:port>
+          <spirit:name>sys_clock</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>B_0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>G_0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>R_0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>vga_h_sync_0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>vga_v_sync_0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+      </spirit:ports>
+    </spirit:model>
+  </spirit:component>
+
+  <spirit:design xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009">
+    <spirit:vendor>xilinx.com</spirit:vendor>
+    <spirit:library>BlockDiagram</spirit:library>
+    <spirit:name>top_imp</spirit:name>
+    <spirit:version>1.00.a</spirit:version>
+    <spirit:componentInstances>
+      <spirit:componentInstance>
+        <spirit:instanceName>vga_out_0</spirit:instanceName>
+        <spirit:componentRef spirit:library="module_ref" spirit:name="vga_out" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+        <spirit:configurableElementValues>
+          <spirit:configurableElementValue spirit:referenceId="bd:xciName">top_vga_out_0_0</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="bd:referenceName">vga_out</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="bd:subInstancePath"></spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="bd:referenceType">hdl</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="bd:BoundaryCRC">0x0</spirit:configurableElementValue>
+        </spirit:configurableElementValues>
+      </spirit:componentInstance>
+      <spirit:componentInstance>
+        <spirit:instanceName>clk_wiz</spirit:instanceName>
+        <spirit:componentRef spirit:library="ip" spirit:name="clk_wiz" spirit:vendor="xilinx.com" spirit:version="5.4"/>
+        <spirit:configurableElementValues>
+          <spirit:configurableElementValue spirit:referenceId="bd:xciName">top_clk_wiz_0</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_REQUESTED_OUT_FREQ">25</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="RESET_PORT">resetn</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_DIVCLK_DIVIDE">5</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKFBOUT_MULT_F">36.500</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKOUT0_DIVIDE_F">36.500</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="RESET_TYPE">ACTIVE_LOW</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="USE_BOARD_FLOW">true</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLK_IN1_BOARD_INTERFACE">sys_clock</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_JITTER">312.659</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_PHASE_ERROR">245.713</spirit:configurableElementValue>
+        </spirit:configurableElementValues>
+      </spirit:componentInstance>
+      <spirit:componentInstance>
+        <spirit:instanceName>xlconstant_0</spirit:instanceName>
+        <spirit:componentRef spirit:library="ip" spirit:name="xlconstant" spirit:vendor="xilinx.com" spirit:version="1.1"/>
+        <spirit:configurableElementValues>
+          <spirit:configurableElementValue spirit:referenceId="bd:xciName">top_xlconstant_0_0</spirit:configurableElementValue>
+        </spirit:configurableElementValues>
+      </spirit:componentInstance>
+    </spirit:componentInstances>
+    <spirit:adHocConnections>
+      <spirit:adHocConnection>
+        <spirit:name>clk_wiz_clk_out1</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="clk_wiz" spirit:portRef="clk_out1"/>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="clk"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>sys_clock_1</spirit:name>
+        <spirit:externalPortReference spirit:portRef="sys_clock"/>
+        <spirit:internalPortReference spirit:componentRef="clk_wiz" spirit:portRef="clk_in1"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>vga_out_0_B</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="B"/>
+        <spirit:externalPortReference spirit:portRef="B_0"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>vga_out_0_G</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="G"/>
+        <spirit:externalPortReference spirit:portRef="G_0"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>vga_out_0_R</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="R"/>
+        <spirit:externalPortReference spirit:portRef="R_0"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>vga_out_0_vga_h_sync</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="vga_h_sync"/>
+        <spirit:externalPortReference spirit:portRef="vga_h_sync_0"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>vga_out_0_vga_v_sync</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="vga_v_sync"/>
+        <spirit:externalPortReference spirit:portRef="vga_v_sync_0"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>nRst_1</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="xlconstant_0" spirit:portRef="dout"/>
+        <spirit:internalPortReference spirit:componentRef="vga_out_0" spirit:portRef="nRst"/>
+        <spirit:internalPortReference spirit:componentRef="clk_wiz" spirit:portRef="resetn"/>
+      </spirit:adHocConnection>
+    </spirit:adHocConnections>
+  </spirit:design>
+
+</bd:repository>
