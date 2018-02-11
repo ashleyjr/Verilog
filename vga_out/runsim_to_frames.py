@@ -2,7 +2,8 @@
 from PIL import Image
 import random
 
-PCLK_MHZ = 1000
+TB_SAMPLE_NS = 40
+PCLK_MHZ = 40
 PCLK_PERIOD_NS = int(1e9/(PCLK_MHZ*1e6))
 
 def main():
@@ -12,15 +13,58 @@ def main():
     runsim = runsim.split("\n")
     runsim = runsim[100:-100]
     sim_len_ns = len(runsim)
-    print PCLK_PERIOD_NS
+
+    ''' Find frame and horizontal frequency '''
+    first_v = True
+    first_h = True
+    width_v_ns = 0
+    width_h_ns = 0
+    vers = []
+    hors = []
+    for i in range(0, len(runsim)):
+        data = runsim[i].split(",")
+        V = int(data[0])
+        H = int(data[1])
+        if (i > 0):
+            ''' Vertical '''
+            if (VL == 0) and (V == 1):
+                if not first_v:
+                    f = 1/(width_v_ns*1e-9)
+                    if f not in vers:
+                        vers.append(f)
+                else:
+                    first_v = False
+                width_v_ns = 0
+            else:
+                width_v_ns += TB_SAMPLE_NS
+            ''' Horizontal '''
+            if (HL == 0) and (H == 1):
+                if not first_h:
+                    f = 1/(width_h_ns*1e-9)
+                    if f not in hors:
+                        hors.append(f)
+                else:
+                    first_h = False
+                width_h_ns = 0
+            else:
+                width_h_ns += TB_SAMPLE_NS
+        VL = V
+        HL = H
+    print "Vertical frequency (Hz) "+str(vers)
+    print "Horizontal frequency (Hz) "+str(hors)
+
+
+
+
+
+    print "Processing 640 x 480 frames @ 60Hz"
+
 
     ''' Data as seen by clock processed to image '''
-    state = "FIRST"
+    first = True
+    record = False
     frames = []
-    width = 0
-    v_sync_width = 0
-    h_sync_width = 0
-    for i in range(0, sim_len_ns, PCLK_PERIOD_NS):
+    for i in range(0, sim_len_ns):
         data = runsim[i].split(",")
         V = int(data[0])
         H = int(data[1])
@@ -28,46 +72,27 @@ def main():
         G = int(data[3])
         B = int(data[4])
 
-        if state == "FIRST":
-            state = "IDLE"
-        elif state == "IDLE":
-            v_sync_width += 1
-            if (1 == V) and (0 == VL):
-                print v_sync_width
-                v_sync_width = 0
-                frames.append([])
-                state = "IN"
-        elif state == "IN":
-            if (0 == V) and (1 == VL):
-                state = "IDLE"
 
-
-            if (0 == H) and (1 == HL):
-                h_sync_width = 0
-            if (0 == H):
-                h_sync_width += 1
-            if (1 == H) and (0 == HL):
-                print h_sync_width
-
-            if (1 == H) and (0 == HL):
-                width = 0
-            else:
-                width += 1
+        if (1 == V) and (0 == VL):
+            record = True
+            frames.append([])
+        if record:
             frames[-1].append((R*255,G*255,B*255))
 
+
+        first = False
         VL = V
         HL = H
 
 
     ''' Find '''
     for i in range(0, len(frames)):
-
-        #for i in range(0,(512*512)):
-        #im.append((random.randint(0,256),random.randint(0,256),random.randint(0,256)))
-
-        new_img = Image.new("RGB", (1056, 5000), "white")
+        loc = 'frame'+str(i)+'.png'
+        new_img = Image.new("RGB", (800, 523), "white")
         new_img.putdata(frames[i])
-        new_img.save('frame'+str(i)+'.png')
+        new_img = new_img.crop((0,0,640,480))
+        new_img.save(loc)
+
 
     #i = 0
     #runsim_clk = []

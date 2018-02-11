@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 module vga_out_tb;
 
-	parameter CLK_PERIOD = 8;
+   // 25MHz clock
+	parameter CLK_PERIOD = 40;
 
 	reg	clk;
 	reg	nRst;
@@ -34,14 +35,14 @@ module vga_out_tb;
       $display("V,H,R,G,B");
       // Write every 1ns
       while(1) begin
-         $display("%d,%d,%d,%d,%d",
-            vga_v_sync,
-            vga_h_sync,
-            R,
-            G,
-            B
-         );
-         #1;
+         @(posedge clk)
+            $display("%d,%d,%d,%d,%d",
+               vga_v_sync,
+               vga_h_sync,
+               R,
+               G,
+               B
+            );
       end
    end
 
@@ -49,7 +50,7 @@ module vga_out_tb;
 		      nRst		= 1;
 		#17	nRst		= 0;
 		#17	nRst		= 1;
-		#10000000
+		#50000000
 		$finish;
 	end
 
