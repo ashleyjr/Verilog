@@ -118,6 +118,16 @@ uart_ice/uart_ice.v
 uart_ice/uart_ice_filelist.txt
 uart_ice/uart_ice_tb.tcl
 uart_ice/uart_ice_tb.v
+uart_rx/uart_rx.pcf
+uart_rx/uart_rx.v
+uart_rx/uart_rx_filelist.txt
+uart_rx/uart_rx_tb.tcl
+uart_rx/uart_rx_tb.v
+uart_tx/uart_tx.pcf
+uart_tx/uart_tx.v
+uart_tx/uart_tx_filelist.txt
+uart_tx/uart_tx_tb.tcl
+uart_tx/uart_tx_tb.v
 up/.DS_Store
 up/architecture
 up/code
