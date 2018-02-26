@@ -1,86 +1,65 @@
 `timescale 1ns/1ps
+
 module uart_rx_tb;
 
-	parameter CLK_PERIOD = 20;
+	parameter   CLK_PERIOD_NS  = 20;
+   parameter   SAMPLE         = 5208;     // SAMPLE = CLK_HZ   /  BAUDRATE
+   parameter   SAMPLE_TB      = 104166;   // SAMPLE_TB = 1e9 / BAUDRATE
+	
+   reg	      i_clk;
+	reg	      i_nrst;
+   wire  [7:0] o_data;
+   reg         i_rx;
+   wire        o_valid;
+   reg         i_accept;
 
-	reg	clk;
-	reg	nRst;
-	reg	rx;
-	reg	sw2;
-	reg	sw1;
-	reg	sw0;
-	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
-
-	uart_rx uart_rx(
-		`ifdef POST_SYNTHESIS
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`endif
+   uart_rx #(
+      .SAMPLE     (SAMPLE     )
+   
+   ) uart_rx (
+      .i_clk      (i_clk      ),
+      .i_nrst     (i_nrst     ),
+      .o_data     (o_data     ),
+      .i_rx       (i_rx       ),
+      .o_valid    (o_valid    ),
+      .i_accept   (i_accept   )
 	);
 
 	initial begin
 		while(1) begin
-			#(CLK_PERIOD/2) clk = 0;
-			#(CLK_PERIOD/2) clk = 1;
+			#(CLK_PERIOD_NS/2)   i_clk = 0;
+			#(CLK_PERIOD_NS/2)   i_clk = 1;
 		end
 	end
 
 	initial begin
-		`ifdef POST_SYNTHESIS
-			$dumpfile("uart_rx_syn.vcd");
-			$dumpvars(0,uart_rx_tb);
-		`else
-			$dumpfile("uart_rx.vcd");
-			$dumpvars(0,uart_rx_tb);
-		`endif
-		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
+		$dumpfile("uart_rx.vcd");
+	   $dumpvars(0,uart_rx_tb);
+	   $display("                  TIME    nRst");		$monitor("%tps       %d",$time,i_nrst);
 	end
+   
+   task uart_send;
+      input [7:0] send;
+      integer i;
+      begin
+         i_rx = 0;
+         for(i=0;i<=7;i=i+1) begin
+            #SAMPLE_TB  i_rx = send[i];
+         end
+         #SAMPLE_TB  i_rx = 1;
+      end
+   endtask
+
 
 	initial begin
-					nRst		= 1;
-					rx			= 0;
-					sw2		= 0;
-					sw1		= 0;
-					sw0		= 0;
-		#17		nRst		= 0;
-		#17		nRst		= 1;
-		#17		sw0		= 1;
-		#17		sw1		= 1;
-		#17		sw2		= 1;
-		#17		rx			= 1;
-		#17		sw1		= 0;
-		#17		sw2		= 0;
-		#17		sw0		= 0;
-		#17		rx			= 0;
-		#10
+					i_nrst		= 1;
+               i_accept    = 1;
+      #17      i_nrst      = 0;
+      #17      i_nrst      = 1;
+      #1000000  uart_send(8'h11);
+      #1000000  uart_send(8'hAA);
+      #1000000  uart_send(8'h11);
+      #1000000  uart_send(8'hAA);
 		$finish;
 	end
 
