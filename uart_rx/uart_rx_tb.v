@@ -3,15 +3,14 @@
 module uart_rx_tb;
 
 	parameter   CLK_PERIOD_NS  = 20;
-   parameter   SAMPLE         = 5208;     // SAMPLE = CLK_HZ   /  BAUDRATE
-   parameter   SAMPLE_TB      = 104166;   // SAMPLE_TB = 1e9 / BAUDRATE
+   parameter   SAMPLE         = 5208;     // SAMPLE      = CLK_HZ    / BAUDRATE
+   parameter   SAMPLE_TB      = 104166;   // SAMPLE_TB   = 1e9       / BAUDRATE
 	
    reg	      i_clk;
 	reg	      i_nrst;
    wire  [7:0] o_data;
    reg         i_rx;
    wire        o_valid;
-   reg         i_accept;
 
    uart_rx #(
       .SAMPLE     (SAMPLE     )
@@ -21,8 +20,7 @@ module uart_rx_tb;
       .i_nrst     (i_nrst     ),
       .o_data     (o_data     ),
       .i_rx       (i_rx       ),
-      .o_valid    (o_valid    ),
-      .i_accept   (i_accept   )
+      .o_valid    (o_valid    )
 	);
 
 	initial begin
@@ -53,7 +51,6 @@ module uart_rx_tb;
 
 	initial begin
 					i_nrst		= 1;
-               i_accept    = 1;
       #17      i_nrst      = 0;
       #17      i_nrst      = 1;
       #1000000  uart_send(8'h11);

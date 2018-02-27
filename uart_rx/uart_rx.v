@@ -11,69 +11,53 @@ module uart_rx(
 	input    wire		      i_nrst,
    output   reg   [7:0]    o_data,
    input    wire           i_rx,
-	output   reg            o_valid,
-   input    wire           i_accept
+	output   reg            o_valid
 );
 
     parameter  SAMPLE      = 1,  
-               RX_IDLE     = 4'h0,
-               RX_START    = 4'h1,
-               RX_0        = 4'h2,
-               RX_1        = 4'h3,
-               RX_2        = 4'h4,
-               RX_3        = 4'h5,
-               RX_4        = 4'h6,
-               RX_5        = 4'h7,
-               RX_6        = 4'h8,
-               RX_7        = 4'h9,
-               RX_ACCEPT   = 4'hA,
-               RX_WAIT     = 4'hB;
+               SM_IDLE     = 2'b00,
+               SM_RX_START = 2'b01,
+               SM_RX       = 2'b11,
+               SM_WAIT     = 2'b10,
+               START_BIT   = 8'h80;
 
-   reg [3:0]                   state;
+   reg [1:0]                   state;
    reg [$clog2(SAMPLE)-1:0]    count;
 
    assign full_sample = (count == SAMPLE);
    assign half_sample = (count == (SAMPLE >> 1));
 
+   // MSb is set and shifted as a counter for the 8 bits
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
-         state    <= RX_IDLE;	
+         state    <= SM_IDLE;	
          count    <= 'b0;
          o_valid  <= 1'b0;
          o_data   <= 8'h0;
       end else begin
-         if(!full_sample) begin
-            count <= count + 'b1;
-         end
+         count <= count + 'b1;
          case(state)
-            RX_IDLE:    if(!i_rx) begin
-                           state    <= RX_START;
-                           count    <= 'b0; 
-                        end
-            RX_START:   if(half_sample) begin
-                           state    <= RX_0;
-                           count    <= 'b0;
-                        end
-            RX_0,
-            RX_1, 
-            RX_2, 
-            RX_3,
-            RX_4, 
-            RX_5, 
-            RX_6, 
-            RX_7:       if(full_sample) begin
-                           o_data   <= {i_rx,o_data[7:1]}; 
-                           state    <= state + 'b1;
-                           count    <= 'b0;
-                           o_valid  <= 1'b1;
-                        end
-            RX_ACCEPT:  if(i_accept) begin                
-                           state    <= RX_WAIT;
-                        end
-            RX_WAIT:    if(full_sample) begin
-                           state    <= RX_IDLE;  
-                        end
-            default:    state       <= RX_IDLE;
+            SM_IDLE:       if(!i_rx) begin
+                              state       <= SM_RX_START;
+                              count       <= 'b0;
+                              o_valid     <= 1'b0;
+                              o_data      <= START_BIT;
+                           end
+            SM_RX_START:   if(half_sample) begin
+                              state       <= SM_RX;
+                              count       <= 'b0;
+                           end
+            SM_RX:         if(full_sample) begin
+                              o_data      <= {i_rx,o_data[7:1]}; 
+                              count       <= 'b0;
+                              if(o_data[0]) begin
+                                 state    <= SM_WAIT;
+                                 o_valid  <= 1'b1;
+                              end
+                           end
+            SM_WAIT:       if(full_sample) begin
+                              state       <= SM_IDLE;  
+                           end
          endcase
       end
    end
