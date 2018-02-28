@@ -208,7 +208,9 @@ up/up_tb.tcl
 up/up_filelist.txt
 up/up.v
 uart_tx/uart_tx_tb.tcl
+uart_tx/uart_tx_runsim.txt
 uart_tx/uart_tx.v
+uart_tx/uart_tx.dat
 uart_tx/uart_tx_tb.v
 uart_tx/uart_tx_filelist.txt
 uart_tx/uart_tx.pcf
