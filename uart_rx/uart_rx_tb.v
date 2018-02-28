@@ -2,9 +2,12 @@
 
 module uart_rx_tb;
 
-	parameter   CLK_PERIOD_NS  = 20;
-   parameter   SAMPLE         = 5208;     // SAMPLE      = CLK_HZ    / BAUDRATE
-   parameter   SAMPLE_TB      = 104166;   // SAMPLE_TB   = 1e9       / BAUDRATE
+   // CLK - 12 MHz
+	parameter   CLK_PERIOD_NS  = 83;
+
+   // BAUD = 115200
+   parameter   SAMPLE         = 104;      // SAMPLE      = CLK_HZ    / BAUDRATE
+   parameter   SAMPLE_TB      = 8681;     // SAMPLE_TB   = 1e9       / BAUDRATE
 	
    reg	      i_clk;
 	reg	      i_nrst;
@@ -50,14 +53,36 @@ module uart_rx_tb;
 
 
 	initial begin
-					i_nrst		= 1;
-      #17      i_nrst      = 0;
-      #17      i_nrst      = 1;
-      #1000000  uart_send(8'h11);
-      #1000000  uart_send(8'hAA);
-      #1000000  uart_send(8'h11);
-      #1000000  uart_send(8'hAA);
-		$finish;
+                  i_rx        = 1;
+					   i_nrst		= 1;
+      #17         i_nrst      = 0;
+      #17         i_nrst      = 1;
+      #100000     uart_send(8'h11);
+      #100000     uart_send(8'hAA);
+      #100000     uart_send(8'hD6);
+      #100000     uart_send(8'hE2);
+	
+      #80000      uart_send(8'h11);
+      #80000      uart_send(8'hAA);
+      #80000      uart_send(8'h11);
+      #80000      uart_send(8'hFF);
+      
+      #60000      uart_send(8'h11);
+      #60000      uart_send(8'hAA);
+      #60000      uart_send(8'h11);
+      #60000      uart_send(8'hFF);
+
+      #40000      uart_send(8'h11);
+      #40000      uart_send(8'hAA);
+      #40000      uart_send(8'h11);
+      #40000      uart_send(8'hFF);
+
+      #20000      uart_send(8'h11);
+      #20000      uart_send(8'hAA);
+      #20000      uart_send(8'h11);
+      #20000      uart_send(8'hFF);
+
+      $finish;
 	end
 
 endmodule
