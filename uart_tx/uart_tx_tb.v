@@ -1,87 +1,68 @@
 `timescale 1ns/1ps
+
 module uart_tx_tb;
 
-	parameter CLK_PERIOD = 20;
+   // CLK = 12 MHz
+	parameter   CLK_PERIOD_NS  = 83;
 
-	reg	clk;
-	reg	nRst;
-	reg	rx;
-	reg	sw2;
-	reg	sw1;
-	reg	sw0;
-	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
+   // BAUD = 115200
+   parameter   SAMPLE         = 104;      // SAMPLE      = CLK_HZ    / BAUDRATE
+   parameter   SAMPLE_TB      = 8681;     // SAMPLE_TB   = 1e9       / BAUDRATE
+	
+   reg	      i_clk;
+	reg	      i_nrst;
+   reg   [7:0] i_data;  
+   wire        o_tx;
+   reg         i_valid;
+   wire        o_accept;
 
-	uart_tx uart_tx(
-		`ifdef POST_SYNTHESIS
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`endif
-	);
+
+	uart_tx #(
+      .SAMPLE     (SAMPLE     )
+   ) uart_tx (
+	   .i_clk      (i_clk      ),
+      .i_nrst     (i_nrst     ),
+      .i_data     (i_data     ),
+      .o_tx       (o_tx       ),
+      .i_valid    (i_valid    ),
+      .o_accept   (o_accept   )
+   );
 
 	initial begin
 		while(1) begin
-			#(CLK_PERIOD/2) clk = 0;
-			#(CLK_PERIOD/2) clk = 1;
+			#(CLK_PERIOD_NS/2) i_clk = 0;
+			#(CLK_PERIOD_NS/2) i_clk = 1;
 		end
 	end
 
 	initial begin
-		`ifdef POST_SYNTHESIS
-			$dumpfile("uart_tx_syn.vcd");
-			$dumpvars(0,uart_tx_tb);
-		`else
-			$dumpfile("uart_tx.vcd");
-			$dumpvars(0,uart_tx_tb);
-		`endif
-		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
+		$dumpfile("uart_tx.vcd");
+		$dumpvars(0,uart_tx_tb);	
+		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,i_nrst);
 	end
+   
+   task uart_send;
+      input [7:0] send;
+      integer i;
+      begin 
+         i_data   = send;
+         i_valid  = 1;
+         while(!o_accept)
+            @(posedge i_clk);
+         i_valid  = 0;
+      end
+   endtask
+
 
 	initial begin
-					nRst		= 1;
-					rx			= 0;
-					sw2		= 0;
-					sw1		= 0;
-					sw0		= 0;
-		#17		nRst		= 0;
-		#17		nRst		= 1;
-		#17		sw0		= 1;
-		#17		sw1		= 1;
-		#17		sw2		= 1;
-		#17		rx			= 1;
-		#17		sw1		= 0;
-		#17		sw2		= 0;
-		#17		sw0		= 0;
-		#17		rx			= 0;
-		#10
-		$finish;
+		#100     i_nrst   = 1;
+		#170		i_nrst   = 0;
+               i_valid  = 0;
+		#170		i_nrst   = 1;	
+      #100000  uart_send(8'h11); 
+      #100000  uart_send(8'h33);
+      #100000  uart_send(8'hEE);
+      $finish;
 	end
 
 endmodule

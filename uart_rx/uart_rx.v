@@ -1,6 +1,12 @@
 ///////////////////////////////////////////////////////////
 // uart_rx.v
-// Recieve only 8-bit UART with fixed baud rate
+// Receive only 8-bit UART with fixed baud rate
+//
+//    - o_valid   - Raised when data has been received and
+//                  placed on o_data
+//
+//    - o_data    - This is used as counter when shifting
+//                  in data by shifting a single bit
 //
 ///////////////////////////////////////////////////////////
 
@@ -27,7 +33,6 @@ module uart_rx(
    assign full_sample = (count == SAMPLE);
    assign half_sample = (count == (SAMPLE >> 1));
 
-   // MSb is set and shifted as a counter for the 8 bits
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
          state    <= SM_IDLE;	

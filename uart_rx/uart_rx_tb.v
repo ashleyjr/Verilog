@@ -2,7 +2,7 @@
 
 module uart_rx_tb;
 
-   // CLK - 12 MHz
+   // CLK = 12 MHz
 	parameter   CLK_PERIOD_NS  = 83;
 
    // BAUD = 115200
