@@ -17,7 +17,7 @@ module uart_rx(
 	input    wire		      i_nrst,
    output   reg   [7:0]    o_data,
    input    wire           i_rx,
-	output   wire           o_valid
+	output   reg            o_valid
 );
 
     parameter  SAMPLE      = 1,  
@@ -32,14 +32,13 @@ module uart_rx(
 
    assign   full_sample =  (count == SAMPLE        );
    assign   half_sample =  (count == (SAMPLE >> 1) );
-   assign   o_valid     =  (state == SM_IDLE       )  ?  1'b1  :
-                           (state == SM_WAIT       )  ?  1'b1  :
-                                                         1'b0  ;
+   
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
          state    <= SM_IDLE;	
          count    <= 'b0; 
          o_data   <= 8'h0;
+         o_valid  <= 1'b0;
       end else begin
          count <= count + 'b1;
          case(state)
@@ -47,6 +46,7 @@ module uart_rx(
                               state       <= SM_RX_START;
                               count       <= 'b0;
                               o_data      <= START_BIT;
+                              o_valid     <= 1'b0;
                            end
             SM_RX_START:   if(half_sample) begin
                               state       <= SM_RX;
@@ -60,7 +60,8 @@ module uart_rx(
                               end
                            end
             SM_WAIT:       if(full_sample) begin
-                              state       <= SM_IDLE;  
+                              state       <= SM_IDLE;
+                              o_valid     <= 1'b1;
                            end
          endcase
       end
