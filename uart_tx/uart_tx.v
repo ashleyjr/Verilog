@@ -17,53 +17,60 @@ module uart_tx(
    input    wire        i_clk,
    input    wire        i_nrst,
    input    wire  [7:0] i_data,
-   output   reg         o_tx,
+   output   wire        o_tx,
    input    wire        i_valid,
-   output   reg         o_accept
+   output   wire        o_accept
 );
 
-   parameter   SAMPLE   = 1,
-               TX_IDLE  = 2'b00,
-               TX       = 2'b01,
-               TX_END_1 = 2'b10,
-               TX_END_2 = 2'b11;
+   parameter   SAMPLE   =  1,
+               TX1      =  4'h0,
+               TX2      =  4'h1,
+               TX3      =  4'h2,
+               TX4      =  4'h3,
+               TX5      =  4'h4,
+               TX6      =  4'h5,
+               TX7      =  4'h6,
+               TX8      =  4'h7,
+               TX_END   =  4'h8,
+               TX_IDLE  =  4'h9,
+               TX_START =  4'hA;
 
-   reg   [1:0]                   state;
-   reg   [2:0]                   ptr;
+   reg   [3:0]                   state;
    reg   [$clog2(SAMPLE)-1:0]    count;
   
-   assign full_sample = (count == SAMPLE);
-
-	always@(posedge i_clk or negedge i_nrst) begin
+   assign   full_sample =  (count == SAMPLE  );
+   assign   o_accept    =  (state == TX_END  );
+   assign   o_tx        =  (state == TX_IDLE )  ?  1'b1                 :
+                           (state == TX_START)  ?  1'b0                 :
+                           (state == TX_END  )  ?  1'b1                 :
+                                                   i_data[state[2:0]]   ;  // TX? 
+   
+   always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
-         state    <= TX_IDLE;
-         o_tx     <= 1'b1;
-         ptr      <= 3'h0;
-         o_accept <= 1'b0;
+         state    <= TX_IDLE;  
          count    <= 'b0;
 		end else begin
-         count <= count + 'b1;
+         if(full_sample) begin
+            count <= 'b0;
+         end else begin
+            count <= count + 'b1;
+         end
 	      case(state)
-            TX_IDLE:    if(i_valid) begin
-                           o_tx     <= 1'b0;
-                           count    <= 'b0;
-                           state    <= TX;
-                           ptr      <= 3'b0;
-                        end
-            TX:         if(full_sample) begin
-                           ptr   <= ptr   + 3'h1;
-                           o_tx  <= i_data[ptr];
-                           if(ptr == 7) begin
-                              state    <= TX_END_1;
-                              o_accept <= 1'b1;
-                              o_tx     <= 1'b1;
-                           end
-                        end
-            TX_END_1,
-            TX_END_2:   if(!i_valid) begin
-                           state <= TX_IDLE; 
-                           o_accept <= 1'b0;
-                        end  
+            TX_IDLE:    if(i_valid & full_sample)  
+                           state    <= TX_START;
+            TX_START:   if(full_sample)   
+                           state     <= TX1;
+            TX1,
+            TX2,
+            TX3,
+            TX4,
+            TX5,
+            TX6,
+            TX7,
+            TX8:        if(full_sample)   
+                           state    <= state + 4'h1;  
+            TX_END:     if(!i_valid)      
+                           state    <= TX_IDLE;  
          endcase
 		end
 	end
