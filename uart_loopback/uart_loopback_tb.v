@@ -44,21 +44,16 @@ module uart_loopback_tb;
       end
    endtask
 
+   integer i;
+
 	initial begin
                   i_rx     = 1;
 	   #100        i_nrst   = 1;
 		#170		   i_nrst   = 0;
 		#170		   i_nrst   = 1;	
-      #1000000    uart_send(8'h11); 
-      #1000000    uart_send(8'h33);
-      #1000000    uart_send(8'hEE); 
-      #1000000    uart_send(8'h11); 
-      #1000000    uart_send(8'h33);
-      #1000000    uart_send(8'hEE); 
-      #1000000    uart_send(8'h11); 
-      #1000000    uart_send(8'h33);
-      #1000000    uart_send(8'hEE); 
-
+      for(i=0;i<256;i=i+1) begin
+         #100000    uart_send(i); 
+      end      
       $finish;
 	end
 

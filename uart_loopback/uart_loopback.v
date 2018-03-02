@@ -8,8 +8,10 @@ module uart_loopback(
 
    parameter   SAMPLE   = 104;   // SAMPLE = CLK_HZ / BAUDRATE
 
-   wire        valid_rx_2_tx;
-   wire  [7:0] data_rx_2_tx;
+   wire           valid_rx_2_tx;
+   wire  [7:0]    data_rx_2_tx;
+   reg            latch_valid;
+   reg   [7:0]    latch_data;
 
    uart_rx #(
       .SAMPLE     (SAMPLE        )   
@@ -26,11 +28,17 @@ module uart_loopback(
    ) uart_tx (
 	   .i_clk      (i_clk         ),
       .i_nrst     (i_nrst        ),
-      .i_data     (data_rx_2_tx  ),
+      .i_data     (latch_data  ),
       .o_tx       (o_tx          ),
-      .i_valid    (valid_rx_2_tx ),
+      .i_valid    (latch_valid ),
       .o_accept   (              )
    );
+
+   always@(posedge i_clk) begin
+      latch_valid <= valid_rx_2_tx;
+      if((valid_rx_2_tx == 1) && (latch_valid == 0))
+         latch_data <= data_rx_2_tx;
+   end
 
 
 	

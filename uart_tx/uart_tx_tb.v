@@ -53,15 +53,16 @@ module uart_tx_tb;
       end
    endtask
 
+   integer i;
 
 	initial begin
 		#100     i_nrst   = 1;
 		#170		i_nrst   = 0;
                i_valid  = 0;
 		#170		i_nrst   = 1;	
-      #100000  uart_send(8'h11); 
-      #100000  uart_send(8'h33);
-      #100000  uart_send(8'hEE);
+      for(i=0;i<256;i=i+1) begin
+         #100000  uart_send(i);
+      end
       $finish;
 	end
 

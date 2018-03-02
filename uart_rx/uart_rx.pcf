@@ -1,16 +1,11 @@
-set_io clk   21
+set_io i_clk   21
 
-set_io nRst  78
+set_io i_nrst  78
 
-set_io sw2   79
-set_io sw1   80
-set_io sw0   81
+set_io o_data[0]  95
+set_io o_data[1]  96
+set_io o_data[2]  97
+set_io o_data[3]  98
+set_io o_data[4]  99
 
-set_io led4  95
-set_io led3  96
-set_io led2  97
-set_io led1  98
-set_io led0  99
-
-set_io tx    8
-set_io rx    9
+set_io i_rx    9
