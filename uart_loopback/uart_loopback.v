@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////////
+// uart_loopback.v
+// Return UART traffic after passing through a FIFO
+// 
+// Baudrate = 9600
+//
+// Tested on icestick. Deeper FIFO breaks, perhaps timing?
+//
+///////////////////////////////////////////////////////////
+
 `timescale 1ns/1ps
 module uart_loopback(
 	input    wire  i_clk,
@@ -6,40 +16,53 @@ module uart_loopback(
 	output	wire	o_tx
 );
 
-   parameter   SAMPLE   = 104;   // SAMPLE = CLK_HZ / BAUDRATE
+   parameter   DEPTH    = 10;
+   parameter   WIDTH    = 8;
+   parameter   SAMPLE   = 1250;   // SAMPLE = CLK_HZ / BAUDRATE
 
-   wire           valid_rx_2_tx;
-   wire  [7:0]    data_rx_2_tx;
-   reg            latch_valid;
-   reg   [7:0]    latch_data;
+   wire                       rx_2_fifo_valid;
+   wire  [7:0]                rx_2_fifo_data;
+   wire  [7:0]                fifo_2_tx_data;
+   wire                       fifo_2_tx_accept;
+
+   wire                       valid_tx;
+   wire  [$clog2(DEPTH)-1:0]  level;
+   
+   assign valid_tx = (level > 10);
 
    uart_rx #(
-      .SAMPLE     (SAMPLE        )   
+      .SAMPLE     (SAMPLE           )   
    ) uart_rx (
-      .i_clk      (i_clk         ),
-      .i_nrst     (i_nrst        ),
-      .o_data     (data_rx_2_tx  ),
-      .i_rx       (i_rx          ),
-      .o_valid    (valid_rx_2_tx )
+      .i_clk      (i_clk            ),
+      .i_nrst     (i_nrst           ),
+      .o_data     (rx_2_fifo_data   ),
+      .i_rx       (i_rx             ),
+      .o_valid    (rx_2_fifo_valid  ),
+      .i_accept   (1'b1             )
 	);
 
-   uart_tx #(
-      .SAMPLE     (SAMPLE        )
-   ) uart_tx (
-	   .i_clk      (i_clk         ),
-      .i_nrst     (i_nrst        ),
-      .i_data     (latch_data  ),
-      .o_tx       (o_tx          ),
-      .i_valid    (latch_valid ),
-      .o_accept   (              )
+   fifo #(
+      .DEPTH      (DEPTH            ),
+      .WIDTH      (WIDTH            )
+   ) fifo(
+	   .i_clk      (i_clk            ),
+		.i_nrst     (i_nrst           ),
+		.i_data	   (rx_2_fifo_data   ),
+      .o_data     (fifo_2_tx_data   ),
+      .i_write    (rx_2_fifo_valid  ),
+      .i_read     (tx_2_fifo_accept ),
+      .o_level    (level            )
    );
 
-   always@(posedge i_clk) begin
-      latch_valid <= valid_rx_2_tx;
-      if((valid_rx_2_tx == 1) && (latch_valid == 0))
-         latch_data <= data_rx_2_tx;
-   end
+   uart_tx #(
+      .SAMPLE     (SAMPLE           )
+   ) uart_tx (
+	   .i_clk      (i_clk            ),
+      .i_nrst     (i_nrst           ),
+      .i_data     (fifo_2_tx_data   ),
+      .o_tx       (o_tx             ),
+      .i_valid    (valid_tx         ),
+      .o_accept   (tx_2_fifo_accept )
+   );
 
-
-	
 endmodule

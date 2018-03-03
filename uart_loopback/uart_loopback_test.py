@@ -1,9 +1,10 @@
 import time
 import serial
+from random import randint
 
 ser = serial.Serial(
     port='/dev/ttyUSB1',
-    baudrate=115200,
+    baudrate=9600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS
@@ -12,14 +13,26 @@ ser = serial.Serial(
 ser.isOpen()
 ser.reset_input_buffer()
 
+expected = []
+count = 0
+
 print "Tx       Rx"
-for tx in range(0,256):
+while(1):
+    tx = randint(0,255)
+    print str(count)
+    count = count + 1
     ser.write(chr(tx))
-    while not ser.inWaiting():
-        pass
-    rx = ord(ser.read(1))
-    print '{:08b}'.format(tx),'{:08b}'.format(rx),
-    if(rx != tx):
-        print " error"
-    else:
-        print ""
+    #print '{:08b}'.format(tx)
+    expected.append(tx)
+    while ser.inWaiting():
+        rx = ord(ser.read(1))
+        #print '                     {:08b}'.format(rx)
+        if expected[0] != rx:
+            print "ERROR"
+        else:
+            expected = expected[1:]
+
+    #if(rx != tx):
+    #    print " error"
+    #else:
+            #    print ""

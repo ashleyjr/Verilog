@@ -4,8 +4,8 @@ module uart_loopback_tb;
    // CLK = 12 MHz
 	parameter   CLK_PERIOD_NS  = 83;
 
-   // BAUD = 115200
-   parameter   SAMPLE_TB      = 8681;     // SAMPLE_TB   = 1e9       / BAUDRATE
+   // BAUD = 9600
+   parameter   SAMPLE_TB      = 104167;     // SAMPLE_TB   = 1e9       / BAUDRATE
 	
 	reg	i_clk;
 	reg	i_nrst;
@@ -52,7 +52,7 @@ module uart_loopback_tb;
 		#170		   i_nrst   = 0;
 		#170		   i_nrst   = 1;	
       for(i=0;i<256;i=i+1) begin
-         #100000    uart_send(i); 
+         #100000 uart_send(i); 
       end      
       $finish;
 	end

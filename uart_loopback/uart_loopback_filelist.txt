@@ -1,4 +1,5 @@
 uart_loopback.v
 ../uart_rx/uart_rx.v
 ../uart_tx/uart_tx.v
+../fifo/fifo.v
 uart_loopback_tb.v

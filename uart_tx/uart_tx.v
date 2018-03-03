@@ -19,7 +19,7 @@ module uart_tx(
    input    wire  [7:0] i_data,
    output   wire        o_tx,
    input    wire        i_valid,
-   output   wire        o_accept
+   output   reg         o_accept
 );
 
    parameter   SAMPLE   =  1,
@@ -37,9 +37,8 @@ module uart_tx(
 
    reg   [3:0]                   state;
    reg   [$clog2(SAMPLE)-1:0]    count;
-  
+ 
    assign   full_sample =  (count == SAMPLE  );
-   assign   o_accept    =  (state == TX_END  );
    assign   o_tx        =  (state == TX_IDLE )  ?  1'b1                 :
                            (state == TX_START)  ?  1'b0                 :
                            (state == TX_END  )  ?  1'b1                 :
@@ -49,6 +48,7 @@ module uart_tx(
 		if(!i_nrst) begin
          state    <= TX_IDLE;  
          count    <= 'b0;
+         o_accept <= 1'b0;
 		end else begin
          if(full_sample) begin
             count <= 'b0;
@@ -56,8 +56,13 @@ module uart_tx(
             count <= count + 'b1;
          end
 	      case(state)
-            TX_IDLE:    if(i_valid & full_sample)  
-                           state    <= TX_START;
+            TX_IDLE:    begin
+                           o_accept <= 1'b0;
+                           if(i_valid & !o_accept) begin
+                              count    <= 'b0;
+                              state    <= TX_START;
+                           end
+                        end
             TX_START:   if(full_sample)   
                            state     <= TX1;
             TX1,
@@ -67,10 +72,12 @@ module uart_tx(
             TX5,
             TX6,
             TX7,
-            TX8:        if(full_sample)   
-                           state    <= state + 4'h1;  
-            TX_END:     if(!i_valid)      
-                           state    <= TX_IDLE;  
+            TX8:        if(full_sample)
+                           state    <= state + 4'h1; 
+            TX_END:     if(full_sample) begin     
+                           state    <= TX_IDLE;
+                           o_accept <= 1'b1;
+                        end
          endcase
 		end
 	end

@@ -14,6 +14,7 @@ module uart_rx_tb;
    wire  [7:0] o_data;
    reg         i_rx;
    wire        o_valid;
+   reg         i_accept;
 
    uart_rx #(
       .SAMPLE     (SAMPLE     )
@@ -23,8 +24,9 @@ module uart_rx_tb;
       .i_nrst     (i_nrst     ),
       .o_data     (o_data     ),
       .i_rx       (i_rx       ),
-      .o_valid    (o_valid    )
-	);
+      .o_valid    (o_valid    ),
+	   .i_accept   (i_accept   )
+   );
 
 	initial begin
 		while(1) begin
@@ -51,12 +53,16 @@ module uart_rx_tb;
       end
    endtask
 
+   initial
+      while(1) 
+         #CLK_PERIOD_NS i_accept = $random;
 
 	initial begin
                   i_rx        = 1;
 					   i_nrst		= 1;
       #17         i_nrst      = 0;
       #17         i_nrst      = 1;
+
       #100000     uart_send(8'h11);
       #100000     uart_send(8'hAA);
       #100000     uart_send(8'hD6);
@@ -71,6 +77,7 @@ module uart_rx_tb;
       #60000      uart_send(8'hAA);
       #60000      uart_send(8'h11);
       #60000      uart_send(8'hFF);
+
 
       #40000      uart_send(8'h11);
       #40000      uart_send(8'hAA);

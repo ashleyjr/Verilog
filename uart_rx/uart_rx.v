@@ -17,7 +17,8 @@ module uart_rx(
 	input    wire		      i_nrst,
    output   reg   [7:0]    o_data,
    input    wire           i_rx,
-	output   reg            o_valid
+	output   reg            o_valid,
+   input    wire           i_accept
 );
 
     parameter  SAMPLE      = 1,  
@@ -42,11 +43,16 @@ module uart_rx(
       end else begin
          count <= count + 'b1;
          case(state)
-            SM_IDLE:       if(!i_rx) begin
-                              state       <= SM_RX_START;
-                              count       <= 'b0;
-                              o_data      <= START_BIT;
-                              o_valid     <= 1'b0;
+            SM_IDLE:       begin
+                              if(i_accept) begin
+                                 o_valid  <= 1'b0;
+                              end
+                              if(!i_rx) begin
+                                 state    <= SM_RX_START;
+                                 count    <= 'b0;
+                                 o_data   <= START_BIT;
+                                 o_valid  <= 1'b0;
+                              end
                            end
             SM_RX_START:   if(half_sample) begin
                               state       <= SM_RX;
@@ -57,11 +63,17 @@ module uart_rx(
                               count       <= 'b0;
                               if(o_data[0]) begin
                                  state    <= SM_WAIT;
+                                 o_valid  <= 1'b1;
                               end
                            end
-            SM_WAIT:       if(full_sample) begin
-                              state       <= SM_IDLE;
-                              o_valid     <= 1'b1;
+            SM_WAIT:       begin
+                              if(full_sample) begin
+                                 state    <= SM_IDLE;
+                                 count    <= 'b0;
+                              end
+                              if(i_accept) begin
+                                 o_valid  <= 1'b0;
+                              end
                            end
          endcase
       end
