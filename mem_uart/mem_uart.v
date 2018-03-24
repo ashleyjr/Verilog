@@ -38,13 +38,12 @@ module mem_uart(
    output   wire                    o_uart_tx	
 );
 
-   parameter   DATA_WIDTH        = 32;
-   parameter   ADDR_WIDTH        = 32;
+   parameter   DATA_WIDTH        = 0;
+   parameter   ADDR_WIDTH        = 0;
    parameter   DATA_NIBBLE_WIDTH = DATA_WIDTH >> 2;
    parameter   ADDR_NIBBLE_WIDTH = ADDR_WIDTH >> 2;
    parameter   NIBBLE_WIDTH      = DATA_NIBBLE_WIDTH + ADDR_NIBBLE_WIDTH;
-   parameter   SAMPLE            =  1250;             // SAMPLE = CLK_HZ / BAUDRATE
-
+   parameter   SAMPLE            = 0;             
 
    parameter   SM_IDLE           = 3'h0, 
                SM_WRITE_VALID    = 3'h1,
@@ -66,7 +65,8 @@ module mem_uart(
    wire     [7:0]                               uart_rx_o_data;
    wire     [3:0]                               uart_tx_i_data;
 
-   assign   cmd         =  (state == SM_WRITE                  )  ?  write_cmd : 
+   assign   cmd         =  (  (state == SM_WRITE_VALID   )  ||
+                              (state == SM_WRITE_ACCEPT  )  )?        write_cmd         : 
                                                                      read_cmd;
    
    assign   write_cmd   =  (nibble_ptr == 'b0                  )  ?  CMD_ADDR_START    :
@@ -93,14 +93,15 @@ module mem_uart(
          o_data         <= 'b0;
          o_read_accept  <= 1'b0;
          o_write_accept <= 1'b0;
+         state          <= SM_IDLE;
 		end else begin
 	      case(state)
             SM_IDLE:          begin
-                                 nibble_ptr <= 'b0;
-                                 case({i_read_valid, i_write_valid})
-                                    2'b10:   state    <= SM_READ_VALID;
-                                    2'b01:   state    <= SM_WRITE_VALID;
-                                 endcase
+                                 nibble_ptr  <= 'b0;
+                                 if(i_read_valid)
+                                     state   <= SM_READ_VALID;
+                                 if(i_write_valid)
+                                     state   <= SM_WRITE_VALID; 
                               end
 
             // Write sequence
