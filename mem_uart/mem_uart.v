@@ -46,8 +46,11 @@ module mem_uart(
    parameter   SAMPLE            =  1250;             // SAMPLE = CLK_HZ / BAUDRATE
 
 
-   parameter   SM_IDLE
-               SM_WRITE
+   parameter   SM_IDLE           = 3'h0, 
+               SM_WRITE_VALID    = 3'h1,
+               SM_WRITE_ACCEPT   = 3'h2,
+               SM_READ_VALID     = 3'h3,
+               SM_READ_ACCEPT    = 3'h4;
 
    parameter   CMD_TRANS         = 4'b0000,
                CMD_DATA_START    = 4'b0001,
@@ -55,17 +58,13 @@ module mem_uart(
                CMD_END_WRITE     = 4'b0100,
                CMD_END_READ      = 4'b1000;
 
-   wire  [DATA_WIDTH+ADDR_WIDTH-1:0]         in;
-   reg   [$clog2(DATA_WIDTH+ADDR_WIDTH)-1:0] nibble_ptr;
-   wire  [$clog2(DATA_WIDTH+ADDR_WIDTH)+2:0] bit_ptr;
-   
-   assign bit_ptr = nibble_ptr << 2;
-   assign in = {i_addr,i_data};
-   assign tx_nibble = in[bit_ptr+3:bit_ptr];
-
-   wire   [3:0]   cmd,
-                  write_cmd,
-                  read_cmd;
+   reg      [2:0]                               state;
+   reg      [$clog2(DATA_WIDTH+ADDR_WIDTH)-1:0] nibble_ptr;
+   wire     [3:0]                               cmd,
+                                                write_cmd,
+                                                read_cmd;
+   wire     [7:0]                               uart_rx_o_data;
+   wire     [3:0]                               uart_tx_i_data;
 
    assign   cmd         =  (state == SM_WRITE                  )  ?  write_cmd : 
                                                                      read_cmd;
@@ -81,75 +80,75 @@ module mem_uart(
                                                                      CMD_TRANS;
 
 
+   assign   uart_tx_i_valid = (state == SM_WRITE_VALID);
 
-   always@(posedge clk or negedge nRst) begin
-		if(!nRst) begin
+   assign   uart_tx_i_data[0] = i_data[0 + (nibble_ptr*4)];
+   assign   uart_tx_i_data[1] = i_data[1 + (nibble_ptr*4)];
+   assign   uart_tx_i_data[2] = i_data[2 + (nibble_ptr*4)];
+   assign   uart_tx_i_data[3] = i_data[3 + (nibble_ptr*4)];
+
+
+   always@(posedge i_clk or negedge i_nrst) begin
+		if(!i_nrst) begin
          o_data         <= 'b0;
          o_read_accept  <= 1'b0;
          o_write_accept <= 1'b0;
 		end else begin
 	      case(state)
-            SM_IDLE:    case({i_read_valid, i_write_valid})
-                           2'b10:   state <= SM_READ;
-                           2'b01:   begin
-                                       state             <= SM_WRITE;
-                                       nibble_ptr        <= 'b0;
-                                       cmd               <= CMD_ADDR_START;
-                                       uart_tx_i_valid   <= 1'b1;
-                                    end
-                        endcase
-
-
-            SM_WRITE_VALID:   begin
-                                    uart_tx_i_valid   <= 1'b1;
-                        
-                              end
-            SM_WRITE_ACCEPT:  begin
-                                 nibble_ptr <= nibble_ptr + 'b1;
-                                 case({nibble_ptr})
-                                    ADDR_NIBBLE_WIDTH-1,
-                                    NIBBLE_WIDTH-1:         cmd <= CMD_END_WRITE;
-                                    ADDR_NIBBLE_WIDTH:      cmd <= CMD_START_WRITE
-                                    default:                cmd <= CMD_TRANS; 
+            SM_IDLE:          begin
+                                 nibble_ptr <= 'b0;
+                                 case({i_read_valid, i_write_valid})
+                                    2'b10:   state    <= SM_READ_VALID;
+                                    2'b01:   state    <= SM_WRITE_VALID;
                                  endcase
                               end
-                                       
-            begin
-                                 if(uart_tx_o_accept) begin
-                                    if(nibble_ptr == ADDR_NIBBLE_WIDTH
-                                 end
+
+            // Write sequence
+            SM_WRITE_VALID:   begin 
+                                 state       <= SM_WRITE_ACCEPT;
+                                 nibble_ptr  <= nibble_ptr + 'b1; 
+                              end                     
+            SM_WRITE_ACCEPT:  if(uart_tx_o_accept)
+                                 if(nibble_ptr == NIBBLE_WIDTH-1)
+                                    state    <= SM_IDLE;
+                                 else
+                                    state    <= SM_WRITE_VALID;
+            
+            // Read sequence
+            SM_READ_VALID:    begin
+                                 state       <= SM_READ_ACCEPT;
+                                 nibble_ptr  <= nibble_ptr;
                               end
-
-
-
-            SM_READ: begin 
-                                                    
-                     end
-
+            SM_READ_ACCEPT:   if(uart_tx_o_accept)
+                                 if(nibble_ptr == ADDR_WIDTH-1)
+                                    state    <= SM_IDLE;
+                                 else
+                                    state    <= SM_READ_VALID;
+            default:          state <= SM_IDLE;
          endcase
       end
 	end
 
    uart_rx #(
-      .SAMPLE     (SAMPLE                    )   
+      .SAMPLE     (SAMPLE                 )   
    ) uart_rx (
-      .i_clk      (i_clk                     ),
-      .i_nrst     (i_nrst                    ),
-      .o_data     (i_data[nibbl]   ),
-      .i_rx       (i_uart_rx        ),
-      .o_valid    (uart_rx_o_valid  ),
-      .i_accept   (1'b1                      )
+      .i_clk      (i_clk                  ),
+      .i_nrst     (i_nrst                 ),
+      .o_data     (uart_rx_o_data         ),
+      .i_rx       (i_uart_rx              ),
+      .o_valid    (uart_rx_o_valid        ),
+      .i_accept   (1'b1                   )
 	);
 
    uart_tx #(
-      .SAMPLE     (SAMPLE                    )
+      .SAMPLE     (SAMPLE                 )
    ) uart_tx (
-	   .i_clk      (i_clk                     ),
-      .i_nrst     (i_nrst                    ),
-      .i_data     ({i_data[nibble_ptr],cmd}  ),
-      .o_tx       (o_uart_tx                 ),
-      .i_valid    (uart_tx_i_valid           ),
-      .o_accept   (uart_tx_o_accept          )
+	   .i_clk      (i_clk                  ),
+      .i_nrst     (i_nrst                 ),
+      .i_data     ({uart_tx_i_data,cmd}   ),
+      .o_tx       (o_uart_tx              ),
+      .i_valid    (uart_tx_i_valid        ),
+      .o_accept   (uart_tx_o_accept       )
    );
 
 
