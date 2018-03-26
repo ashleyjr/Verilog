@@ -84,6 +84,11 @@ module mem_uart_tb;
    reg   [7:0]    uart;
 
 	initial begin
+		while(1)
+         uart_get(uart);
+	end
+	
+   initial begin
                // Initial
                i_uart_rx      = 1'b1;
                i_write_valid  = 1'b0;
@@ -94,15 +99,24 @@ module mem_uart_tb;
       #77      i_nrst         = 1'b0;
       #77      i_nrst         = 1'b1;
 
-               // Test
+      // Writes
       #7777    i_data         = 16'hABCD;
                i_addr         = 64'h0123456789ABCDEF;
+               i_write_valid  = 1'b1; 
+               while(!o_write_accept) @(posedge i_clk); 
+               i_write_valid  = 1'b0;	
+      #7777777 i_data         = 16'hBEEF;
+               i_addr         = 64'hDEADDEADDEADDEAD;
                i_write_valid  = 1'b1;
-
-               repeat(20)
-                  uart_get(uart);
-      #10000000
-		$finish;
+               while(!o_write_accept) @(posedge i_clk); 
+               i_write_valid  = 1'b0;
+       #1      i_data         = 16'hABCD;
+               i_addr         = 64'h0123456789ABCDEF;
+               i_write_valid  = 1'b1; 
+               while(!o_write_accept) @(posedge i_clk); 
+               i_write_valid  = 1'b0;     
+                  
+      $finish;
 	end
 
 endmodule

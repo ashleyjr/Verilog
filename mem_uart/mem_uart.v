@@ -100,6 +100,8 @@ module mem_uart(
 		end else begin
 	      case(state)
             SM_IDLE:          begin
+                                 o_write_accept <= 1'b0;
+                                 o_read_accept <= 1'b0;
                                  nibble_ptr  <= 'b0;
                                  if(i_read_valid)
                                      state   <= SM_READ_VALID;
@@ -112,9 +114,10 @@ module mem_uart(
                                  state       <= SM_WRITE_ACCEPT; 
                               end                     
             SM_WRITE_ACCEPT:  if(uart_tx_o_accept)
-                                 if(nibble_ptr == NIBBLE_WIDTH-1)
+                                 if(nibble_ptr == NIBBLE_WIDTH-1) begin
                                     state    <= SM_IDLE;
-                                 else begin
+                                    o_write_accept  <= 1'b1;
+                                 end else begin
                                     state    <= SM_WRITE_VALID;
                                     nibble_ptr  <= nibble_ptr + 'b1; 
                                  end
