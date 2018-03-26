@@ -67,26 +67,21 @@ module mem_uart_tb;
 
    task uart_get;
       output [7:0]   get;    
-      output         timeout;
-      integer        count;
+      integer        i;
       begin
          while(o_uart_tx == 1) 
-            @(posedge i_clk); 
-           
+            @(posedge i_clk);  
          #(SAMPLE_TB*1.5)
          get = 0;
-         repeat(7) begin 
-            get[7]   = o_uart_tx;
-            get      = get >> 1;
-            #SAMPLE_TB;
+         for(i=0;i<8;i=i+1) begin 
+            get[i]   = o_uart_tx;
+            #SAMPLE_TB; 
          end
-         get[7]      = o_uart_tx;
          $display("%tps       uart_get = %x",$time,get); 
       end
    endtask
 
    reg   [7:0]    uart;
-   reg            timeout;
 
 	initial begin
                // Initial
@@ -104,9 +99,9 @@ module mem_uart_tb;
                i_addr         = 64'h0123456789ABCDEF;
                i_write_valid  = 1'b1;
 
-               timeout = 0;
-               repeat(21)
-                  uart_get(uart, timeout); 
+               repeat(20)
+                  uart_get(uart);
+      #10000000
 		$finish;
 	end
 
