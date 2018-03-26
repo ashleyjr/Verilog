@@ -52,8 +52,6 @@ module mem_uart_tb;
 	initial begin
       $dumpfile("mem_uart.vcd");
 		$dumpvars(0,mem_uart_tb);	
-		$display("                  TIME    i_nrst");		
-      $monitor("%tps       %d",$time,i_nrst);
 	end
 
    task uart_send;

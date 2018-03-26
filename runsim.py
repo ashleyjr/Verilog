@@ -6,6 +6,7 @@ import subprocess
 from optparse import OptionParser
 
 
+DEFAULT_LINES = 15
 
 def cmd_print(cmd):
     print "     Cmd: " + cmd
@@ -14,6 +15,7 @@ def cmd_print(cmd):
 def main():
     parser = OptionParser(usage="runsim.py [-m module] [-s do a sim] [-w view waves]" )
     parser.add_option("-i", "--ice", action="store_true", dest="ice", help="translate and deploy to icestick")
+    parser.add_option("-l", "--line", dest="lines", help="Number of lines of the log to print at runtime")
     parser.add_option("-m", "--module", dest="module", help="module to simulate - should not be defined if program is")
     parser.add_option("-n", "--new", dest="new", help="Creates new module with a given name")
     parser.add_option("-p", "--pnr", action="store_true", dest="pnr", help="place and route")
@@ -53,6 +55,11 @@ def main():
         print "    Info: You must specify and operation"
         sys.exit(0)
 
+    if(options.lines != None):
+        lines = int(options.lines)
+    else:
+        lines = DEFAULT_LINES
+
     print
     print "--- runsim.py ---"
     print "  Module: " + sim
@@ -74,15 +81,16 @@ def main():
         cmd_print("iverilog -o " + str(sim) + ".dat -c " + str(sim) +"_filelist.txt")
         cmd_print("vvp " + str(sim) + ".dat -vcd > " + temp)
 
-        print "    Info: Head of " + temp
-        f = open(temp)
-        count = 1
-        for line in f:
-            print "    Info: " + line,
-            if not options.all:
-                count = count + 1
-                if(count > 15):
-                    break
+        if lines > 2:
+            print "    Info: Head of " + temp + " (Max of "+str(lines)+" lines)"
+            f = open(temp)
+            count = 1
+            for line in f:
+                print "    Info: " + line,
+                if not options.all:
+                    count = count + 1
+                    if(count > lines):
+                        break
 
     if(options.synth):
         os.chdir(sim)
