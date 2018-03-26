@@ -72,20 +72,18 @@ module mem_uart_tb;
       output         timeout;
       integer        count;
       begin
-         timeout = 0;
-         while((o_uart_tx == 1) && (!timeout)) begin
+         while(o_uart_tx == 1) 
             @(posedge i_clk); 
-            count = count + 1;
-            if(count > 1000)
-               timeout = 1;
+           
+         #(SAMPLE_TB*1.5)
+         get = 0;
+         repeat(7) begin 
+            get[7]   = o_uart_tx;
+            get      = get >> 1;
+            #SAMPLE_TB;
          end
-         if(!timeout) begin
-            #(SAMPLE_TB/2)
-            get = 0;
-            repeat(8) 
-               #SAMPLE_TB  get = {get << 1,o_uart_tx};
-            $display("%tps       uart_get = %x",$time,get);
-         end
+         get[7]      = o_uart_tx;
+         $display("%tps       uart_get = %x",$time,get); 
       end
    endtask
 
@@ -105,11 +103,11 @@ module mem_uart_tb;
 
                // Test
       #7777    i_data         = 16'hABCD;
-               i_addr         = 64'h123456789ABCDEF;
+               i_addr         = 64'h0123456789ABCDEF;
                i_write_valid  = 1'b1;
 
                timeout = 0;
-               repeat(10)
+               repeat(21)
                   uart_get(uart, timeout); 
 		$finish;
 	end

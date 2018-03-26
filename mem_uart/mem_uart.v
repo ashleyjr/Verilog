@@ -59,6 +59,7 @@ module mem_uart(
 
    reg      [2:0]                               state;
    reg      [$clog2(DATA_WIDTH+ADDR_WIDTH)-1:0] nibble_ptr;
+   wire     [DATA_WIDTH+ADDR_WIDTH-1:0]         data_addr;
    wire     [3:0]                               cmd,
                                                 write_cmd,
                                                 read_cmd;
@@ -80,12 +81,14 @@ module mem_uart(
                                                                      CMD_TRANS;
 
 
-   assign   uart_tx_i_valid = (state == SM_WRITE_VALID);
+   assign   uart_tx_i_valid = (state == SM_WRITE_ACCEPT);
 
-   assign   uart_tx_i_data[0] = i_data[0 + (nibble_ptr*4)];
-   assign   uart_tx_i_data[1] = i_data[1 + (nibble_ptr*4)];
-   assign   uart_tx_i_data[2] = i_data[2 + (nibble_ptr*4)];
-   assign   uart_tx_i_data[3] = i_data[3 + (nibble_ptr*4)];
+   assign   data_addr = {i_data,i_addr};
+
+   assign   uart_tx_i_data[0] = data_addr[      (nibble_ptr << 2)];
+   assign   uart_tx_i_data[1] = data_addr[1 +   (nibble_ptr << 2)];
+   assign   uart_tx_i_data[2] = data_addr[2 +   (nibble_ptr << 2)];
+   assign   uart_tx_i_data[3] = data_addr[3 +   (nibble_ptr << 2)];
 
 
    always@(posedge i_clk or negedge i_nrst) begin
@@ -106,15 +109,15 @@ module mem_uart(
 
             // Write sequence
             SM_WRITE_VALID:   begin 
-                                 state       <= SM_WRITE_ACCEPT;
-                                 nibble_ptr  <= nibble_ptr + 'b1; 
+                                 state       <= SM_WRITE_ACCEPT; 
                               end                     
             SM_WRITE_ACCEPT:  if(uart_tx_o_accept)
                                  if(nibble_ptr == NIBBLE_WIDTH-1)
                                     state    <= SM_IDLE;
-                                 else
+                                 else begin
                                     state    <= SM_WRITE_VALID;
-            
+                                    nibble_ptr  <= nibble_ptr + 'b1; 
+                                 end
             // Read sequence
             SM_READ_VALID:    begin
                                  state       <= SM_READ_ACCEPT;
