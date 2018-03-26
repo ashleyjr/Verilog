@@ -1,34 +1,40 @@
+///////////////////////////////////////////////////////////
+// fibonacci.v
+// Generates a fibonacci sequence to write to memory.
+// Ouput o_write_valid is always valid as addition 
+// happens on a single cycle. Updated when i_write_accept
+// is returned.
+//
+///////////////////////////////////////////////////////////
+
 `timescale 1ns/1ps
 module fibonacci(
-	input				clk,
-	input				nRst,
-	input				rx,
-	input				sw2,
-	input				sw1,
-	input				sw0,
-	output	reg	tx,
-	output	reg	led4,
-	output	reg	led3,
-	output	reg	led2,
-	output	reg	led1,
-	output	reg	led0
+	input	   wire			               i_clk,
+	input	   wire			               i_nrst,
+   output   reg   [VALUE_WIDTH-1:0]    o_value,
+   output   reg   [SEQUENCE_WIDTH-1:0] o_sequence,
+   output   wire                       o_write_valid,
+   input    wire                       i_write_accept	
 );
 
-	always@(posedge clk or negedge nRst) begin
-		if(!nRst) begin
-			tx   <= 1'b0;
-			led4 <= 1'b0;
-			led3 <= 1'b0;
-			led2 <= 1'b0;
-			led1 <= 1'b0;
-			led0 <= 1'b0;
-		end else begin
-			tx   <= rx;
-			led4 <= sw1;
-			led3 <= 1'b1;
-			led2 <= sw2;
-			led1 <= 1'b1;
-			led0 <= sw0;
-		end
+   parameter   VALUE_WIDTH    = 0,
+               SEQUENCE_WIDTH = 0;
+
+   reg   [VALUE_WIDTH-1:0] last_value;
+
+   assign o_write_valid = 1'b1;
+
+	always@(posedge i_clk or negedge i_nrst) begin
+		if(!i_nrst) begin
+		   o_value        <= 'b1;
+         last_value     <= 'b0;
+         o_sequence     <= 'b0;
+      end else begin
+         if(i_write_accept) begin
+            o_value        <= o_value + last_value;
+            last_value     <= o_value;
+            o_sequence     <= o_sequence + 'b1; 
+         end 
+      end
 	end
 endmodule

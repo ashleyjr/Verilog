@@ -3,84 +3,51 @@ module fibonacci_tb;
 
 	parameter CLK_PERIOD = 20;
 
-	reg	clk;
-	reg	nRst;
-	reg	rx;
-	reg	sw2;
-	reg	sw1;
-	reg	sw0;
-	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
 
-	fibonacci fibonacci(
-		`ifdef POST_SYNTHESIS
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`endif
+   parameter   VALUE_WIDTH    = 64,
+               SEQUENCE_WIDTH = 16;
+
+	reg	                     i_clk;
+	reg	                     i_nrst;
+	wire  [VALUE_WIDTH-1:0]    o_value;
+   wire  [SEQUENCE_WIDTH-1:0] o_sequence;
+   wire                       o_write_valid;
+   reg                        i_write_accept;	
+
+	fibonacci #(
+      .VALUE_WIDTH      (VALUE_WIDTH      ),
+      .SEQUENCE_WIDTH   (SEQUENCE_WIDTH   )
+   ) fibonacci (
+      .i_clk            (i_clk            ),
+      .i_nrst           (i_nrst           ),
+      .o_value          (o_value          ),
+      .o_sequence       (o_sequence       ),
+      .o_write_valid    (o_write_valid    ),
+      .i_write_accept   (i_write_accept   )
 	);
 
 	initial begin
 		while(1) begin
-			#(CLK_PERIOD/2) clk = 0;
-			#(CLK_PERIOD/2) clk = 1;
+			#(CLK_PERIOD/2) i_clk = 0;
+			#(CLK_PERIOD/2) i_clk = 1;
 		end
 	end
 
 	initial begin
-		`ifdef POST_SYNTHESIS
-			$dumpfile("fibonacci_syn.vcd");
-			$dumpvars(0,fibonacci_tb);
-		`else
-			$dumpfile("fibonacci.vcd");
-			$dumpvars(0,fibonacci_tb);
-		`endif
-		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
+		$dumpfile("fibonacci.vcd");
+		$dumpvars(0,fibonacci_tb);	
+		$display("                  TIME    nRst");		
+      $monitor("%tps       %d",$time,i_nrst);
 	end
 
 	initial begin
-					nRst		= 1;
-					rx			= 0;
-					sw2		= 0;
-					sw1		= 0;
-					sw0		= 0;
-		#17		nRst		= 0;
-		#17		nRst		= 1;
-		#17		sw0		= 1;
-		#17		sw1		= 1;
-		#17		sw2		= 1;
-		#17		rx			= 1;
-		#17		sw1		= 0;
-		#17		sw2		= 0;
-		#17		sw0		= 0;
-		#17		rx			= 0;
-		#10
+            i_nrst         = 1;
+      #777  i_nrst         = 0;
+      #777  i_nrst         = 1;
+            repeat(200) begin
+               @(posedge i_clk)
+               i_write_accept = $random;
+            end 
 		$finish;
 	end
 

@@ -1,0 +1,6 @@
+fibonacci_mem_uart.v
+../fibonacci/fibonacci.v
+../mem_uart/mem_uart.v
+../uart_rx/uart_rx.v
+../uart_tx/uart_tx.v
+fibonacci_mem_uart_tb.v
