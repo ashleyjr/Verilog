@@ -14,9 +14,9 @@ module fibonacci_mem_uart(
 	input    wire  i_nrst,
    output   wire  o_tx 
 );
-   parameter   SAMPLE         = 104167,
-               VALUE_WIDTH    = 16,
-               SEQUENCE_WIDTH = 8;
+   parameter   SAMPLE         = 1250,  // BAUD = 9600 with 12MHz clk
+               VALUE_WIDTH    = 64,
+               SEQUENCE_WIDTH = 32;
         
    wire  [VALUE_WIDTH-1:0]    value_f_to_m;
    wire  [SEQUENCE_WIDTH-1:0] sequence_f_to_m;
