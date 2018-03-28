@@ -2,9 +2,9 @@
 module shift_and_add_multiplier_tb;
 
 	parameter   CLK_PERIOD        = 20,
-               DATA_WIDTH_A      = 32,
-               DATA_WIDTH_B      = 32,
-               DATA_WIDTH_C_TB   = 64;
+               DATA_WIDTH_A      = 64,
+               DATA_WIDTH_B      = 64,
+               DATA_WIDTH_C_TB   = 128;
 
 	reg	                        i_clk;
 	reg	                        i_nrst;
