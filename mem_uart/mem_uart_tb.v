@@ -115,7 +115,12 @@ module mem_uart_tb;
                i_write_valid  = 1'b1; 
                while(!o_write_accept) @(posedge i_clk); 
                i_write_valid  = 1'b0;     
-                  
+  
+      // Reads
+      #77777   i_read_valid   = 1'b1;
+               i_addr         = 64'hDEADDEADDEADDEAD;
+
+      #77777777
       $finish;
 	end
 

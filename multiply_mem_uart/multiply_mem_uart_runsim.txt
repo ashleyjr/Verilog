@@ -1,0 +1,5 @@
+VCD info: dumpfile multiply_mem_uart.vcd opened for output.
+                  TIME    nRst
+                   0ps       1
+               77000ps       0
+              154000ps       1

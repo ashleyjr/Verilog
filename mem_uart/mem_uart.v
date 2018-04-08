@@ -81,7 +81,7 @@ module mem_uart(
                                                                      CMD_TRANS;
 
 
-   assign   uart_tx_i_valid = (state == SM_WRITE_ACCEPT);
+   assign   uart_tx_i_valid = (state == SM_WRITE_ACCEPT) | (state == SM_READ_ACCEPT);
 
    assign   data_addr = {i_data,i_addr};
 

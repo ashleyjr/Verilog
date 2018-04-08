@@ -1,0 +1,6 @@
+multiply_mem_uart.v
+../mem_uart/mem_uart.v
+../uart_rx/uart_rx.v
+../uart_tx/uart_tx.v
+../shift_and_add_multiplier/shift_and_add_multiplier.v
+multiply_mem_uart_tb.v
