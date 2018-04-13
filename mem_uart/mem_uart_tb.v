@@ -59,7 +59,7 @@ module mem_uart_tb;
       integer i;
       begin
          i_uart_rx = 0;
-         repeat(8)
+         for(i=0;i<8;i=i+1)
             #SAMPLE_TB  i_uart_rx = send[i];
          #SAMPLE_TB  i_uart_rx = 1;
       end
@@ -87,6 +87,14 @@ module mem_uart_tb;
 		while(1)
          uart_get(uart);
 	end
+
+   initial begin
+                  while(!i_read_valid) @(posedge i_clk); 
+      #99999999   uart_send(8'h77);
+                  uart_send(8'h66);
+      #9999999
+      $finish;
+   end
 	
    initial begin
                // Initial
@@ -120,8 +128,8 @@ module mem_uart_tb;
       #77777   i_read_valid   = 1'b1;
                i_addr         = 64'hDEADDEADDEADDEAD;
 
-      #77777777
-      $finish;
+               while(!o_read_accept) @(posedge i_clk);
+               i_read_valid   = 1'b0; 
 	end
 
 endmodule

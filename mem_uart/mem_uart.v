@@ -43,13 +43,15 @@ module mem_uart(
    parameter   DATA_NIBBLE_WIDTH = DATA_WIDTH >> 2;
    parameter   ADDR_NIBBLE_WIDTH = ADDR_WIDTH >> 2;
    parameter   NIBBLE_WIDTH      = DATA_NIBBLE_WIDTH + ADDR_NIBBLE_WIDTH;
+   parameter   DATA_BYTE_WIDTH   = DATA_WIDTH >> 3;
    parameter   SAMPLE            = 0;             
 
    parameter   SM_IDLE           = 3'h0, 
                SM_WRITE_VALID    = 3'h1,
                SM_WRITE_ACCEPT   = 3'h2,
                SM_READ_VALID     = 3'h3,
-               SM_READ_ACCEPT    = 3'h4;
+               SM_READ_ACCEPT    = 3'h4,
+               SM_READ_RX        = 3'h5;
 
    parameter   CMD_TRANS         = 4'b0000,
                CMD_DATA_START    = 4'b0001,
@@ -126,12 +128,22 @@ module mem_uart(
                                  state       <= SM_READ_ACCEPT;
                                  nibble_ptr  <= nibble_ptr;
                               end
-            SM_READ_ACCEPT:   if(uart_tx_o_accept)
-                                 if(nibble_ptr == ADDR_WIDTH-1)
-                                    state    <= SM_IDLE;
-                                 else
-                                    state    <= SM_READ_VALID;
-            default:          state <= SM_IDLE;
+            SM_READ_ACCEPT:   if(uart_tx_o_accept) begin
+                                 nibble_ptr  <= nibble_ptr + 'b1; 
+                                 if(nibble_ptr == ADDR_NIBBLE_WIDTH-1) begin
+                                    state       <= SM_READ_RX;
+                                    nibble_ptr  <= 'b0;
+                                 end else
+                                    state       <= SM_READ_VALID;
+                              end
+            SM_READ_RX:       if(uart_rx_o_valid) begin
+                                 o_data <= {o_data[DATA_WIDTH-9:0], uart_rx_o_data};
+                                 if(nibble_ptr == (DATA_BYTE_WIDTH-1)) begin
+                                    state          <= SM_IDLE;
+                                    o_read_accept  <= 1'b1;
+                                 end
+                                 nibble_ptr <= nibble_ptr + 'b1;
+                              end
          endcase
       end
 	end
