@@ -12,45 +12,50 @@
 module fibonacci_mem_uart(
 	input	   wire  i_clk,
 	input    wire  i_nrst,
-   output   wire  o_tx 
+   output   wire  o_tx,
+   input    wire  i_rx
 );
-   parameter   SAMPLE         = 1250,  // BAUD = 9600 with 12MHz clk
-               VALUE_WIDTH    = 64,
-               SEQUENCE_WIDTH = 32;
+   parameter   SAMPLE      = 1250,  // BAUD = 9600 with 12MHz clk
+               DATA_WIDTH  = 16,
+               ADDR_WIDTH  = 32;
         
-   wire  [VALUE_WIDTH-1:0]    value_f_to_m;
-   wire  [SEQUENCE_WIDTH-1:0] sequence_f_to_m;
+   wire  [ADDR_WIDTH-1:0]     addr_f_to_m;
+   wire  [DATA_WIDTH-1:0]     data_f_to_m;
+   wire  [DATA_WIDTH-1:0]     data_m_to_f;
    wire                       write_valid_f_to_m;
    wire                       write_accept_m_to_f;
 
 	mem_uart #(
-      .DATA_WIDTH       (VALUE_WIDTH         ),
-      .ADDR_WIDTH       (SEQUENCE_WIDTH      ),
+      .DATA_WIDTH       (DATA_WIDTH          ),
+      .ADDR_WIDTH       (ADDR_WIDTH          ),
       .SAMPLE           (SAMPLE              )
    ) m (
 		.i_clk	         (i_clk               ),
 		.i_nrst           (i_nrst              ),
-      .i_data           (value_f_to_m        ),
-      .i_addr           (sequence_f_to_m     ),
-      .o_data           (                    ),
-      .i_read_valid     (1'b0                ),
-      .o_read_accept    (                    ),
-      .i_write_valid    (write_valid_f_to_m  ),
-      .o_write_accept   (write_accept_m_to_f ),
-      .i_uart_rx        (1'b1                ),
+      .i_data           (data_f_to_m         ),
+      .i_addr           (addr_f_to_m         ),
+      .o_data           (data_m_to_f         ),
+      .i_read_valid     (read_valid          ),
+      .o_read_accept    (read_accept         ),
+      .i_write_valid    (write_valid         ),
+      .o_write_accept   (write_accept        ),
+      .i_uart_rx        (i_rx                ),
       .o_uart_tx        (o_tx                )
 	);
 
 	fibonacci #(
-      .VALUE_WIDTH      (VALUE_WIDTH         ),
-      .SEQUENCE_WIDTH   (SEQUENCE_WIDTH      )
+      .DATA_WIDTH       (DATA_WIDTH          ),
+      .ADDR_WIDTH       (ADDR_WIDTH          )
    ) f (
       .i_clk            (i_clk               ),
       .i_nrst           (i_nrst              ),
-      .o_value          (value_f_to_m        ),
-      .o_sequence       (sequence_f_to_m     ),
-      .o_write_valid    (write_valid_f_to_m  ),
-      .i_write_accept   (write_accept_m_to_f )
+      .o_addr           (addr_f_to_m         ),
+      .o_data           (data_f_to_m         ),
+      .i_data           (data_m_to_f         ),
+      .o_read_valid     (read_valid          ),
+      .i_read_accept    (read_accept         ),
+      .o_write_valid    (write_valid         ),
+      .i_write_accept   (write_accept        )
 	);
 
 

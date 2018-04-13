@@ -22,9 +22,10 @@ module fibonacci(
 
    parameter   ADDR_WIDTH  = 0,
                DATA_WIDTH  = 0,
-               SM_READ1    = 2'b00,
-               SM_READ2    = 2'b01,
-               SM_WRITE    = 2'b10;
+               SM_IDLE     = 2'b00,
+               SM_READ1    = 2'b01,
+               SM_READ2    = 2'b10,
+               SM_WRITE    = 2'b11;
 
    reg   [1:0]             state;
 
@@ -33,10 +34,11 @@ module fibonacci(
 
 	always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
-		   state    <= SM_READ1;
+		   state    <= SM_IDLE;
          o_addr   <= 'b0;
       end else begin
          case(state)
+            SM_IDLE:    state <= SM_READ1;
             SM_READ1:   if(i_read_accept) begin
                            state    <= SM_READ2;
                            o_addr   <= o_addr + 'b1;
