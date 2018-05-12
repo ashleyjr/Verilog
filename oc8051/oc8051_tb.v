@@ -127,7 +127,7 @@ assign wbi_err_i = 1'b0;
 //
 // oc8051 controller
 //
-oc8051_top oc8051_top_1(.wb_rst_i(rst), .wb_clk_i(clk),
+oc8051 oc8051_top_1(.wb_rst_i(rst), .wb_clk_i(clk),
          .int0_i(int0), .int1_i(int1),
 
          .wbd_dat_i(data_in), .wbd_we_o(write), .wbd_dat_o(data_out),
@@ -183,30 +183,6 @@ oc8051_xram oc8051_xram1 (.clk(clk), .rst(rst), .wr(write_xram), .addr(ext_addr)
 
 
 defparam oc8051_xram1.DELAY = 2;
-
-`ifdef OC8051_SERIAL
-
-//
-// test programs with serial interface
-//
-oc8051_serial oc8051_serial1(.clk(clk), .rst(rst), .rxd(txd), .txd(rxd));
-
-defparam oc8051_serial1.FREQ  = FREQ;
-//defparam oc8051_serial1.BRATE = 9.6;
-defparam oc8051_serial1.BRATE = 4.8;
-
-
-`else
-
-//
-// external uart
-//
-oc8051_uart_test oc8051_uart_test1(.clk(clk), .rst(rst), .addr(ext_addr[7:0]), .wr(write_uart),
-                  .wr_bit(p3_out[0]), .data_in(data_out), .data_out(data_out_uart), .bit_out(bit_out), .rxd(txd),
-		  .txd(rxd), .ow(p3_out[1]), .intr(int_uart), .stb(stb_o), .ack(ack_uart));
-
-
-`endif
 
 
 `ifdef OC8051_XILINX_RAMB
@@ -344,7 +320,7 @@ initial
   $readmemb("oc8051_ea.in", ea);
 
 initial begin
-	$dumpfile("8051.vcd");
+	$dumpfile("oc8051.vcd");
 	$dumpvars(0,oc8051_tb);	
 end
 

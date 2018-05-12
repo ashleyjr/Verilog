@@ -112,7 +112,7 @@
 
 `include "oc8051_defines.v"
 
-module oc8051_top (wb_rst_i, wb_clk_i,
+module oc8051(wb_rst_i, wb_clk_i,
 //interface to instruction rom
 		wbi_adr_o, 
 		wbi_dat_i, 
@@ -136,51 +136,6 @@ module oc8051_top (wb_rst_i, wb_clk_i,
 		int1_i,
 
 
-// port interface
-  `ifdef OC8051_PORTS
-	`ifdef OC8051_PORT0
-		p0_i,
-		p0_o,
-	`endif
-
-	`ifdef OC8051_PORT1
-		p1_i,
-		p1_o,
-	`endif
-
-	`ifdef OC8051_PORT2
-		p2_i,
-		p2_o,
-	`endif
-
-	`ifdef OC8051_PORT3
-		p3_i,
-		p3_o,
-	`endif
-  `endif
-
-// serial interface
-	`ifdef OC8051_UART
-		rxd_i, txd_o,
-	`endif
-
-// counter interface
-	`ifdef OC8051_TC01
-		t0_i, t1_i,
-	`endif
-
-	`ifdef OC8051_TC2
-		t2_i, t2ex_i,
-	`endif
-
-// BIST
-`ifdef OC8051_BIST
-         scanb_rst,
-         scanb_clk,
-         scanb_si,
-         scanb_so,
-         scanb_en,
-`endif
 // external access (active low)
 		ea_in
 		);
@@ -211,58 +166,6 @@ output [7:0]  wbd_dat_o;	// data output
 output [15:0] wbd_adr_o,	// data address
               wbi_adr_o;	// instruction address
 
-`ifdef OC8051_PORTS
-
-`ifdef OC8051_PORT0
-input  [7:0]  p0_i;		// port 0 input
-output [7:0]  p0_o;		// port 0 output
-`endif
-
-`ifdef OC8051_PORT1
-input  [7:0]  p1_i;		// port 1 input
-output [7:0]  p1_o;		// port 1 output
-`endif
-
-`ifdef OC8051_PORT2
-input  [7:0]  p2_i;		// port 2 input
-output [7:0]  p2_o;		// port 2 output
-`endif
-
-`ifdef OC8051_PORT3
-input  [7:0]  p3_i;		// port 3 input
-output [7:0]  p3_o;		// port 3 output
-`endif
-
-`endif
-
-
-
-
-
-
-`ifdef OC8051_UART
-input         rxd_i;		// receive
-output        txd_o;		// transnmit
-`endif
-
-`ifdef OC8051_TC01
-input         t0_i,		// counter 0 input
-              t1_i;		// counter 1 input
-`endif
-
-`ifdef OC8051_TC2
-input         t2_i,		// counter 2 input
-              t2ex_i;		//
-`endif
-
-`ifdef OC8051_BIST
-input   scanb_rst;
-input   scanb_clk;
-input   scanb_si;
-output  scanb_so;
-input   scanb_en;
-wire    scanb_soi;
-`endif
 
 wire [7:0]  dptr_hi,
 	    dptr_lo, 
@@ -425,14 +328,7 @@ oc8051_ram_top oc8051_ram_top1(.clk(wb_clk_i),
 			       .wr(wr_o && (!wr_addr[7] || wr_ind)),
 			       .bit_data_in(desCy),
 			       .bit_data_out(bit_data)
-`ifdef OC8051_BIST
-         ,
-         .scanb_rst(scanb_rst),
-         .scanb_clk(scanb_clk),
-         .scanb_si(scanb_soi),
-         .scanb_so(scanb_so),
-         .scanb_en(scanb_en)
-`endif
+
 			       );
 
 //
@@ -470,31 +366,10 @@ oc8051_comp oc8051_comp1(.sel(comp_sel),
 
 
 //
-//program rom
-`ifdef OC8051_ROM
-  oc8051_rom oc8051_rom1(.rst(wb_rst_i),
-                       .clk(wb_clk_i),
-		       .ea_int(ea_int),
-		       .addr(iadr_o),
-		       .data_o(idat_onchip)
-		       );
-`else
+//External ROM only
   assign ea_int = 1'b0;
   assign idat_onchip = 32'h0;
   
-  `ifdef OC8051_SIMULATION
-
-    initial
-    begin
-      $display("\t * ");
-      $display("\t * Internal rom disabled!!!");
-      $display("\t * ");
-    end
-
-  `endif
-
-`endif
-
 //
 //
 oc8051_cy_select oc8051_cy_select1(.cy_sel(cy_sel), 
@@ -630,33 +505,6 @@ oc8051_sfr oc8051_sfr1(.rst(wb_rst_i),
 // ports
 		       .rmw(rmw),
 
-  `ifdef OC8051_PORTS
-	`ifdef OC8051_PORT0
-		       .p0_out(p0_o),
-		       .p0_in(p0_i),
-	`endif
-
-	`ifdef OC8051_PORT1
-		       .p1_out(p1_o),
-		       .p1_in(p1_i),
-	`endif
-
-	`ifdef OC8051_PORT2
-		       .p2_out(p2_o),
-		       .p2_in(p2_i),
-	`endif
-
-	`ifdef OC8051_PORT3
-		       .p3_out(p3_o),
-		       .p3_in(p3_i),
-	`endif
-  `endif
-
-// uart
-	`ifdef OC8051_UART
-		       .rxd(rxd_i), .txd(txd_o),
-	`endif
-
 // int
 		       .int_ack(int_ack),
 		       .intr(intr),
@@ -664,18 +512,6 @@ oc8051_sfr oc8051_sfr1(.rst(wb_rst_i),
 		       .int1(int1_i),
 		       .reti(reti),
 		       .int_src(int_src),
-
-// t/c 0,1
-	`ifdef OC8051_TC01
-		       .t0(t0_i),
-		       .t1(t1_i),
-	`endif
-
-// t/c 2
-	`ifdef OC8051_TC2
-		       .t2(t2_i),
-		       .t2ex(t2ex_i),
-	`endif
 
 // dptr
 		       .dptr_hi(dptr_hi),
@@ -686,114 +522,11 @@ oc8051_sfr oc8051_sfr1(.rst(wb_rst_i),
 
 
 
-`ifdef OC8051_CACHE
-
-
-  oc8051_icache oc8051_icache1(.rst(wb_rst_i), .clk(wb_clk_i),
-  // cpu
-        .adr_i(iadr_o),
-	.dat_o(idat_i),
-	.stb_i(istb_o),
-	.ack_o(iack_i),
-        .cyc_i(icyc_o),
-  // pins
-        .dat_i(wbi_dat_i),
-	.stb_o(wbi_stb_o),
-	.adr_o(wbi_adr_o),
-	.ack_i(wbi_ack_i),
-        .cyc_o(wbi_cyc_o)
-`ifdef OC8051_BIST
-         ,
-         .scanb_rst(scanb_rst),
-         .scanb_clk(scanb_clk),
-         .scanb_si(scanb_si),
-         .scanb_so(scanb_soi),
-         .scanb_en(scanb_en)
-`endif
-	);
-
-  defparam oc8051_icache1.ADR_WIDTH = 6;  // cache address wihth
-  defparam oc8051_icache1.LINE_WIDTH = 2; // line address width (2 => 4x32)
-  defparam oc8051_icache1.BL_NUM = 15; // number of blocks (2^BL_WIDTH-1); BL_WIDTH = ADR_WIDTH - LINE_WIDTH
-  defparam oc8051_icache1.CACHE_RAM = 64; // cache ram x 32 (2^ADR_WIDTH)
-
-  
-
-  `ifdef OC8051_SIMULATION
-
-    initial
-    begin
-      #1
-      $display("\t * ");
-      $display("\t * External rom interface: cache");
-      $display("\t * ");
-    end
-
-  `endif
-
-
-
-//
-//    no cache
-//
-`else
-
-  `ifdef OC8051_BIST
-       assign scanb_soi=scanb_si;
-  `endif
-
-  `ifdef OC8051_WB
-
-    oc8051_wb_iinterface oc8051_wb_iinterface(.rst(wb_rst_i), .clk(wb_clk_i),
-    // cpu
-        .adr_i(iadr_o),
-	.dat_o(idat_i),
-	.stb_i(istb_o),
-	.ack_o(iack_i),
-        .cyc_i(icyc_o),
-    // external rom
-        .dat_i(wbi_dat_i),
-	.stb_o(wbi_stb_o),
-	.adr_o(wbi_adr_o),
-	.ack_i(wbi_ack_i),
-        .cyc_o(wbi_cyc_o));
-
-  `ifdef OC8051_SIMULATION
-
-    initial
-    begin
-      #1
-      $display("\t * ");
-      $display("\t * External rom interface: WB interface");
-      $display("\t * ");
-    end
-
-  `endif
-
-  `else
-
     assign wbi_adr_o = iadr_o    ;
     assign idat_i    = wbi_dat_i ;
     assign wbi_stb_o = 1'b1      ;
     assign iack_i    = wbi_ack_i ;
     assign wbi_cyc_o = 1'b1      ;
-
-  `ifdef OC8051_SIMULATION
-
-    initial
-    begin
-      #1
-      $display("\t * ");
-      $display("\t * External rom interface: Pipelined interface");
-      $display("\t * ");
-    end
-
-  `endif
-
-
-  `endif
-
-`endif
 
 
 

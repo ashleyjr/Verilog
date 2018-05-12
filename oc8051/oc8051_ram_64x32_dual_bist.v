@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-////  8051 wishbone interface to instruction rom                  ////
+////  8051 cache ram                                              ////
 ////                                                              ////
 ////  This file is part of the 8051 cores project                 ////
 ////  http://www.opencores.org/cores/8051/                        ////
 ////                                                              ////
 ////  Description                                                 ////
-////                                                              ////
+////   64x31 dual port ram                                        ////
 ////                                                              ////
 ////  To Do:                                                      ////
-////    nothing                                                   ////
+////   nothing                                                    ////
 ////                                                              ////
 ////  Author(s):                                                  ////
 ////      - Simon Teran, simont@opencores.org                     ////
@@ -44,21 +44,6 @@
 // CVS Revision History
 //
 // $Log: not supported by cvs2svn $
-// Revision 1.5  2003/05/05 10:34:27  simont
-// registering outputs.
-//
-// Revision 1.4  2003/04/16 10:02:45  simont
-// fix bug (cyc_o and stb_o)
-//
-// Revision 1.3  2003/04/03 19:19:02  simont
-// change adr_i and adr_o length.
-//
-// Revision 1.2  2003/01/13 14:14:41  simont
-// replace some modules
-//
-// Revision 1.1  2002/10/28 16:42:08  simont
-// initial import
-//
 //
 //
 
@@ -66,66 +51,139 @@
 `include "oc8051_timescale.v"
 // synopsys translate_on
 
-
-module oc8051_wb_iinterface(rst, clk, 
-                  adr_i, dat_o, cyc_i, stb_i, ack_o,
-		  adr_o, dat_i, cyc_o, stb_o, ack_i
-		  );
-//
-// rst           (in)  reset - pin
-// clk           (in)  clock - pini
-input rst, clk;
+`include "oc8051_defines.v"
 
 //
-// interface to oc8051 cpu
+// duble port ram
 //
-// adr_i    (in)  address
-// dat_o    (out) data output
-// stb_i    (in)  strobe
-// ack_o    (out) acknowledge
-// cyc_i    (in)  cycle
-input         stb_i,
-              cyc_i;
-input  [15:0] adr_i;
-output        ack_o;
-output [31:0] dat_o;
+module oc8051_ram_64x32_dual_bist (
+                     clk,
+                     rst,
+                     
+		     adr0,
+		     dat0_o,
+		     en0,
+		     
+		     adr1,
+		     dat1_i,
+		     dat1_o,
+		     en1,
+		     wr1
+`ifdef OC8051_BIST
+	 ,
+         scanb_rst,
+         scanb_clk,
+         scanb_si,
+         scanb_so,
+         scanb_en
+`endif
+		     );
 
-//
-// interface to instruction rom
-//
-// adr_o    (out) address
-// dat_i    (in)  data input
-// stb_o    (out) strobe
-// ack_i    (in) acknowledge
-// cyc_o    (out)  cycle
-input         ack_i;
-input  [31:0] dat_i;
-output        stb_o,
-              cyc_o;
-output [15:0] adr_o;
+parameter ADR_WIDTH = 6;
 
-//
-// internal bufers and wires
-//
-reg [15:0] adr_o;
-reg        stb_o;
+input         clk, 
+              wr1, 
+	      rst,
+	      en0,
+	      en1;
+input  [31:0]  dat1_i;
+input  [ADR_WIDTH-1:0]  adr0,
+                        adr1;
+output reg [31:0]  dat0_o,
+              dat1_o;
 
-assign ack_o = ack_i;
-assign dat_o = dat_i;
-//assign stb_o = stb_i || ack_i;
-assign cyc_o = stb_o;
-//assign adr_o = ack_i ? adr : adr_i;
+reg    [31:0]  rd_data;
 
-always @(posedge clk or posedge rst)
-  if (rst) begin
-    stb_o <= #1 1'b0;
-    adr_o <= #1 16'h0000;
-  end else if (ack_i) begin
-    stb_o <= #1 stb_i;
-    adr_o <= #1 adr_i;
-  end else if (!stb_o & stb_i) begin
-    stb_o <= #1 1'b1;
-    adr_o <= #1 adr_i;
-  end
+
+`ifdef OC8051_BIST
+input   scanb_rst;
+input   scanb_clk;
+input   scanb_si;
+output  scanb_so;
+input   scanb_en;
+`endif
+
+
+`ifdef OC8051_RAM_XILINX
+  xilinx_ram_dp xilinx_ram(
+  	// read port
+  	.CLKA(clk),
+  	.RSTA(rst),
+  	.ENA(en0),
+  	.ADDRA(adr0),
+  	.DIA(32'h00),
+  	.WEA(1'b0),
+  	.DOA(dat0_o),
+  
+  	// write port
+  	.CLKB(clk),
+  	.RSTB(rst),
+  	.ENB(en1),
+  	.ADDRB(adr1),
+  	.DIB(dat1_i),
+  	.WEB(wr1),
+  	.DOB(dat1_o)
+  );
+  
+  defparam
+  	xilinx_ram.dwidth = 32,
+  	xilinx_ram.awidth = ADR_WIDTH;
+
+`else
+
+  `ifdef OC8051_RAM_VIRTUALSILICON
+
+  `else
+
+    `ifdef OC8051_RAM_GENERIC
+    
+      generic_dpram #(ADR_WIDTH, 32) oc8051_ram1(
+      	.rclk  ( clk            ),
+      	.rrst  ( rst            ),
+      	.rce   ( en0            ),
+      	.oe    ( 1'b1           ),
+      	.raddr ( adr0           ),
+      	.do    ( dat0_o         ),
+      
+      	.wclk  ( clk            ),
+      	.wrst  ( rst            ),
+      	.wce   ( en1            ),
+      	.we    ( wr1            ),
+      	.waddr ( adr1           ),
+      	.di    ( dat1_i         )
+      );
+    
+    `else
+
+      //reg [31:0] dat1_o, 
+      //           dat0_o;  
+      //
+      // buffer
+      reg    [31:0]  buff [0:(1<<ADR_WIDTH) -1];
+
+      always @(posedge clk or posedge rst)
+      begin
+        if (rst)
+          dat1_o     <= #1 32'h0;
+        else if (wr1) begin
+          buff[adr1] <= #1 dat1_i;
+          dat1_o    <= #1 dat1_i;
+        end else
+          dat1_o <= #1 buff[adr1];
+      end
+      
+      always @(posedge clk or posedge rst)
+      begin
+        if (rst)
+          dat0_o <= #1 32'h0;
+        else if ((adr0==adr1) & wr1)
+          dat0_o <= #1 dat1_i;
+        else
+          dat0_o <= #1 buff[adr0];
+      end
+            
+    `endif  //OC8051_RAM_GENERIC
+  `endif    //OC8051_RAM_VIRTUALSILICON  
+`endif      //OC8051_RAM_XILINX
 
 endmodule
