@@ -117,7 +117,6 @@ wire wbi_err_i, wbd_err_i;
 //
 // buffer
 reg [23:0] buff [0:255];
-reg ea [0:1];
 
 integer num;
 
@@ -137,43 +136,7 @@ oc8051 oc8051_top_1(.wb_rst_i(rst), .wb_clk_i(clk),
 	 .wbi_adr_o(iadr_o), .wbi_stb_o(istb_o), .wbi_ack_i(iack_i),
          .wbi_cyc_o(icyc_o), .wbi_dat_i(idat_i), .wbi_err_i(wbi_err_i),
 
-  `ifdef OC8051_PORTS
-
-   `ifdef OC8051_PORT0
-	 .p0_i(p0_in),
-	 .p0_o(p0_out),
-   `endif
-
-   `ifdef OC8051_PORT1
-	 .p1_i(p1_in),
-	 .p1_o(p1_out),
-   `endif
-
-   `ifdef OC8051_PORT2
-	 .p2_i(p2_in),
-	 .p2_o(p2_out),
-   `endif
-
-   `ifdef OC8051_PORT3
-	 .p3_i(p3_in),
-	 .p3_o(p3_out),
-   `endif
-  `endif
-
-
-   `ifdef OC8051_UART
-	 .rxd_i(rxd), .txd_o(txd),
-   `endif
-
-   `ifdef OC8051_TC01
-	 .t0_i(t0), .t1_i(t1),
-   `endif
-
-   `ifdef OC8051_TC2
-	 .t2_i(t2), .t2ex_i(t2ex),
-   `endif
-
-	 .ea_in(ea[0]));
+ 	 .ea_in(1'b0));
 
 
 //
@@ -185,80 +148,14 @@ oc8051_xram oc8051_xram1 (.clk(clk), .rst(rst), .wr(write_xram), .addr(ext_addr)
 defparam oc8051_xram1.DELAY = 2;
 
 
-`ifdef OC8051_XILINX_RAMB
-
-`include "oc8051_rom_values.v"
-
 //
-// exteranl program rom
+// external rom
 //
-//
-// rom 0
-//
-wire [11:0] adr0, adr1;
-wire [15:0] dat0, dat1;
-
-assign adr0 = iadr_o[13:2] + {11'h0, iadr_o[1]};
-assign adr1 = iadr_o[13:2];
-
-rom_8kx16_top rom_8kx16_top_0
-(
-  // WISHBONE slave
-  .wb_clk_i(clk),
-  .wb_rst_i(rst),
-  .wb_dat_i(16'h0),
-  .wb_dat_o(dat0),
-
-  .wb_adr_i(adr0),
-  .wb_sel_i(2'b11),
-  .wb_we_i(1'b0),
-  .wb_cyc_i(icyc_o),
-  .wb_stb_i(istb_o),
-  .wb_ack_o(iack_i),
-  .wb_err_o(wbi_err_i)
-);
-
-rom_8kx16_top rom_8kx16_top_1
-(
-  // WISHBONE slave
-  .wb_clk_i(clk),
-  .wb_rst_i(rst),
-  .wb_dat_i(16'h0),
-  .wb_dat_o(dat1),
-
-  .wb_adr_i(adr1),
-  .wb_sel_i(2'b11),
-  .wb_we_i(1'b0),
-  .wb_cyc_i(icyc_o),
-  .wb_stb_i(istb_o),
-  .wb_ack_o(iack_i),
-  .wb_err_o(wbi_err_i)
-);
-
-defparam  rom_8kx16_top_0.awidth = 12;
-defparam  rom_8kx16_top_1.awidth = 12;
-
-always @(iadr_o[1:0] or dat0 or dat1)
-begin
-  case (iadr_o[1:0])
-    2'b00: idat_i = {8'h0, dat1[7:0], dat0};
-    2'b01: idat_i = {8'h0, dat1, dat0[15:8]};
-    2'b10: idat_i = {8'h0, dat0[7:0], dat1};
-    default: idat_i = {8'h0, dat0, dat1[15:8]};
-  endcase
-end
-
-`else
-
-  oc8051_xrom oc8051_xrom1(.rst(rst), .clk(clk), .addr(iadr_o), .data(idat_i),
+oc8051_xrom oc8051_xrom1(.rst(rst), .clk(clk), .addr(iadr_o), .data(idat_i),
                .stb_i(istb_o), .cyc_i(icyc_o), .ack_o(iack_i));
 
-   defparam oc8051_xrom1.DELAY = 0;
+defparam oc8051_xrom1.DELAY = 0;
 
-`endif
-//
-//
-//
 
 
 
@@ -314,10 +211,6 @@ begin
     end
   end
 end
-
-
-initial
-  $readmemb("oc8051_ea.in", ea);
 
 initial begin
 	$dumpfile("oc8051.vcd");
