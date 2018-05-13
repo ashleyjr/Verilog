@@ -74,7 +74,7 @@ def main():
             print "    Move: " + code + "/"
             for file in os.listdir("."):
                 if file.endswith(".asm"):
-                    cmd_print("python assembler.py -c " + str(file) + " > " + str(file).replace(".asm",".txt"))
+                    cmd_print("python make.py -c " + str(file) + " > " + str(file).replace(".asm",".txt"))
             os.chdir("..")
 
         print "    Info: Simulate " + str(sim)

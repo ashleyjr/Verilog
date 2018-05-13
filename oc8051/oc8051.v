@@ -130,14 +130,6 @@ module oc8051(wb_rst_i, wb_clk_i,
 		wbd_stb_o, 
 		wbd_cyc_o, 
 		wbd_err_i,
-
-// interrupt interface
-		int0_i, 
-		int1_i,
-
-
-// external access (active low)
-		ea_in
 		);
 
 
@@ -145,8 +137,7 @@ module oc8051(wb_rst_i, wb_clk_i,
 input         wb_rst_i,		// reset input
               wb_clk_i,		// clock input
               int0_i,		// interrupt 0
-              int1_i,		// interrupt 1
-              ea_in,		// external access
+              int1_i,		// interrupt 1 
               wbd_ack_i,	// data acknowalge
               wbi_ack_i,	// instruction acknowlage
               wbd_err_i,	// data error
@@ -165,6 +156,13 @@ output [7:0]  wbd_dat_o;	// data output
 
 output [15:0] wbd_adr_o,	// data address
               wbi_adr_o;	// instruction address
+
+wire ea_in = 1'b0;  // External ROM only
+
+// Tie off interrupts
+wire    int0_i, int1_i;
+assign  int0_i = 1'b0;
+assign  int1_i = 1'b0;
 
 
 wire [7:0]  dptr_hi,

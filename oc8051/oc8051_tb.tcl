@@ -8,6 +8,7 @@ set sigs [list]
 #}
 
 lappend sigs "oc8051_top_1.oc8051_alu_src_sel1.pc"
+lappend sigs "oc8051_top_1.oc8051_sfr1.oc8051_acc1.acc"
 
 set added [ gtkwave::addSignalsFromList $sigs ]
 gtkwave::/Time/Zoom/Zoom_Full

@@ -100,7 +100,7 @@ parameter DELAY = 500000/FREQ;
 reg  rst, clk;
 reg  [7:0] p0_in, p1_in, p2_in;
 wire [15:0] ext_addr, iadr_o;
-wire write, write_xram, write_uart, txd, rxd, int_uart, int0, int1, t0, t1, bit_out, stb_o, ack_i;
+wire write, write_xram, write_uart, txd, rxd, int_uart,  t0, t1, bit_out, stb_o, ack_i;
 wire ack_xram, ack_uart, cyc_o, iack_i, istb_o, icyc_o, t2, t2ex;
 wire [7:0] data_in, data_out, p0_out, p1_out, p2_out, p3_out, data_out_uart, data_out_xram, p3_in;
 wire wbi_err_i, wbd_err_i;
@@ -126,23 +126,39 @@ assign wbi_err_i = 1'b0;
 //
 // oc8051 controller
 //
-oc8051 oc8051_top_1(.wb_rst_i(rst), .wb_clk_i(clk),
-         .int0_i(int0), .int1_i(int1),
-
-         .wbd_dat_i(data_in), .wbd_we_o(write), .wbd_dat_o(data_out),
-         .wbd_adr_o(ext_addr), .wbd_err_i(wbd_err_i),
-         .wbd_ack_i(ack_i), .wbd_stb_o(stb_o), .wbd_cyc_o(cyc_o),
-
-	 .wbi_adr_o(iadr_o), .wbi_stb_o(istb_o), .wbi_ack_i(iack_i),
-         .wbi_cyc_o(icyc_o), .wbi_dat_i(idat_i), .wbi_err_i(wbi_err_i),
-
- 	 .ea_in(1'b0));
+oc8051 oc8051_top_1(
+    .wb_rst_i(rst), 
+    .wb_clk_i(clk),
+    .wbd_dat_i(data_in), 
+    .wbd_we_o(write), 
+    .wbd_dat_o(data_out),
+    .wbd_adr_o(ext_addr), 
+    .wbd_err_i(wbd_err_i),
+    .wbd_ack_i(ack_i), 
+    .wbd_stb_o(stb_o), 
+    .wbd_cyc_o(cyc_o),
+    .wbi_adr_o(iadr_o), 
+    .wbi_stb_o(istb_o), 
+    .wbi_ack_i(iack_i),
+    .wbi_cyc_o(icyc_o), 
+    .wbi_dat_i(idat_i), 
+    .wbi_err_i(wbi_err_i)
+);
 
 
 //
 // external data ram
 //
-oc8051_xram oc8051_xram1 (.clk(clk), .rst(rst), .wr(write_xram), .addr(ext_addr), .data_in(data_out), .data_out(data_out_xram), .ack(ack_xram), .stb(stb_o));
+oc8051_xram oc8051_xram1 (
+    .clk(clk), 
+    .rst(rst), 
+    .wr(write_xram), 
+    .addr(ext_addr), 
+    .data_in(data_out), 
+    .data_out(data_out_xram), 
+    .ack(ack_xram), 
+    .stb(stb_o)
+);
 
 
 defparam oc8051_xram1.DELAY = 2;
@@ -151,8 +167,15 @@ defparam oc8051_xram1.DELAY = 2;
 //
 // external rom
 //
-oc8051_xrom oc8051_xrom1(.rst(rst), .clk(clk), .addr(iadr_o), .data(idat_i),
-               .stb_i(istb_o), .cyc_i(icyc_o), .ack_o(iack_i));
+oc8051_xrom oc8051_xrom1(
+    .rst(rst), 
+    .clk(clk), 
+    .addr(iadr_o),
+    .data(idat_i),
+    .stb_i(istb_o), 
+    .cyc_i(icyc_o), 
+    .ack_o(iack_i)
+);
 
 defparam oc8051_xrom1.DELAY = 0;
 
@@ -167,8 +190,7 @@ assign p3_in = {6'h0, bit_out, int_uart};
 assign t0 = p3_out[5];
 assign t1 = p3_out[6];
 
-assign int0 = p3_out[3];
-assign int1 = p3_out[4];
+
 assign t2 = p3_out[5];
 assign t2ex = p3_out[2];
 
