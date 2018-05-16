@@ -1,6 +1,6 @@
 python -m pip install pyserial
 sudo apt-get install putty
-sudo apt-get install texlive-latex-base
+#sudo apt-get install texlive-latex-base
 #sudo apt-get install texlive-latex-extra
 sudo apt-get install git
 sudo apt-get install gawk
@@ -15,6 +15,7 @@ sudo apt-get install verilog
 sudo apt-get install gtkwave
 sudo add-apt-repository ppa:saltmakrell/ppa
 sudo apt-get update
+sudo apt-get install sdcc
 sudo apt-get install yosys
 git clone https://github.com/cliffordwolf/icestorm.git icestorm
 cd icestorm
