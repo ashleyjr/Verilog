@@ -202,7 +202,7 @@ initial begin
 #220
   rst = 1'b0;
 
-#8000
+#100000
   $display("time ",$time, "\n faulire: end of time\n \n");
   $display("");
   $finish;
