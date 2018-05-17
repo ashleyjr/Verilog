@@ -76,7 +76,7 @@ initial
 begin
 //  for (i=0; i<65536; i=i+1)
 //    buff [i] = 8'h00;
-  $readmemh("code/function.mem", buff);
+  //$readmemh("code/function.mem", buff);
 end
 
 always @(posedge clk or posedge rst)

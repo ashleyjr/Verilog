@@ -118,6 +118,8 @@ wire wbi_err_i, wbd_err_i;
 // buffer
 reg [23:0] buff [0:255];
 
+reg next;
+
 integer num;
 
 assign wbd_err_i = 1'b0;
@@ -194,20 +196,43 @@ assign t1 = p3_out[6];
 assign t2 = p3_out[5];
 assign t2ex = p3_out[2];
 
-initial begin
-  rst= 1'b1;
-  p0_in = 8'h00;
-  p1_in = 8'h00;
-  p2_in = 8'h00;
-#220
-  rst = 1'b0;
 
-#100000
-  $display("time ",$time, "\n faulire: end of time\n \n");
-  $display("");
-  $finish;
+task test_code;  
+   begin
+      @(posedge next);  
+      rst = 1'b1;
+      #220
+      rst = 1'b0;
+   end
+endtask
+
+initial begin
+   rst= 1'b1;
+   p0_in = 8'h00;
+   p1_in = 8'h00;
+   p2_in = 8'h00;
+   #220
+   rst = 1'b0; 
+   $readmemh("code/loop.mem", oc8051_xrom1.buff);        test_code(); 
+   $readmemh("code/function.mem", oc8051_xrom1.buff);    test_code();
+   $readmemh("code/fib.mem", oc8051_xrom1.buff);         test_code();
+   $finish;
 end
 
+integer test_time;
+initial begin
+   test_time = 0;
+   forever begin
+      #1 
+      test_time = test_time + 1;
+      if(next)
+         test_time = 0;
+      if(test_time > 1000000) begin
+         $display("time ",$time, " Fail: Timeout");
+         $finish;
+      end
+   end
+end
 
 initial
 begin
@@ -218,17 +243,13 @@ end
 
 always @(ext_addr or write or stb_o or data_out)
 begin
+   next = 0;
   if ((ext_addr==16'h0010) & write & stb_o) begin
     if (data_out==8'h7f) begin
-      $display("");
       $display("time ",$time, " Passed");
-      $display("");
-      $finish;
-
-    end else begin
-      $display("");
+      next = 1;
+    end else begin 
       $display("time ",$time," Error: %h", data_out);
-      $display("");
       $finish;
     end
   end

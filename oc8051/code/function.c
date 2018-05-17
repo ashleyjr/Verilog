@@ -1,7 +1,10 @@
+#include "oc8051.h"
+
 void func(char i);
+
 void main(void){
    func(10);
-   while(1);
+   PASS_TEST
 }
 
 void func(char i){
@@ -10,3 +13,5 @@ void func(char i){
    else
       func(i-1);
 }
+
+

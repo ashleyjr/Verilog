@@ -17,11 +17,11 @@ def main():
             h = f.read()
             f.close()
             f = open(name.replace(".asm",".mem"),'w')
-            out = ["00"] * 30
+            out = ["00"] * 1000
             for line in h.split("\n")[0:-1]:
 		if '[' in line:
-                    print line
-                    print line[6:12]
+                    #print line
+                    #print line[6:12]
                     ptr = int(line[6:12], 16)
                     codes = line[13:21]
                     if 'r' in codes:
@@ -34,7 +34,7 @@ def main():
                    # str_byte = line.split(' ')
                    # for i in range(4,len(str_byte)):
                    #     f.write(str_byte[i] + "\n")
-            print out
+            #print out
             for o in out:
                 f.write(o+"\n")
             f.close()
