@@ -184,10 +184,10 @@ defparam oc8051_xrom1.DELAY = 0;
 
 
 
-assign write_xram = p3_out[7] & write;
+assign write_xram = write;
 assign write_uart = !p3_out[7] & write;
-assign data_in = p3_out[7] ? data_out_xram : data_out_uart;
-assign ack_i = p3_out[7] ? ack_xram : ack_uart;
+assign data_in = data_out_xram ;
+assign ack_i = ack_xram ;
 assign p3_in = {6'h0, bit_out, int_uart};
 assign t0 = p3_out[5];
 assign t1 = p3_out[6];
@@ -216,6 +216,7 @@ initial begin
    $readmemh("code/loop.mem", oc8051_xrom1.buff);        test_code(); 
    $readmemh("code/function.mem", oc8051_xrom1.buff);    test_code();
    $readmemh("code/fib.mem", oc8051_xrom1.buff);         test_code();
+   $readmemh("code/fib_large.mem", oc8051_xrom1.buff);   test_code();
    $finish;
 end
 
@@ -227,7 +228,7 @@ initial begin
       test_time = test_time + 1;
       if(next)
          test_time = 0;
-      if(test_time > 1000000) begin
+      if(test_time > 10000000) begin
          $display("time ",$time, " Fail: Timeout");
          $finish;
       end
@@ -241,8 +242,12 @@ begin
 end
 
 
+reg [15:0] interest;
+
 always @(ext_addr or write or stb_o or data_out)
 begin
+   
+   // Terminate
    next = 0;
   if ((ext_addr==16'h0010) & write & stb_o) begin
     if (data_out==8'h7f) begin
@@ -253,6 +258,19 @@ begin
       $finish;
     end
   end
+
+   // Data of interest
+   if (write & stb_o) begin
+     if(ext_addr==16'h0) begin
+         $display("time ",$time," Interest bottom byte");
+         interest[7:0] = data_out;
+      end
+      if(ext_addr==16'h1) begin
+         $display("time ",$time," Interest topm byte");
+         interest[15:8] = data_out;
+      end
+       $display("time ",$time," Interest: %h,%d", interest, interest);
+   end
 end
 
 initial begin

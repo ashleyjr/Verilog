@@ -1,18 +1,18 @@
 #include "oc8051.h"
 
-__xdata __at (0x0) char f;
+__xdata __at (0x0) unsigned int f;
 
-char fib(char n);
+unsigned int fib(unsigned int n);
 
 void main(void){
-   char i; 
-   for(i=0;i<5;i++){
+   unsigned int i; 
+   for(i=0;i<100;i++){
       f = fib(i);
    }
    PASS_TEST
 }
 
-char fib(char n){
+unsigned int fib(unsigned int  n){
    if(0==n)
       return 0;
    if(1==n)
