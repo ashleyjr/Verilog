@@ -21,7 +21,5 @@ oc8051_defines.v
 ../oc8051/oc8051_sfr.v
 ../oc8051/oc8051_sp.v
 oc8051_timescale.v
-../oc8051/oc8051_xram.v
-../oc8051/oc8051_xrom.v
 ../oc8051/oc8051_ram_256x8_two_bist.v
-../oc8051/oc8051_ram_64x32_dual_bist.v
+

@@ -10,21 +10,21 @@ module oc8051_ice(
 	output   wire	o_led0
 );
 
-   parameter ROM_BYTES = 6;
-   parameter RAM_BYTES = 1;
+   parameter ROM_BYTES = 8;
+   parameter RAM_BYTES = 2;
 
    // ROM
-   reg   [7:0]                   rom [0:ROM_BYTES]; 
+   reg   [7:0]                   rom [0:ROM_BYTES-1]; 
    wire  [15:0]                  rom_addr;
    wire  [$clog2(ROM_BYTES):0]   rom_addr_crop;
    wire                          rom_stb;
    reg   [31:0]                  rom_data;
    reg                           rom_ack;
 
-   assign rom_addr_crop = rom_addr[$clog2(ROM_BYTES):0];
+   assign rom_addr_crop = rom_addr[$clog2(ROM_BYTES)-1:0];
 
    // RAM
-   reg   [7:0]                   ram [0:RAM_BYTES]; 
+   reg   [7:0]                   ram [0:RAM_BYTES-1]; 
    wire  [15:0]                  ram_addr; 
    wire  [7:0]                   ram_data_in;
    reg   [7:0]                   ram_data_out;
@@ -104,15 +104,14 @@ module oc8051_ice(
          rom_data <= 31'h0;
          rom_ack  <= 1'b0;
          // Code
-         rom[0] <= 8'h04;    
-         rom[1] <= 8'h90;
-         rom[2] <= 8'h00;
-         rom[3] <= 8'h00;
-         rom[4] <= 8'hF0;
-         rom[5] <= 8'h90;
-         rom[6] <= 8'hF9;
-
-
+         rom[0] <= 8'h04;  // label:   inc A    
+         rom[1] <= 8'h90;  //          mov DPTR, #0x00
+         rom[2] <= 8'h00;  //
+         rom[3] <= 8'h00;  //
+         rom[4] <= 8'hF0;  //          movx @DPTR, A
+         rom[5] <= 8'h80;  //          sjmp label
+         rom[6] <= 8'hF9;  //
+         rom[7] <= 8'h00;  //
       end else begin 
          if (rom_stb) begin
             rom_data    <= {  rom[rom_addr_crop+3], 

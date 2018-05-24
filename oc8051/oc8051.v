@@ -135,9 +135,7 @@ module oc8051(wb_rst_i, wb_clk_i,
 
 
 input         wb_rst_i,		// reset input
-              wb_clk_i,		// clock input
-              int0_i,		// interrupt 0
-              int1_i,		// interrupt 1 
+              wb_clk_i,		// clock input 
               wbd_ack_i,	// data acknowalge
               wbi_ack_i,	// instruction acknowlage
               wbd_err_i,	// data error

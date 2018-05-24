@@ -39,7 +39,7 @@ module oc8051_ice_tb;
 	         i_nrst   = 1;
       #17   i_nrst   = 0;
       #17   i_nrst   = 1;
-		#10000
+		#200000
 		$finish;
 	end
 
