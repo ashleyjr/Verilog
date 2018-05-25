@@ -112,7 +112,10 @@
 
 `include "oc8051_defines.v"
 
-module oc8051(wb_rst_i, wb_clk_i,
+module oc8051(
+      wb_rst_i, 
+      wb_clk_i,
+
 //interface to instruction rom
 		wbi_adr_o, 
 		wbi_dat_i, 
@@ -207,8 +210,8 @@ wire        rom_addr_sel,	//rom addres select; alu or pc
 
 wire        reti,
             intr,
-	    int_ack,
-	    istb;
+	         istb;
+
 wire [7:0]  int_src;
 
 wire        mem_wait;
@@ -447,10 +450,9 @@ oc8051_memory_interface oc8051_memory_interface1(.clk(wb_clk_i),
 
 // interrupt interface
                        .intr(intr), 
-		       .int_v(int_src), 
-		       .int_ack(int_ack), 
+		       .int_v(int_src),  
 		       .istb(istb),
-		       .reti(reti),
+		       
 
 //pc
                        .pc_wr_sel(pc_wr_sel), 
@@ -502,7 +504,7 @@ oc8051_sfr oc8051_sfr1(.rst(wb_rst_i),
 		       .rmw(rmw),
 
 // int
-		       .int_ack(int_ack),
+		       .int_ack(1'b0),
 		       .intr(intr),
 		       .int0(int0_i),
 		       .int1(int1_i),

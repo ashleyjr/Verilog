@@ -213,11 +213,11 @@ initial begin
    p2_in = 8'h00;
    #220
    rst = 1'b0; 
-   $readmemh("code/leds.mem", oc8051_xrom1.buff);        test_code(); 
-   //$readmemh("code/loop.mem", oc8051_xrom1.buff);        test_code(); 
-   //$readmemh("code/function.mem", oc8051_xrom1.buff);    test_code();
-   //$readmemh("code/fib.mem", oc8051_xrom1.buff);         test_code();
-   //$readmemh("code/fib_large.mem", oc8051_xrom1.buff);   test_code();
+   //$readmemh("code/leds.mem", oc8051_xrom1.buff);        test_code(); 
+   $readmemh("code/loop.mem", oc8051_xrom1.buff);        test_code(); 
+   $readmemh("code/function.mem", oc8051_xrom1.buff);    test_code();
+   $readmemh("code/fib.mem", oc8051_xrom1.buff);         test_code();
+   $readmemh("code/fib_large.mem", oc8051_xrom1.buff);   test_code();
    $finish;
 end
 
@@ -229,7 +229,7 @@ initial begin
       test_time = test_time + 1;
       if(next)
          test_time = 0;
-      if(test_time > 10000) begin
+      if(test_time > 1000000) begin
          $display("time ",$time, " Fail: Timeout");
          $finish;
       end

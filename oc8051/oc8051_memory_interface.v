@@ -147,8 +147,7 @@ module oc8051_memory_interface (clk, rst,
 //interrupt interface
      intr, 
      int_v, 
-     int_ack,
-
+     
 //alu
      des_acc, 
      des1, 
@@ -270,18 +269,11 @@ input  [7:0]  int_v;
 
 input  [31:0] idat_onchip;
 
-output        int_ack,
-              istb_o;
+output       istb_o;
 
 output  [7:0] op1_out,
               op3_out,
 	      op2_out;
-
-reg           int_ack_t,
-              int_ack,
-	      int_ack_buff;
-
-reg [7:0]     int_vec_buff;
 reg [7:0]     op1_out,
               op2_buff,
 	      op3_buff;
@@ -309,10 +301,6 @@ reg [15:0]    pc;
 //pc            program counter register, save current value
 reg [15:0]    pc_buf;
 wire [15:0]   alu;
-
-
-reg           int_buff,
-              int_buff1; // interrupt buffer: used to prevent interrupting in the middle of executin instructions
 
 
 //
@@ -642,26 +630,14 @@ end
 
 //
 // in case of interrupts
-always @(op1 or op2 or op3 or int_ack_t or int_vec_buff or iack_i or ea_rom_sel)
+
+
+always @(op1 or op2 or op3)
 begin
-  if (int_ack_t && (iack_i || ea_rom_sel)) begin
-    op1_o = `OC8051_LCALL;
-    op2_o = 8'h00;
-    op3_o = int_vec_buff;
-  end else begin
     op1_o = op1;
     op2_o = op2;
     op3_o = op3;
-  end
 end
-
-//
-//in case of reti
-always @(posedge clk or posedge rst)
-  if (rst) reti <= #1 1'b0;
-  else if ((op1_o==`OC8051_RETI) & rd & !mem_wait) reti <= #1 1'b1;
-  else reti <= #1 1'b0;
-
 //
 // remember inputs
 always @(posedge clk or posedge rst)
@@ -756,92 +732,6 @@ begin
         endcase
 end
 
-/*
-always @(posedge clk or posedge rst)
-begin
-    if (rst) begin
-      op_length = 2'h2;
-//    end else if (pc_wait) begin
-    end else begin
-        casex (op1_out)
-          `OC8051_ACALL :  op_length <= #1 2'h2;
-          `OC8051_AJMP :   op_length <= #1 2'h2;
-
-        //op_code [7:3]
-          `OC8051_CJNE_R : op_length <= #1 2'h3;
-          `OC8051_DJNZ_R : op_length <= #1 2'h2;
-          `OC8051_MOV_DR : op_length <= #1 2'h2;
-          `OC8051_MOV_CR : op_length <= #1 2'h2;
-          `OC8051_MOV_RD : op_length <= #1 2'h2;
-
-        //op_code [7:1]
-          `OC8051_CJNE_I : op_length <= #1 2'h3;
-          `OC8051_MOV_ID : op_length <= #1 2'h2;
-          `OC8051_MOV_DI : op_length <= #1 2'h2;
-          `OC8051_MOV_CI : op_length <= #1 2'h2;
-
-        //op_code [7:0]
-          `OC8051_ADD_D :  op_length <= #1 2'h2;
-          `OC8051_ADD_C :  op_length <= #1 2'h2;
-          `OC8051_ADDC_D : op_length <= #1 2'h2;
-          `OC8051_ADDC_C : op_length <= #1 2'h2;
-          `OC8051_ANL_D :  op_length <= #1 2'h2;
-          `OC8051_ANL_C :  op_length <= #1 2'h2;
-          `OC8051_ANL_DD : op_length <= #1 2'h2;
-          `OC8051_ANL_DC : op_length <= #1 2'h3;
-          `OC8051_ANL_B :  op_length <= #1 2'h2;
-          `OC8051_ANL_NB : op_length <= #1 2'h2;
-          `OC8051_CJNE_D : op_length <= #1 2'h3;
-          `OC8051_CJNE_C : op_length <= #1 2'h3;
-          `OC8051_CLR_B :  op_length <= #1 2'h2;
-          `OC8051_CPL_B :  op_length <= #1 2'h2;
-          `OC8051_DEC_D :  op_length <= #1 2'h2;
-          `OC8051_DJNZ_D : op_length <= #1 2'h3;
-          `OC8051_INC_D :  op_length <= #1 2'h2;
-          `OC8051_JB :     op_length <= #1 2'h3;
-          `OC8051_JBC :    op_length <= #1 2'h3;
-          `OC8051_JC :     op_length <= #1 2'h2;
-          `OC8051_JNB :    op_length <= #1 2'h3;
-          `OC8051_JNC :    op_length <= #1 2'h2;
-          `OC8051_JNZ :    op_length <= #1 2'h2;
-          `OC8051_JZ :     op_length <= #1 2'h2;
-          `OC8051_LCALL :  op_length <= #1 2'h3;
-          `OC8051_LJMP :   op_length <= #1 2'h3;
-          `OC8051_MOV_D :  op_length <= #1 2'h2;
-          `OC8051_MOV_C :  op_length <= #1 2'h2;
-          `OC8051_MOV_DA : op_length <= #1 2'h2;
-          `OC8051_MOV_DD : op_length <= #1 2'h3;
-          `OC8051_MOV_CD : op_length <= #1 2'h3;
-          `OC8051_MOV_BC : op_length <= #1 2'h2;
-          `OC8051_MOV_CB : op_length <= #1 2'h2;
-          `OC8051_MOV_DP : op_length <= #1 2'h3;
-          `OC8051_ORL_D :  op_length <= #1 2'h2;
-          `OC8051_ORL_C :  op_length <= #1 2'h2;
-          `OC8051_ORL_AD : op_length <= #1 2'h2;
-          `OC8051_ORL_CD : op_length <= #1 2'h3;
-          `OC8051_ORL_B :  op_length <= #1 2'h2;
-          `OC8051_ORL_NB : op_length <= #1 2'h2;
-          `OC8051_POP :    op_length <= #1 2'h2;
-          `OC8051_PUSH :   op_length <= #1 2'h2;
-          `OC8051_SETB_B : op_length <= #1 2'h2;
-          `OC8051_SJMP :   op_length <= #1 2'h2;
-          `OC8051_SUBB_D : op_length <= #1 2'h2;
-          `OC8051_SUBB_C : op_length <= #1 2'h2;
-          `OC8051_XCH_D :  op_length <= #1 2'h2;
-          `OC8051_XRL_D :  op_length <= #1 2'h2;
-          `OC8051_XRL_C :  op_length <= #1 2'h2;
-          `OC8051_XRL_AD : op_length <= #1 2'h2;
-          `OC8051_XRL_CD : op_length <= #1 2'h3;
-          default:         op_length <= #1 2'h1;
-        endcase
-//
-//in case of instructions that use more than one clock hold current pc
-//    end else begin
-//      pc= pc_buf;
-   end
-end
-*/
-
 assign inc_pc = ((op_pos[2] | (&op_pos[1:0])) & rd) | pc_wr_r2;
 
 always @(posedge rst or posedge clk)
@@ -867,48 +757,10 @@ begin
   end
 end
 
-//
-// remember interrupt
-// we don't want to interrupt instruction in the middle of execution
-always @(posedge clk or posedge rst)
- if (rst) begin
-   int_ack_t <= #1 1'b0;
-   int_vec_buff <= #1 8'h00;
- end else if (intr) begin
-   int_ack_t <= #1 1'b1;
-   int_vec_buff <= #1 int_v;
- end else if (rd && (ea_rom_sel || iack_i) && !pc_wr_r2) int_ack_t <= #1 1'b0;
-
-always @(posedge clk or posedge rst)
-  if (rst) int_ack_buff <= #1 1'b0;
-  else int_ack_buff <= #1 int_ack_t;
-
-always @(posedge clk or posedge rst)
-  if (rst) int_ack <= #1 1'b0;
-  else begin
-    if ((int_ack_buff) & !(int_ack_t))
-      int_ack <= #1 1'b1;
-    else int_ack <= #1 1'b0;
-  end
 
 
 //
 //interrupt buffer
-always @(posedge clk or posedge rst)
-  if (rst) begin
-    int_buff1 <= #1 1'b0;
-  end else begin
-    int_buff1 <= #1 int_buff;
-  end
-
-always @(posedge clk or posedge rst)
-  if (rst) begin
-    int_buff <= #1 1'b0;
-  end else if (intr) begin
-    int_buff <= #1 1'b1;
-  end else if (pc_wait)
-    int_buff <= #1 1'b0;
-
 wire [7:0]  pcs_source;
 reg  [15:0] pcs_result;
 reg         pcs_cy;
@@ -933,7 +785,7 @@ begin
     pc <= #1 16'h0;
   else if (pc_wr_r2)
     pc <= #1 pc_buf;
-  else if (rd & !int_ack_t)
+  else if (rd)
     pc <= #1 pc_buf - 16'h8 + {13'h0, op_pos} + {14'h0, op_length};
 end
 

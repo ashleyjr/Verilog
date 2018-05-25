@@ -111,47 +111,10 @@ module oc8051_sfr (rst, clk,
        comp_sel,
        comp_wait,
 
-`ifdef OC8051_PORTS
-
-  `ifdef OC8051_PORT0
-       p0_out,
-       p0_in,
-  `endif
-
-  `ifdef OC8051_PORT1
-       p1_out,
-       p1_in,
-  `endif
-
-  `ifdef OC8051_PORT2
-       p2_out,
-       p2_in,
-  `endif
-
-  `ifdef OC8051_PORT3
-       p3_out,
-       p3_in,
-  `endif
-
-`endif
-
-
-  `ifdef OC8051_UART
-       rxd, txd,
-  `endif
-
        int_ack, intr,
        int0, int1,
        int_src,
        reti,
-
-  `ifdef OC8051_TC01
-       t0, t1,
-  `endif
-
-  `ifdef OC8051_TC2
-       t2, t2ex,
-  `endif
 
        dptr_hi, dptr_lo,
        wait_data);
@@ -379,73 +342,7 @@ oc8051_psw oc8051_psw1 (.clk(clk),
 			.set(psw_set), 
 			.bank_sel(bank_sel));
 
-//
-// ports
-// P0, P1, P2, P3
-`ifdef OC8051_PORTS
-  oc8051_ports oc8051_ports1(.clk(clk),
-                           .rst(rst),
-			   .bit_in(bit_in),
-			   .data_in(dat1),
-			   .wr(we),
-			   .wr_bit(wr_bit_r),
-			   .wr_addr(adr1),
-
-		`ifdef OC8051_PORT0
-			   .p0_out(p0_out),
-			   .p0_in(p0_in),
-			   .p0_data(p0_data),
-		`endif
-
-		`ifdef OC8051_PORT1
-			   .p1_out(p1_out),
-			   .p1_in(p1_in),
-			   .p1_data(p1_data),
-		`endif
-
-		`ifdef OC8051_PORT2
-			   .p2_out(p2_out),
-			   .p2_in(p2_in),
-			   .p2_data(p2_data),
-		`endif
-
-		`ifdef OC8051_PORT3
-			   .p3_out(p3_out),
-			   .p3_in(p3_in),
-			   .p3_data(p3_data),
-		`endif
-
-			   .rmw(rmw));
-`endif
-
-//
-// serial interface
-// SCON, SBUF
-`ifdef OC8051_UART
-  oc8051_uart oc8051_uatr1 (.clk(clk), 
-                            .rst(rst), 
-			    .bit_in(bit_in),
-			    .data_in(dat1), 
-			    .wr(we), 
-			    .wr_bit(wr_bit_r), 
-			    .wr_addr(adr1),
-			    .rxd(rxd), 
-			    .txd(txd), 
-		// interrupt
-			    .intr(uart_int),
-		// baud rate sources
-			    .brate2(brate2),
-			    .t1_ow(tf1),
-			    .pres_ow(pres_ow),
-			    .rclk(rclk),
-			    .tclk(tclk),
-		//registers
-			    .scon(scon),
-			    .pcon(pcon),
-			    .sbuf(sbuf));
-`else
   assign uart_int = 1'b0;
-`endif
 
 //
 // interrupt control
@@ -473,66 +370,14 @@ oc8051_int oc8051_int1 (.clk(clk),
 			.tcon(tcon), 
 			.ip(ip));
 
-
-//
-// timer/counter control
-// TH0, TH1, TL0, TH1, TMOD
-`ifdef OC8051_TC01
-  oc8051_tc oc8051_tc1(.clk(clk), 
-                       .rst(rst), 
-		       .wr_addr(adr1),
-		       .data_in(dat1), 
-		       .wr(we), 
-		       .wr_bit(wr_bit_r), 
-		       .ie0(int0), 
-		       .ie1(int1), 
-		       .tr0(tr0),
-		       .tr1(tr1), 
-		       .t0(t0), 
-		       .t1(t1), 
-		       .tf0(tf0), 
-		       .tf1(tf1), 
-		       .pres_ow(pres_ow),
-		       .tmod(tmod), 
-		       .tl0(tl0), 
-		       .th0(th0), 
-		       .tl1(tl1), 
-		       .th1(th1));
-`else
   assign tf0 = 1'b0;
   assign tf1 = 1'b0;
-`endif
 
-//
-// timer/counter 2
-// TH2, TL2, RCAPL2L, RCAPL2H, T2CON
-`ifdef OC8051_TC2
-  oc8051_tc2 oc8051_tc21(.clk(clk), 
-                         .rst(rst), 
-			 .wr_addr(adr1),
-			 .data_in(dat1), 
-			 .wr(we),
-			 .wr_bit(wr_bit_r), 
-			 .bit_in(bit_in), 
-			 .t2(t2), 
-			 .t2ex(t2ex),
-			 .rclk(rclk), 
-			 .tclk(tclk), 
-			 .brate2(brate2), 
-			 .tc2_int(tc2_int), 
-			 .pres_ow(pres_ow),
-			 .t2con(t2con), 
-			 .tl2(tl2), 
-			 .th2(th2), 
-			 .rcap2l(rcap2l), 
-			 .rcap2h(rcap2h));
-`else
+
   assign tc2_int = 1'b0;
   assign rclk    = 1'b0;
   assign tclk    = 1'b0;
   assign brate2  = 1'b0;
-`endif
-
 
 
 always @(posedge clk or posedge rst)
