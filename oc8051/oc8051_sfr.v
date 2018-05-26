@@ -344,40 +344,20 @@ oc8051_psw oc8051_psw1 (.clk(clk),
 
   assign uart_int = 1'b0;
 
-//
-// interrupt control
-// IP, IE, TCON
-oc8051_int oc8051_int1 (.clk(clk), 
-                        .rst(rst), 
-			.wr_addr(adr1), 
-			.bit_in(bit_in),
-			.ack(int_ack), 
-			.data_in(dat1),
-			.wr(we), 
-			.wr_bit(wr_bit_r),
-			.tf0(tf0), 
-			.tf1(tf1), 
-			.t2_int(tc2_int), 
-			.tr0(tr0), 
-			.tr1(tr1),
-			.ie0(int0), 
-			.ie1(int1),
-			.uart_int(uart_int),
-			.reti(reti),
-			.intr(intr),
-			.int_vec(int_src),
-			.ie(ie),
-			.tcon(tcon), 
-			.ip(ip));
 
-  assign tf0 = 1'b0;
-  assign tf1 = 1'b0;
-
-
-  assign tc2_int = 1'b0;
-  assign rclk    = 1'b0;
-  assign tclk    = 1'b0;
-  assign brate2  = 1'b0;
+assign tr0 = 0; 
+assign tr1 = 0;
+assign intr = 0;
+assign int_src = 0;
+assign ie = 0;
+assign tcon = 0;
+assign ip = 0;
+assign tf0 = 1'b0;
+assign tf1 = 1'b0;
+assign tc2_int = 1'b0;
+assign rclk    = 1'b0;
+assign tclk    = 1'b0;
+assign brate2  = 1'b0;
 
 
 always @(posedge clk or posedge rst)
