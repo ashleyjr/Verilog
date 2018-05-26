@@ -4,7 +4,6 @@ oc8051_acc.v
 oc8051_alu_src_sel.v
 oc8051_alu.v
 oc8051_b_register.v
-oc8051_cache_ram.v
 oc8051_comp.v
 oc8051_cy_select.v
 oc8051_decoder.v
@@ -22,4 +21,4 @@ oc8051_timescale.v
 oc8051_xram.v
 oc8051_xrom.v
 oc8051_ram_256x8_two_bist.v
-oc8051_ram_64x32_dual_bist.v
+

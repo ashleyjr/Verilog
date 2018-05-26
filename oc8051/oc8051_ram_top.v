@@ -154,33 +154,26 @@ oc8051_ram_256x8_two_bist oc8051_idata(
 			   .wr_data ( wr_data_m  ),
 			   .wr_en   ( 1'b1       ),
 			   .wr      ( wr         )
-`ifdef OC8051_BIST
-         ,
-         .scanb_rst(scanb_rst),
-         .scanb_clk(scanb_clk),
-         .scanb_si(scanb_si),
-         .scanb_so(scanb_so),
-         .scanb_en(scanb_en)
-`endif
+
 			   );
 
 always @(posedge clk or posedge rst)
   if (rst) begin
-    bit_addr_r <= #1 1'b0;
-    bit_select <= #1 3'b0;
+    bit_addr_r <=  1'b0;
+    bit_select <=  3'b0;
   end else begin
-    bit_addr_r <= #1 bit_addr;
-    bit_select <= #1 rd_addr[2:0];
+    bit_addr_r <=  bit_addr;
+    bit_select <=  rd_addr[2:0];
   end
 
 
 always @(posedge clk or posedge rst)
   if (rst) begin
-    rd_en_r    <= #1 1'b0;
-    wr_data_r  <= #1 8'h0;
+    rd_en_r    <=  1'b0;
+    wr_data_r  <=  8'h0;
   end else begin
-    rd_en_r    <= #1 rd_en;
-    wr_data_r  <= #1 wr_data_m;
+    rd_en_r    <=  rd_en;
+    wr_data_r  <=  wr_data_m;
   end
 
 

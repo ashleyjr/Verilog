@@ -125,24 +125,11 @@ end
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    data_out <= #1 `OC8051_RST_ACC;
+    data_out <=  `OC8051_RST_ACC;
   else
-    data_out <= #1 acc;
+    data_out <=  acc;
 end
 
-
-`ifdef OC8051_SIMULATION
-
-always @(data_out)
-  if (data_out===8'hxx) begin
-    $display("time ",$time, "   faulire: invalid write to ACC (oc8051_acc)");
-#22222
-    $finish;
-
-  end
-
-
-`endif
 
 
 endmodule

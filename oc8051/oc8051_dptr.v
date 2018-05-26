@@ -85,19 +85,19 @@ reg [7:0] data_hi, data_lo;
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    data_hi <= #1 `OC8051_RST_DPH;
-    data_lo <= #1 `OC8051_RST_DPL;
+    data_hi <=  `OC8051_RST_DPH;
+    data_lo <=  `OC8051_RST_DPL;
   end else if (wr_sfr==`OC8051_WRS_DPTR) begin
 //
 //write from destination 2 and 1
-    data_hi <= #1 data2_in;
-    data_lo <= #1 data_in;
+    data_hi <=  data2_in;
+    data_lo <=  data_in;
   end else if ((addr==`OC8051_SFR_DPTR_HI) & (wr) & !(wr_bit))
 //
 //case of writing to dptr
-    data_hi <= #1 data_in;
+    data_hi <=  data_in;
   else if ((addr==`OC8051_SFR_DPTR_LO) & (wr) & !(wr_bit))
-    data_lo <= #1 data_in;
+    data_lo <=  data_in;
 end
 
 endmodule

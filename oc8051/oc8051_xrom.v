@@ -82,24 +82,24 @@ end
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    data <= #1 31'h0;
-    ack_o <= #1 1'b0;
+    data <=  31'h0;
+    ack_o <=  1'b0;
   end else if (stb_i && ((DELAY==3'b000) || (cnt==3'b000))) begin
-    data <= #1 {buff[addr+3], buff[addr+2], buff[addr+1], buff [addr]};
-    ack_o <= #1 1'b1;
+    data <=  {buff[addr+3], buff[addr+2], buff[addr+1], buff [addr]};
+    ack_o <=  1'b1;
   end else
-    ack_o <= #1 1'b0;
+    ack_o <=  1'b0;
 end
 
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    cnt <= #1 DELAY;
+    cnt <=  DELAY;
   else if (cnt == 3'b000)
-    cnt <= #1 DELAY;
+    cnt <=  DELAY;
   else if (stb_i)
-    cnt <= #1 cnt - 3'b001;
-  else cnt <= #1 DELAY;
+    cnt <=  cnt - 3'b001;
+  else cnt <=  DELAY;
 end
 
 endmodule

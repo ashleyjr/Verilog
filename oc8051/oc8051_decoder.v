@@ -1191,1434 +1191,1434 @@ end
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    ram_wr_sel <= #1 `OC8051_RWS_DC;
-    src_sel1 <= #1 `OC8051_AS1_DC;
-    src_sel2 <= #1 `OC8051_AS2_DC;
-    alu_op <= #1 `OC8051_ALU_NOP;
-    wr <= #1 1'b0;
-    psw_set <= #1 `OC8051_PS_NOT;
-    cy_sel <= #1 `OC8051_CY_0;
-    src_sel3 <= #1 `OC8051_AS3_DC;
-    wr_sfr <= #1 `OC8051_WRS_N;
+    ram_wr_sel <=  `OC8051_RWS_DC;
+    src_sel1 <=  `OC8051_AS1_DC;
+    src_sel2 <=  `OC8051_AS2_DC;
+    alu_op <=  `OC8051_ALU_NOP;
+    wr <=  1'b0;
+    psw_set <=  `OC8051_PS_NOT;
+    cy_sel <=  `OC8051_CY_0;
+    src_sel3 <=  `OC8051_AS3_DC;
+    wr_sfr <=  `OC8051_WRS_N;
   end else if (!wait_data) begin
     case (state_dec) /* synopsys parallel_case */
       2'b01: begin
         casex (op_cur) /* synopsys parallel_case */
           `OC8051_MOVC_DP :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP1;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP1;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOVC_PC :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP1;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP1;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOVX_PA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP1;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP1;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOVX_IA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP1;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP1;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
 /*          `OC8051_ACALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCH;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCH;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_AJMP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_LCALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCH;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCH;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_N;
             end*/
           `OC8051_DIV : begin
-              ram_wr_sel <= #1 `OC8051_RWS_B;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_DIV;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_OV;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_B;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_DIV;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_OV;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_MUL : begin
-              ram_wr_sel <= #1 `OC8051_RWS_B;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_MUL;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_OV;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_B;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_MUL;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_OV;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           default begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              wr_sfr <=  `OC8051_WRS_N;
           end
         endcase
-        cy_sel <= #1 `OC8051_CY_0;
-        src_sel3 <= #1 `OC8051_AS3_DC;
+        cy_sel <=  `OC8051_CY_0;
+        src_sel3 <=  `OC8051_AS3_DC;
       end
       2'b10: begin
         casex (op_cur) /* synopsys parallel_case */
           `OC8051_ACALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCH;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCH;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
             end
           `OC8051_LCALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCH;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCH;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
             end
           `OC8051_JBC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
             end
           `OC8051_DIV : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_DIV;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_OV;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_DIV;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_OV;
             end
           `OC8051_MUL : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_MUL;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_OV;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_MUL;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_OV;
             end
           default begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
           end
         endcase
-        cy_sel <= #1 `OC8051_CY_0;
-        src_sel3 <= #1 `OC8051_AS3_DC;
-        wr_sfr <= #1 `OC8051_WRS_N;
+        cy_sel <=  `OC8051_CY_0;
+        src_sel3 <=  `OC8051_AS3_DC;
+        wr_sfr <=  `OC8051_WRS_N;
       end
 
       2'b11: begin
         casex (op_cur) /* synopsys parallel_case */
           `OC8051_RET : begin
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              psw_set <= #1 `OC8051_PS_NOT;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              psw_set <=  `OC8051_PS_NOT;
             end
           `OC8051_RETI : begin
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              psw_set <= #1 `OC8051_PS_NOT;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              psw_set <=  `OC8051_PS_NOT;
             end
           `OC8051_DIV : begin
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_DIV;
-              psw_set <= #1 `OC8051_PS_OV;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_DIV;
+              psw_set <=  `OC8051_PS_OV;
             end
           `OC8051_MUL : begin
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_MUL;
-              psw_set <= #1 `OC8051_PS_OV;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_MUL;
+              psw_set <=  `OC8051_PS_OV;
             end
          default begin
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              psw_set <= #1 `OC8051_PS_NOT;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              psw_set <=  `OC8051_PS_NOT;
           end
         endcase
-        ram_wr_sel <= #1 `OC8051_RWS_DC;
-        wr <= #1 1'b0;
-        cy_sel <= #1 `OC8051_CY_0;
-        src_sel3 <= #1 `OC8051_AS3_DC;
-        wr_sfr <= #1 `OC8051_WRS_N;
+        ram_wr_sel <=  `OC8051_RWS_DC;
+        wr <=  1'b0;
+        cy_sel <=  `OC8051_CY_0;
+        src_sel3 <=  `OC8051_AS3_DC;
+        wr_sfr <=  `OC8051_WRS_N;
       end
       default: begin
         casex (op_cur) /* synopsys parallel_case */
           `OC8051_ACALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCL;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCL;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_AJMP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ADD_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ADDC_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ANL_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_CJNE_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_OP2;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_OP2;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DEC_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DJNZ_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_INC_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOV_AR : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_DR : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_CR : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_RD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_SUBB_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_XCH_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_RN;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XCH;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_RN;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XCH;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_XRL_R : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
     
     //op_code [7:1]
           `OC8051_ADD_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ADDC_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ANL_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_CJNE_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_OP2;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_OP2;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DEC_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_INC_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOV_ID : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_AI : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_DI : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_CI : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOVX_IA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOVX_AI :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_SUBB_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_XCH_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XCH;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XCH;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_XCHD :begin
-              ram_wr_sel <= #1 `OC8051_RWS_I;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XCH;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_I;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XCH;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_XRL_I : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
     
     //op_code [7:0]
           `OC8051_ADD_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ADD_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ADDC_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ADDC_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ANL_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ANL_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ANL_DD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ANL_DC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_OP3;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_OP3;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ANL_B : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_AND;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_AND;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ANL_NB : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CJNE_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CJNE_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_OP2;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_OP2;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CLR_A : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_CLR_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CLR_B : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CPL_A : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOT;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOT;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_CPL_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOT;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOT;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_CPL_B : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOT;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_RAM;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOT;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_RAM;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_DA;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_DA;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_DEC_A : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_DEC_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DIV : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_DIV;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_OV;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_DIV;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_OV;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_DJNZ_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_INC_A : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_INC_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_INC;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_INC;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_INC_DP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ZERO;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DP;
-              wr_sfr <= #1 `OC8051_WRS_DPTR;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ZERO;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DP;
+              wr_sfr <=  `OC8051_WRS_DPTR;
             end
           `OC8051_JB : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JBC :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JMP_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DP;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DP;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JNB : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JNC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JNZ :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_JZ : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_LCALL :begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_PCL;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_PCL;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_LJMP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOV_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_MOV_DA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_DD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D3;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D3;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_CD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_OP3;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_OP3;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_BC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_RAM;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_RAM;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_CB : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOV_DP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP3;
-              src_sel2 <= #1 `OC8051_AS2_OP2;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_DPTR;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP3;
+              src_sel2 <=  `OC8051_AS2_OP2;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_DPTR;
             end
           `OC8051_MOVC_DP :begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DP;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DP;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOVC_PC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_PCL;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_ADD;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_PCL;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_ADD;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOVX_PA : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MOVX_AP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_MUL : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_MUL;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_OV;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_MUL;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_OV;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ORL_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_ORL_AD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_CD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_OP3;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_OP3;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_B : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_OR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_OR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_ORL_NB : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RL;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RL;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_POP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_PUSH : begin
-              ram_wr_sel <= #1 `OC8051_RWS_SP;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_SP;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_RET : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_RETI : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_RL : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RL;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RL;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_RLC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RLC;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RLC;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_RR : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_RRC : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RRC;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RRC;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_SETB_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_CY;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_CY;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_SETB_B : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_SJMP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_PC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_PC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_SUBB_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_SUBB_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_OP2;
-              alu_op <= #1 `OC8051_ALU_SUB;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_AC;
-              cy_sel <= #1 `OC8051_CY_PSW;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_OP2;
+              alu_op <=  `OC8051_ALU_SUB;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_AC;
+              cy_sel <=  `OC8051_CY_PSW;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_SWAP : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_ACC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_RLC;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_ACC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_RLC;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_XCH_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XCH;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_1;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC2;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XCH;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_1;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC2;
             end
           `OC8051_XRL_D : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_XRL_C : begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_OP2;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_ACC1;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_OP2;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_ACC1;
             end
           `OC8051_XRL_AD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_RAM;
-              src_sel2 <= #1 `OC8051_AS2_ACC;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_RAM;
+              src_sel2 <=  `OC8051_AS2_ACC;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           `OC8051_XRL_CD : begin
-              ram_wr_sel <= #1 `OC8051_RWS_D;
-              src_sel1 <= #1 `OC8051_AS1_OP3;
-              src_sel2 <= #1 `OC8051_AS2_RAM;
-              alu_op <= #1 `OC8051_ALU_XOR;
-              wr <= #1 1'b1;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_D;
+              src_sel1 <=  `OC8051_AS1_OP3;
+              src_sel2 <=  `OC8051_AS2_RAM;
+              alu_op <=  `OC8051_ALU_XOR;
+              wr <=  1'b1;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
             end
           default: begin
-              ram_wr_sel <= #1 `OC8051_RWS_DC;
-              src_sel1 <= #1 `OC8051_AS1_DC;
-              src_sel2 <= #1 `OC8051_AS2_DC;
-              alu_op <= #1 `OC8051_ALU_NOP;
-              wr <= #1 1'b0;
-              psw_set <= #1 `OC8051_PS_NOT;
-              cy_sel <= #1 `OC8051_CY_0;
-              src_sel3 <= #1 `OC8051_AS3_DC;
-              wr_sfr <= #1 `OC8051_WRS_N;
+              ram_wr_sel <=  `OC8051_RWS_DC;
+              src_sel1 <=  `OC8051_AS1_DC;
+              src_sel2 <=  `OC8051_AS2_DC;
+              alu_op <=  `OC8051_ALU_NOP;
+              wr <=  1'b0;
+              psw_set <=  `OC8051_PS_NOT;
+              cy_sel <=  `OC8051_CY_0;
+              src_sel3 <=  `OC8051_AS3_DC;
+              wr_sfr <=  `OC8051_WRS_N;
            end
         endcase
       end
@@ -2630,53 +2630,53 @@ end
 //
 // remember current instruction
 always @(posedge clk or posedge rst)
-  if (rst) op <= #1 2'b00;
-  else if (state==2'b00) op <= #1 op_in;
+  if (rst) op <=  2'b00;
+  else if (state==2'b00) op <=  op_in;
 
 //
 // in case of instructions that needs more than one clock set state
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    state <= #1 2'b11;
+    state <=  2'b11;
   else if  (!mem_wait & !wait_data) begin
     case (state) /* synopsys parallel_case */
-      2'b10: state <= #1 2'b01;
-      2'b11: state <= #1 2'b10;
+      2'b10: state <=  2'b01;
+      2'b11: state <=  2'b10;
       2'b00:
           casex (op_in) /* synopsys full_case parallel_case */
-            `OC8051_ACALL   : state <= #1 2'b10;
-            `OC8051_AJMP    : state <= #1 2'b10;
-            `OC8051_CJNE_R  : state <= #1 2'b10;
-            `OC8051_CJNE_I  : state <= #1 2'b10;
-            `OC8051_CJNE_D  : state <= #1 2'b10;
-            `OC8051_CJNE_C  : state <= #1 2'b10;
-            `OC8051_LJMP    : state <= #1 2'b10;
-            `OC8051_DJNZ_R  : state <= #1 2'b10;
-            `OC8051_DJNZ_D  : state <= #1 2'b10;
-            `OC8051_LCALL   : state <= #1 2'b10;
-            `OC8051_MOVC_DP : state <= #1 2'b11;
-            `OC8051_MOVC_PC : state <= #1 2'b11;
-            `OC8051_MOVX_IA : state <= #1 2'b10;
-            `OC8051_MOVX_AI : state <= #1 2'b10;
-            `OC8051_MOVX_PA : state <= #1 2'b10;
-            `OC8051_MOVX_AP : state <= #1 2'b10;
-            `OC8051_RET     : state <= #1 2'b11;
-            `OC8051_RETI    : state <= #1 2'b11;
-            `OC8051_SJMP    : state <= #1 2'b10;
-            `OC8051_JB      : state <= #1 2'b10;
-            `OC8051_JBC     : state <= #1 2'b10;
-            `OC8051_JC      : state <= #1 2'b10;
-            `OC8051_JMP_D   : state <= #1 2'b10;
-            `OC8051_JNC     : state <= #1 2'b10;
-            `OC8051_JNB     : state <= #1 2'b10;
-            `OC8051_JNZ     : state <= #1 2'b10;
-            `OC8051_JZ      : state <= #1 2'b10;
-            `OC8051_DIV     : state <= #1 2'b11;
-            `OC8051_MUL     : state <= #1 2'b11;
-//            default         : state <= #1 2'b00;
+            `OC8051_ACALL   : state <=  2'b10;
+            `OC8051_AJMP    : state <=  2'b10;
+            `OC8051_CJNE_R  : state <=  2'b10;
+            `OC8051_CJNE_I  : state <=  2'b10;
+            `OC8051_CJNE_D  : state <=  2'b10;
+            `OC8051_CJNE_C  : state <=  2'b10;
+            `OC8051_LJMP    : state <=  2'b10;
+            `OC8051_DJNZ_R  : state <=  2'b10;
+            `OC8051_DJNZ_D  : state <=  2'b10;
+            `OC8051_LCALL   : state <=  2'b10;
+            `OC8051_MOVC_DP : state <=  2'b11;
+            `OC8051_MOVC_PC : state <=  2'b11;
+            `OC8051_MOVX_IA : state <=  2'b10;
+            `OC8051_MOVX_AI : state <=  2'b10;
+            `OC8051_MOVX_PA : state <=  2'b10;
+            `OC8051_MOVX_AP : state <=  2'b10;
+            `OC8051_RET     : state <=  2'b11;
+            `OC8051_RETI    : state <=  2'b11;
+            `OC8051_SJMP    : state <=  2'b10;
+            `OC8051_JB      : state <=  2'b10;
+            `OC8051_JBC     : state <=  2'b10;
+            `OC8051_JC      : state <=  2'b10;
+            `OC8051_JMP_D   : state <=  2'b10;
+            `OC8051_JNC     : state <=  2'b10;
+            `OC8051_JNB     : state <=  2'b10;
+            `OC8051_JNZ     : state <=  2'b10;
+            `OC8051_JZ      : state <=  2'b10;
+            `OC8051_DIV     : state <=  2'b11;
+            `OC8051_MUL     : state <=  2'b11;
+//            default         : state <=  2'b00;
           endcase
-      default: state <= #1 2'b00;
+      default: state <=  2'b00;
     endcase
   end
 end
@@ -2687,44 +2687,30 @@ end
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    mem_act <= #1 `OC8051_MAS_NO;
+    mem_act <= `OC8051_MAS_NO;
   end else if (!rd) begin
-    mem_act <= #1 `OC8051_MAS_NO;
+    mem_act <= `OC8051_MAS_NO;
   end else
-    casex (op_cur) /* synopsys parallel_case */
-      `OC8051_MOVX_AI : mem_act <= #1 `OC8051_MAS_RI_W;
-      `OC8051_MOVX_AP : mem_act <= #1 `OC8051_MAS_DPTR_W;
-      `OC8051_MOVX_IA : mem_act <= #1 `OC8051_MAS_RI_R;
-      `OC8051_MOVX_PA : mem_act <= #1 `OC8051_MAS_DPTR_R;
-      `OC8051_MOVC_DP : mem_act <= #1 `OC8051_MAS_CODE;
-      `OC8051_MOVC_PC : mem_act <= #1 `OC8051_MAS_CODE;
-      default : mem_act <= #1 `OC8051_MAS_NO;
+    casex (op_cur)       
+      `OC8051_MOVX_AI : mem_act <= `OC8051_MAS_RI_W;
+      `OC8051_MOVX_AP : mem_act <= `OC8051_MAS_DPTR_W;
+      `OC8051_MOVX_IA : mem_act <= `OC8051_MAS_RI_R;
+      `OC8051_MOVX_PA : mem_act <= `OC8051_MAS_DPTR_R;
+      `OC8051_MOVC_DP : mem_act <= `OC8051_MAS_CODE;
+      `OC8051_MOVC_PC : mem_act <= `OC8051_MAS_CODE;
+      default : mem_act <=  `OC8051_MAS_NO;
     endcase
 end
 
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    ram_rd_sel_r <= #1 3'h0;
+    ram_rd_sel_r <= 3'h0;
   end else begin
-    ram_rd_sel_r <= #1 ram_rd_sel;
+    ram_rd_sel_r <= ram_rd_sel;
   end
 end
 
-
-
-`ifdef OC8051_SIMULATION
-
-always @(op_cur)
-  if (op_cur===8'hxx) begin
-    $display("time ",$time, "   faulire: invalid instruction (oc8051_decoder)");
-#22;
-    //$finish;
-
-  end
-
-
-`endif
 
 
 

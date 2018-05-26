@@ -97,33 +97,33 @@ assign ack =  ackw || ackr;
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    ackw <= #1 1'b0;
+    ackw <=  1'b0;
   else if (wr && stb && ((DELAY==3'b000) || (cnt==3'b000))) begin
-    buff[addr] <= #1 data_in;
-    ackw <= #1 1'b1;
-  end else ackw <= #1 1'b0;
+    buff[addr] <=  data_in;
+    ackw <=  1'b1;
+  end else ackw <=  1'b0;
 end
 
 always @(posedge clk or posedge rst)
   if (rst)
-    ackr <= #1 1'b0;
+    ackr <=  1'b0;
   else if (stb && !wr && ((DELAY==3'b000) || (cnt==3'b000))) begin
-    data_out <= #1 buff[addr];
-    ackr <= #1 1'b1;
+    data_out <=  buff[addr];
+    ackr <=  1'b1;
   end else begin
-    ackr <= #1 1'b0;
-    data_out <= #1 8'h00;
+    ackr <=  1'b0;
+    data_out <=  8'h00;
   end
 
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    cnt <= #1 DELAY;
+    cnt <=  DELAY;
   else if (cnt==3'b000)
-    cnt <= #1 DELAY;
+    cnt <=  DELAY;
   else if (stb)
-    cnt <= #1 cnt - 3'b001;
-  else cnt <= #1 DELAY;
+    cnt <=  cnt - 3'b001;
+  else cnt <=  DELAY;
 end
 
 

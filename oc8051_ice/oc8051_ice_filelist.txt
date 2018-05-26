@@ -5,7 +5,6 @@ oc8051_ice_tb.v
 ../oc8051/oc8051_alu_src_sel.v
 ../oc8051/oc8051_alu.v
 ../oc8051/oc8051_b_register.v
-../oc8051/oc8051_cache_ram.v
 ../oc8051/oc8051_comp.v
 ../oc8051/oc8051_cy_select.v
 ../oc8051/oc8051_decoder.v
@@ -13,7 +12,6 @@ oc8051_defines.v
 ../oc8051/oc8051_divide.v
 ../oc8051/oc8051_dptr.v
 ../oc8051/oc8051_indi_addr.v
-../oc8051/oc8051_int.v
 ../oc8051/oc8051_memory_interface.v
 ../oc8051/oc8051_multiply.v
 ../oc8051/oc8051_psw.v

@@ -79,14 +79,14 @@ reg [7:0] data_out;
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    data_out <= #1 `OC8051_RST_B;
+    data_out <=  `OC8051_RST_B;
   else if (wr) begin
     if (!wr_bit) begin
       if (wr_addr==`OC8051_SFR_B)
-        data_out <= #1 data_in;
+        data_out <=  data_in;
     end else begin
       if (wr_addr[7:3]==`OC8051_SFR_B_B)
-        data_out[wr_addr[2:0]] <= #1 bit_in;
+        data_out[wr_addr[2:0]] <=  bit_in;
     end
   end
 end

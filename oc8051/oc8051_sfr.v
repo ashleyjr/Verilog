@@ -158,52 +158,6 @@ output [7:0] dat0,	//data output
 output [7:0] sp,
              sp_w;
 
-// ports
-`ifdef OC8051_PORTS
-
-`ifdef OC8051_PORT0
-input  [7:0] p0_in;
-output [7:0] p0_out;
-wire   [7:0] p0_data;
-`endif
-
-`ifdef OC8051_PORT1
-input  [7:0] p1_in;
-output [7:0] p1_out;
-wire   [7:0] p1_data;
-`endif
-
-`ifdef OC8051_PORT2
-input  [7:0] p2_in;
-output [7:0] p2_out;
-wire   [7:0] p2_data;
-`endif
-
-`ifdef OC8051_PORT3
-input  [7:0] p3_in;
-output [7:0] p3_out;
-wire   [7:0] p3_data;
-`endif
-
-`endif
-
-
-// serial interface
-`ifdef OC8051_UART
-input        rxd;
-output       txd;
-`endif
-
-// timer/counter 0,1
-`ifdef OC8051_TC01
-input	     t0, t1;
-`endif
-
-// timer/counter 2
-`ifdef OC8051_TC2
-input	     t2, t2ex;
-`endif
-
 reg        bit_out, 
            wait_data;
 reg [7:0]  dat0,
@@ -227,31 +181,6 @@ wire       p,
 
 wire [7:0] b_reg, 
            psw,
-
-`ifdef OC8051_TC2
-  // t/c 2
-	   t2con, 
-	   tl2, 
-	   th2, 
-	   rcap2l, 
-	   rcap2h,
-`endif
-
-`ifdef OC8051_TC01
-  // t/c 0,1
-	   tmod, 
-	   tl0, 
-	   th0, 
-	   tl1,
-	   th1,
-`endif
-
-  // serial interface
-`ifdef OC8051_UART
-           scon, 
-	   pcon, 
-	   sbuf,
-`endif
 
   //interrupt control
 	   ie, 
@@ -419,54 +348,14 @@ begin
       `OC8051_SFR_ACC: 		dat0 <= #1 acc;
       `OC8051_SFR_PSW: 		dat0 <= #1 psw;
 
-`ifdef OC8051_PORTS
-  `ifdef OC8051_PORT0
-      `OC8051_SFR_P0: 		dat0 <= #1 p0_data;
-  `endif
-
-  `ifdef OC8051_PORT1
-      `OC8051_SFR_P1: 		dat0 <= #1 p1_data;
-  `endif
-
-  `ifdef OC8051_PORT2
-      `OC8051_SFR_P2: 		dat0 <= #1 p2_data;
-  `endif
-
-  `ifdef OC8051_PORT3
-      `OC8051_SFR_P3: 		dat0 <= #1 p3_data;
-  `endif
-`endif
-
       `OC8051_SFR_SP: 		dat0 <= #1 sp;
       `OC8051_SFR_B: 		dat0 <= #1 b_reg;
       `OC8051_SFR_DPTR_HI: 	dat0 <= #1 dptr_hi;
       `OC8051_SFR_DPTR_LO: 	dat0 <= #1 dptr_lo;
 
-`ifdef OC8051_UART
-      `OC8051_SFR_SCON: 	dat0 <= #1 scon;
-      `OC8051_SFR_SBUF: 	dat0 <= #1 sbuf;
-      `OC8051_SFR_PCON: 	dat0 <= #1 pcon;
-`endif
-
-`ifdef OC8051_TC01
-      `OC8051_SFR_TH0: 		dat0 <= #1 th0;
-      `OC8051_SFR_TH1: 		dat0 <= #1 th1;
-      `OC8051_SFR_TL0: 		dat0 <= #1 tl0;
-      `OC8051_SFR_TL1: 		dat0 <= #1 tl1;
-      `OC8051_SFR_TMOD: 	dat0 <= #1 tmod;
-`endif
-
       `OC8051_SFR_IP: 		dat0 <= #1 ip;
       `OC8051_SFR_IE: 		dat0 <= #1 ie;
       `OC8051_SFR_TCON: 	dat0 <= #1 tcon;
-
-`ifdef OC8051_TC2
-      `OC8051_SFR_RCAP2H: 	dat0 <= #1 rcap2h;
-      `OC8051_SFR_RCAP2L: 	dat0 <= #1 rcap2l;
-      `OC8051_SFR_TH2:    	dat0 <= #1 th2;
-      `OC8051_SFR_TL2:    	dat0 <= #1 tl2;
-      `OC8051_SFR_T2CON:  	dat0 <= #1 t2con;
-`endif
 
 //      default: 			dat0 <= #1 8'h00;
     endcase
@@ -495,36 +384,10 @@ begin
       `OC8051_SFR_B_ACC:   bit_out <= #1 acc[adr0[2:0]];
       `OC8051_SFR_B_PSW:   bit_out <= #1 psw[adr0[2:0]];
 
-`ifdef OC8051_PORTS
-  `ifdef OC8051_PORT0
-      `OC8051_SFR_B_P0:    bit_out <= #1 p0_data[adr0[2:0]];
-  `endif
-
-  `ifdef OC8051_PORT1
-      `OC8051_SFR_B_P1:    bit_out <= #1 p1_data[adr0[2:0]];
-  `endif
-
-  `ifdef OC8051_PORT2
-      `OC8051_SFR_B_P2:    bit_out <= #1 p2_data[adr0[2:0]];
-  `endif
-
-  `ifdef OC8051_PORT3
-      `OC8051_SFR_B_P3:    bit_out <= #1 p3_data[adr0[2:0]];
-  `endif
-`endif
-
       `OC8051_SFR_B_B:     bit_out <= #1 b_reg[adr0[2:0]];
       `OC8051_SFR_B_IP:    bit_out <= #1 ip[adr0[2:0]];
       `OC8051_SFR_B_IE:    bit_out <= #1 ie[adr0[2:0]];
       `OC8051_SFR_B_TCON:  bit_out <= #1 tcon[adr0[2:0]];
-
-`ifdef OC8051_UART
-      `OC8051_SFR_B_SCON:  bit_out <= #1 scon[adr0[2:0]];
-`endif
-
-`ifdef OC8051_TC2
-      `OC8051_SFR_B_T2CON: bit_out <= #1 t2con[adr0[2:0]];
-`endif
 
 //      default:             bit_out <= #1 1'b0;
     endcase

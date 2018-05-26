@@ -106,36 +106,36 @@ assign data_out = {data[7:1], p};
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    data <= #1 `OC8051_RST_PSW;
+    data <=  `OC8051_RST_PSW;
 
 //
 // write to psw (byte addressable)
   else begin
     if (wr & (wr_bit==1'b0) & (wr_addr==`OC8051_SFR_PSW))
-      data[7:1] <= #1 data_in[7:1];
+      data[7:1] <=  data_in[7:1];
 //
 // write to psw (bit addressable)
     else if (wr & wr_bit & (wr_addr[7:3]==`OC8051_SFR_B_PSW))
-      data[wr_addr[2:0]] <= #1 cy_in;
+      data[wr_addr[2:0]] <=  cy_in;
     else begin
       case (set) /* synopsys full_case parallel_case */
         `OC8051_PS_CY: begin
 //
 //write carry
-          data[7] <= #1 cy_in;
+          data[7] <=  cy_in;
         end
         `OC8051_PS_OV: begin
 //
 //write carry and overflov
-          data[7] <= #1 cy_in;
-          data[2] <= #1 ov_in;
+          data[7] <=  cy_in;
+          data[2] <=  ov_in;
         end
         `OC8051_PS_AC:begin
 //
 //write carry, overflov and ac
-          data[7] <= #1 cy_in;
-          data[6] <= #1 ac_in;
-          data[2] <= #1 ov_in;
+          data[7] <=  cy_in;
+          data[6] <=  ac_in;
+          data[2] <=  ov_in;
 
         end
       endcase

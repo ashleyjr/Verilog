@@ -87,11 +87,11 @@ assign sp_t= write ? data_in : sp;
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    sp <= #1 `OC8051_RST_SP;
+    sp <=  `OC8051_RST_SP;
   else if (write)
-    sp <= #1 data_in;
+    sp <=  data_in;
   else
-    sp <= #1 sp_out;
+    sp <=  sp_out;
 end
 
 
@@ -119,9 +119,9 @@ end
 always @(posedge clk or posedge rst)
 begin
   if (rst)
-    pop <= #1 1'b0;
-  else if (ram_rd_sel==`OC8051_RRS_SP) pop <= #1 1'b1;
-  else pop <= #1 1'b0;
+    pop <=  1'b0;
+  else if (ram_rd_sel==`OC8051_RRS_SP) pop <=  1'b1;
+  else pop <=  1'b0;
 end
 
 endmodule

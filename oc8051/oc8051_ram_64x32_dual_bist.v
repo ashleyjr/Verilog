@@ -69,14 +69,7 @@ module oc8051_ram_64x32_dual_bist (
 		     dat1_o,
 		     en1,
 		     wr1
-`ifdef OC8051_BIST
-	 ,
-         scanb_rst,
-         scanb_clk,
-         scanb_si,
-         scanb_so,
-         scanb_en
-`endif
+
 		     );
 
 parameter ADR_WIDTH = 6;

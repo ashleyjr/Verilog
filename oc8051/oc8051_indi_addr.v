@@ -87,25 +87,25 @@ reg [7:0] buff [0:7];
 always @(posedge clk or posedge rst)
 begin
   if (rst) begin
-    buff[3'b000] <= #1 8'h00;
-    buff[3'b001] <= #1 8'h00;
-    buff[3'b010] <= #1 8'h00;
-    buff[3'b011] <= #1 8'h00;
-    buff[3'b100] <= #1 8'h00;
-    buff[3'b101] <= #1 8'h00;
-    buff[3'b110] <= #1 8'h00;
-    buff[3'b111] <= #1 8'h00;
+    buff[3'b000] <=  8'h00;
+    buff[3'b001] <=  8'h00;
+    buff[3'b010] <=  8'h00;
+    buff[3'b011] <=  8'h00;
+    buff[3'b100] <=  8'h00;
+    buff[3'b101] <=  8'h00;
+    buff[3'b110] <=  8'h00;
+    buff[3'b111] <=  8'h00;
   end else begin
     if ((wr) & !(wr_bit_r)) begin
       case (wr_addr) /* synopsys full_case parallel_case */
-        8'h00: buff[3'b000] <= #1 data_in;
-        8'h01: buff[3'b001] <= #1 data_in;
-        8'h08: buff[3'b010] <= #1 data_in;
-        8'h09: buff[3'b011] <= #1 data_in;
-        8'h10: buff[3'b100] <= #1 data_in;
-        8'h11: buff[3'b101] <= #1 data_in;
-        8'h18: buff[3'b110] <= #1 data_in;
-        8'h19: buff[3'b111] <= #1 data_in;
+        8'h00: buff[3'b000] <=  data_in;
+        8'h01: buff[3'b001] <=  data_in;
+        8'h08: buff[3'b010] <=  data_in;
+        8'h09: buff[3'b011] <=  data_in;
+        8'h10: buff[3'b100] <=  data_in;
+        8'h11: buff[3'b101] <=  data_in;
+        8'h18: buff[3'b110] <=  data_in;
+        8'h19: buff[3'b111] <=  data_in;
       endcase
     end
   end
@@ -121,9 +121,9 @@ assign ri_out = (({3'b000, bank, 2'b00, sel}==wr_addr) & (wr) & !wr_bit_r) ?
 
 always @(posedge clk or posedge rst)
   if (rst) begin
-    wr_bit_r <= #1 1'b0;
+    wr_bit_r <=  1'b0;
   end else begin
-    wr_bit_r <= #1 wr_bit;
+    wr_bit_r <=  wr_bit;
   end
 
 endmodule
