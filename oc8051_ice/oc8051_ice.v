@@ -61,8 +61,46 @@ module oc8051_ice(
       .wbi_ack_i        (rom_ack       ),
       .wbi_cyc_o        (              ), 
       .wbi_dat_i        (rom_data      ), 
-      .wbi_err_i        (1'b0          )
+      .wbi_err_i        (1'b0          ),
+   
+      .rd_addr          (rd_addr       ),
+      .wr_addr          (wr_addr       ),
+      .wr_dat           (wr_dat        ),
+      .ram_data         (ram_data      ),
+      .desCy            (desCy         ),
+      .bit_data         (bit_data      ),
+      .wr_ram           (wr_ram        ),
+      .bit_addr_o       (bit_addr_o    )
+    
    );
+
+
+   ////////////////////////////////////////////////////////////////////////////
+   // Internal RAM
+ 
+   wire  [7:0] rd_addr;
+   wire  [7:0] wr_addr;
+   wire  [7:0] wr_dat;
+   wire  [7:0] ram_data;
+   wire        desCy;
+   wire        bit_data;
+   wire        wr_ram;
+   wire        bit_addr_o;
+   
+   oc8051_ram_top oc8051_ram_top1(
+      .clk           (clk        ),
+      .rst           (rst        ),
+      .rd_addr       (rd_addr    ),
+      .rd_data       (ram_data   ),
+      .wr_addr       (wr_addr    ),
+      .bit_addr      (bit_addr_o ),
+      .wr_data       (wr_dat     ),
+      .wr            (wr_ram     ),
+      .bit_data_in   (desCy      ),
+      .bit_data_out  (bit_data   )
+   );
+   
+
 
    ////////////////////////////////////////////////////////////////////////////
    // RAM
