@@ -113,50 +113,25 @@
 `include "oc8051_defines.v"
 
 module oc8051(
-      wb_rst_i, 
-      wb_clk_i,
-
-//interface to instruction rom
-		wbi_adr_o, 
-		wbi_dat_i, 
-		wbi_stb_o, 
-		wbi_ack_i, 
-		wbi_cyc_o, 
-		wbi_err_i,
-
-//interface to data ram
-		wbd_dat_i, 
-		wbd_dat_o,
-		wbd_adr_o, 
-		wbd_we_o, 
-		wbd_ack_i,
-		wbd_stb_o, 
-		wbd_cyc_o, 
-		wbd_err_i,
-		);
-
-
-
-input         wb_rst_i,		// reset input
-              wb_clk_i,		// clock input 
-              wbd_ack_i,	// data acknowalge
-              wbi_ack_i,	// instruction acknowlage
-              wbd_err_i,	// data error
-              wbi_err_i;	// instruction error
-
-input [7:0]   wbd_dat_i;	// ram data input
-input [31:0]  wbi_dat_i;	// rom data input
-
-output        wbd_we_o,		// data write enable
-	      wbd_stb_o,	// data strobe
-	      wbd_cyc_o,	// data cycle
-	      wbi_stb_o,	// instruction strobe
-	      wbi_cyc_o;	// instruction cycle
-
-output [7:0]  wbd_dat_o;	// data output
-
-output [15:0] wbd_adr_o,	// data address
-              wbi_adr_o;	// instruction address
+   input             wb_rst_i, 
+   input             wb_clk_i,
+   //interface to instruction rom
+	output   [15:0]   wbi_adr_o,  // Instruction address
+	input    [31:0]   wbi_dat_i,  // ROM data input
+	output            wbi_stb_o,  // Instruction stobe 
+	input             wbi_ack_i,  // INstruction acknoledge 
+	output            wbi_cyc_o,  // Instruction cycle
+	input             wbi_err_i,  // INstruction error
+   //interface to data ram
+	input    [7:0]    wbd_dat_i,  // RAM data input
+	output   [7:0]    wbd_dat_o,  // RAM data output
+	output   [15:0]   wbd_adr_o,  // Data address
+	output            wbd_we_o,   // Data write enable
+	input             wbd_ack_i,  // Data acknowledge
+   output            wbd_stb_o,  // Data strobe
+	output            wbd_cyc_o,  // Data cycle
+	input             wbd_err_i   // Data error
+);
 
 wire ea_in = 1'b0;  // External ROM only
 
