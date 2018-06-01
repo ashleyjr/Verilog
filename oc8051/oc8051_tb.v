@@ -129,23 +129,62 @@ assign wbi_err_i = 1'b0;
 // oc8051 controller
 //
 oc8051 oc8051_top_1(
-    .wb_rst_i(rst), 
-    .wb_clk_i(clk),
-    .wbd_dat_i(data_in), 
-    .wbd_we_o(write), 
-    .wbd_dat_o(data_out),
-    .wbd_adr_o(ext_addr), 
-    .wbd_err_i(wbd_err_i),
-    .wbd_ack_i(ack_i), 
-    .wbd_stb_o(stb_o), 
-    .wbd_cyc_o(cyc_o),
-    .wbi_adr_o(iadr_o), 
-    .wbi_stb_o(istb_o), 
-    .wbi_ack_i(iack_i),
-    .wbi_cyc_o(icyc_o), 
-    .wbi_dat_i(idat_i), 
-    .wbi_err_i(wbi_err_i)
+   .wb_rst_i   (rst        ), 
+   .wb_clk_i   (clk        ),
+   
+   .wbd_dat_i  (data_in    ), 
+   .wbd_we_o   (write      ), 
+   .wbd_dat_o  (data_out   ),
+   .wbd_adr_o  (ext_addr   ), 
+   .wbd_err_i  (wbd_err_i  ),
+   .wbd_ack_i  (ack_i      ), 
+   .wbd_stb_o  (stb_o      ), 
+   .wbd_cyc_o  (cyc_o      ),
+   
+   .wbi_adr_o  (iadr_o     ), 
+   .wbi_stb_o  (istb_o     ), 
+   .wbi_ack_i  (iack_i     ),
+   .wbi_cyc_o  (icyc_o     ), 
+   .wbi_dat_i  (idat_i     ), 
+   .wbi_err_i  (wbi_err_i  ),
+
+   .rd_addr    (rd_addr    ),
+   .wr_addr    (wr_addr    ),
+   .wr_dat     (wr_dat     ),
+   .ram_data   (ram_data   ),
+   .desCy      (desCy      ),
+   .bit_data   (bit_data   ),
+   .wr_ram     (wr_ram     ),
+   .bit_addr_o (bit_addr_o )
+       
 );
+
+
+//
+// Internal data ram
+//
+wire  [7:0] rd_addr;
+wire  [7:0] wr_addr;
+wire  [7:0] wr_dat;
+wire  [7:0] ram_data;
+wire        desCy;
+wire        bit_data;
+wire        wr_ram;
+wire        bit_addr_o;
+
+oc8051_ram_top oc8051_ram_top1(
+   .clk           (clk        ),
+   .rst           (rst        ),
+   .rd_addr       (rd_addr    ),
+   .rd_data       (ram_data   ),
+   .wr_addr       (wr_addr    ),
+   .bit_addr      (bit_addr_o ),
+   .wr_data       (wr_dat     ),
+   .wr            (wr_ram     ),
+   .bit_data_in   (desCy      ),
+   .bit_data_out  (bit_data   )
+);
+
 
 
 //

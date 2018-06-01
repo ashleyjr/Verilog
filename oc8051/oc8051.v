@@ -130,8 +130,19 @@ module oc8051(
 	input             wbd_ack_i,  // Data acknowledge
    output            wbd_stb_o,  // Data strobe
 	output            wbd_cyc_o,  // Data cycle
-	input             wbd_err_i   // Data error
+	input             wbd_err_i,   // Data error
+   // interface to internal data ram
+   output   [7:0]    rd_addr,
+   output   [7:0]    wr_addr,
+   output   [7:0]    wr_dat,
+   input    [7:0]    ram_data,
+   output            desCy,
+   output            bit_data,
+   output            wr_ram,
+   output            bit_addr_o
 );
+
+assign wr_ram = (wr_o && (!wr_addr[7] || wr_ind));  
 
 wire ea_in = 1'b0;  // External ROM only
 
@@ -290,24 +301,7 @@ oc8051_alu oc8051_alu1(.rst(wb_rst_i),
 		       .desOv(desOv),
 		       .bit_in(bit_out));
 
-//
-//data ram
-oc8051_ram_top oc8051_ram_top1(.clk(wb_clk_i),
-                               .rst(wb_rst_i),
-			       .rd_addr(rd_addr),
-			       .rd_data(ram_data),
-			       .wr_addr(wr_addr),
-			       .bit_addr(bit_addr_o),
-			       .wr_data(wr_dat),
-			       .wr(wr_o && (!wr_addr[7] || wr_ind)),
-			       .bit_data_in(desCy),
-			       .bit_data_out(bit_data)
-
-			       );
-
-//
-
-oc8051_alu_src_sel oc8051_alu_src_sel1(.clk(wb_clk_i),
+          oc8051_alu_src_sel oc8051_alu_src_sel1(.clk(wb_clk_i),
                                        .rst(wb_rst_i),
 				       .rd(rd),
 
