@@ -6,7 +6,7 @@ unsigned int fib(unsigned int n);
 
 void main(void){
    unsigned int i; 
-   for(i=0;i<5;i++){
+   for(i=0;i<10;i++){
       f = fib(i);
    }
    PASS_TEST

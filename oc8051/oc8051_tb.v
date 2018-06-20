@@ -302,11 +302,11 @@ begin
    // Data of interest
    if (write & stb_o) begin
      if(ext_addr==16'h0) begin
-         $display("time ",$time," Interest bottom byte");
+         //$display("time ",$time," Interest bottom byte");
          interest[7:0] = data_out;
       end
       if(ext_addr==16'h1) begin
-         $display("time ",$time," Interest topm byte");
+         //$display("time ",$time," Interest topm byte");
          interest[15:8] = data_out;
       end
        $display("time ",$time," Interest: %h,%d", interest, interest);
