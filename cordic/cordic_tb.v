@@ -7,8 +7,8 @@ module cordic_tb;
 	reg	         nrst;
    reg   [15:0]   theta;
    reg            req;
-   wire  [15:0]   sin;
-   wire  [15:0]   cos;
+   wire  [16:0]   sin;
+   wire  [16:0]   cos;
    wire           ack;
 
    cordic cordic(
@@ -41,10 +41,11 @@ module cordic_tb;
 		         req      = 0;
       #17		nrst		= 0;
       #17      nrst     = 1;
-      //for(theta=0;theta<=1;theta=theta+1) begin
-         theta = 16'h0;
-         #1000 req      = 1;
-         #1000 req      = 0;
+      //for(theta=0;theta<=65000;theta=theta+1000) begin 
+         theta = 16'hFFFF;
+         #1000 req      = 1; 
+         #1000 $display("%f", (sin*0.607)/16'hFFFF);
+               req      = 0;
       //end
 		$finish;
 	end
