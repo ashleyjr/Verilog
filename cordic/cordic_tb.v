@@ -42,7 +42,7 @@ module cordic_tb;
       #17		nrst		= 0;
       #17      nrst     = 1;
       //for(theta=0;theta<=1;theta=theta+1) begin
-         theta = 16'hFFFF;
+         theta = 16'h0;
          #1000 req      = 1;
          #1000 req      = 0;
       //end

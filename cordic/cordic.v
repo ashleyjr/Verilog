@@ -25,8 +25,8 @@ module cordic(
 
 	always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst | !i_req) begin 
-         beta  <= 17'h0c90f;
-         count <= 'b1;
+         beta  <= 'd0;
+         count <= 'd0;
       end else begin 
          if (count < 'h10) begin  
             count <= count + 'b1; 
