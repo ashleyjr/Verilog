@@ -1,12 +1,12 @@
 `timescale 1ns/1ps
 module cordic(
-	input				         i_clk,
-	input				         i_nrst,
-	input	         [15:0]   i_theta,
-   input                   i_req,
-   output         [16:0]   o_sin,
-   output         [16:0]   o_cos,
-   output   reg            o_ack
+	input				                  i_clk,
+	input				                  i_nrst,
+	input	         signed   [17:0]   i_theta,
+   input                            i_req,
+   output   reg   signed   [17:0]   o_sin,
+   output   reg   signed   [17:0]   o_cos,
+   output   reg                     o_ack
 );
 
    wire                    sigma; 
@@ -21,9 +21,7 @@ module cordic(
                            beta,
                            x,
                            y; 
-
-   assign   o_sin    = y;
-   assign   o_cos    = x;
+ 
    assign   x_shift  = x >>> count;
    assign   y_shift  = y >>> count;
    assign   t        = i_theta;
@@ -49,6 +47,9 @@ module cordic(
             x     <= x_new;
             y     <= y_new;
          end else begin
+            // 0.5 + 0.0625 + 0.03125 + 0.015625 = 0.609 
+            o_sin <= (y >>> 1) + (y >>> 4) + (y >>> 5) + (y >>> 6);
+            o_cos <= (x >>> 1) + (x >>> 4) + (x >>> 5) + (x >>> 6);
             o_ack <= 1'b1;
          end
       end
