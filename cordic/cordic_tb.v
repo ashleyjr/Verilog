@@ -62,10 +62,13 @@ module cordic_tb;
 
       pi = 20'd205887; 
       theta = -pi;
-      while(theta < pi) begin
+      repeat(10000) begin
          #1000 req = 1;
          #1000 req = 0;
          theta = theta + 20'd100;
+         if(theta > pi) begin
+            theta = -pi;
+         end
       end
 
 

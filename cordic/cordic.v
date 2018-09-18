@@ -20,7 +20,8 @@ module cordic(
                            y_new,
                            x_shift,
                            y_shift,
-                           sin;
+                           sin,
+                           cos;
    reg            [4:0]    count;
    reg   signed   [19:0]   a,
                            beta,
