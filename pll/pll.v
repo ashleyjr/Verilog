@@ -14,9 +14,9 @@ module pll(
 //     parameter p_divf = 7'd44;
 //     parameter p_divq = 3'd5;
 // PLLOUT = 17.25MHz
-     parameter p_divr = 4'd0;
-     parameter p_divf = 7'd45;
-     parameter p_divq = 3'd5;
+//     parameter p_divr = 4'd0;
+//     parameter p_divf = 7'd45;
+//     parameter p_divq = 3'd5;
 // PLLOUT = 17.625MHz
 //     parameter p_divr = 4'd0;
 //     parameter p_divf = 7'd46;
@@ -326,9 +326,9 @@ module pll(
 //     parameter p_divf = 7'd62;
 //     parameter p_divq = 3'd2;
 // PLLOUT = 192.0MHz
-//     parameter p_divr = 4'd0;
-//     parameter p_divf = 7'd63;
-//     parameter p_divq = 3'd2;
+     parameter p_divr = 4'd0;
+     parameter p_divf = 7'd63;
+     parameter p_divq = 3'd2;
 // PLLOUT = 270.0MHz
 //     parameter p_divr = 4'd0;
 //     parameter p_divf = 7'd44;
@@ -346,7 +346,7 @@ module pll(
       .RESETB        (i_nrst     ),
       .BYPASS        (i_bypass   ),
       .REFERENCECLK  (i_clk      ),
-      .PLLOUTCORE    (o_clkout   )
+      .PLLOUTCORE    (o_clk      )
    );
 
 endmodule
