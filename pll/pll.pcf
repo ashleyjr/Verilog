@@ -1,0 +1,14 @@
+set_io         clk   21
+set_io         nRst  78
+
+set_io sw2   79
+set_io sw1   80
+set_io sw0   81
+
+set_io led4  95
+set_io led3  96
+set_io led2  97
+set_io led1  98
+set_io led0  99
+
+
