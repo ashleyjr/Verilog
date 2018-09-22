@@ -2,7 +2,7 @@
 module pll_blink(
 	input				i_clk,
 	input				i_nrst,
-	output	reg	led
+	output	reg	o_led
 );
 
    parameter   p_count_clks = 192000000;
@@ -21,11 +21,11 @@ module pll_blink(
    
 	always@(posedge pll_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
-		   led      <= 1'b0;
-         count    <= 'd0;
+		   o_led       <= 1'b0;
+         count       <= 'd0;
       end else begin 
          if(count == p_count_clks) begin
-            led      <= ~led;
+            o_led    <= ~o_led;
             count    <= 'd0;
          end else begin
             count    <= count + 'd1;

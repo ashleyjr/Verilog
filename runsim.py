@@ -76,7 +76,7 @@ def main():
             os.chdir("..")
 
         print "    Info: Simulate " + str(sim)
-        cmd_print("iverilog -o " + str(sim) + ".dat -c " + str(sim) +"_filelist.txt")
+        cmd_print("iverilog -o " + str(sim) + ".dat -D SIM -c " + str(sim) +"_filelist.txt")
         cmd_print("vvp " + str(sim) + ".dat -vcd > " + temp)
 
         if lines > 2:

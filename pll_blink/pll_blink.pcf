@@ -1,4 +1,4 @@
 set_io i_clk   21
 set_io i_nrst  78
-set_io led     99
+set_io o_led   99
 

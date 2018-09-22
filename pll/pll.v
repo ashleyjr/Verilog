@@ -1,3 +1,4 @@
+`timescale 1ps/1ps
 module pll(  
    input    i_clk,
    input    i_nrst,
@@ -333,21 +334,55 @@ module pll(
 //     parameter p_divr = 4'd0;
 //     parameter p_divf = 7'd44;
 //     parameter p_divq = 3'd1;
- 
-   SB_PLL40_CORE #(
-      .FEEDBACK_PATH ("SIMPLE"   ),
-      .PLLOUT_SELECT ("GENCLK"   ),
-      .DIVR          (p_divr     ),
-      .DIVF          (p_divf     ),
-      .DIVQ          (p_divq     ),
-      .FILTER_RANGE  (3'b001     )  // Always 1 https://www.reddit.com/r/yosys/comments/3yrq6d/are_plls_supported_on_the_icestick_hw/
-   ) uut (
-      .LOCK          (o_lock     ),
-      .RESETB        (i_nrst     ),
-      .BYPASS        (i_bypass   ),
-      .REFERENCECLK  (i_clk      ),
-      .PLLOUTCORE    (o_clk      )
-   );
+
+   `ifdef SIM
+      
+      // Clock
+      parameter   FREQ  = (12 * (p_divf + 1)) / ((2 ** p_divq) * (p_divr +1));
+      parameter   CLK   = (10 ** 6)/FREQ; 
+
+      reg s_clk;
+      
+      initial begin
+		   while(1) begin
+			   #(CLK/2)  s_clk = 0;
+			   #(CLK/2)  s_clk = 1;
+		   end
+	   end
+     
+      assign o_clk = (i_bypass) ? i_clk : s_clk;
+  
+
+      // Lock 
+      reg s_lock;
+
+      always@(posedge i_clk or negedge i_nrst) begin
+         if(!i_nrst) begin
+            s_lock   <= 1'b0;
+         end else begin
+            if(!s_lock)
+               s_lock = $random;
+         end
+      end
+
+      assign o_lock = s_lock;
+
+   `else
+      SB_PLL40_CORE #(
+         .FEEDBACK_PATH ("SIMPLE"   ),
+         .PLLOUT_SELECT ("GENCLK"   ),
+         .DIVR          (p_divr     ),
+         .DIVF          (p_divf     ),
+         .DIVQ          (p_divq     ),
+         .FILTER_RANGE  (3'b001     )  // Always 1 https://www.reddit.com/r/yosys/comments/3yrq6d/are_plls_supported_on_the_icestick_hw/
+      ) uut (
+         .LOCK          (o_lock     ),
+         .RESETB        (i_nrst     ),
+         .BYPASS        (i_bypass   ),
+         .REFERENCECLK  (i_clk      ),
+         .PLLOUTCORE    (o_clk      )
+      );
+   `endif
 
 endmodule
 
