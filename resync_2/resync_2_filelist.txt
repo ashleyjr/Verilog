@@ -1,0 +1,2 @@
+resync_2.v
+resync_2_tb.v
