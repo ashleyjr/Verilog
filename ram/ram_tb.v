@@ -1,86 +1,60 @@
 `timescale 1ns/1ps
 module ram_tb;
 
-	parameter CLK_PERIOD = 20;
+	parameter WCLK_PERIOD = 23;
+   parameter RCLK_PERIOD = 17;
 
-	reg	clk;
-	reg	nRst;
-	reg	rx;
-	reg	sw2;
-	reg	sw1;
-	reg	sw0;
-	wire	tx;
-	wire	led4;
-	wire	led3;
-	wire	led2;
-	wire	led1;
-	wire	led0;
+	reg         wclk;
+   reg         rclk;
+   reg   [7:0] wdata;
+   wire  [7:0] rdata;
+   reg   [8:0] waddr;
+   reg   [8:0] raddr;
+   reg         we;
+   reg         re;
 
 	ram ram(
-		`ifdef POST_SYNTHESIS
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`else
-			.clk	(clk),
-			.nRst	(nRst),
-			.rx	(rx),
-			.sw2	(sw2),
-			.sw1	(sw1),
-			.sw0	(sw0),
-			.tx	(tx),
-			.led4	(led4),
-			.led3	(led3),
-			.led2	(led2),
-			.led1	(led1),
-			.led0	(led0)
-		`endif
+      .i_wclk     (wclk    ),
+      .i_waddr    (waddr   ),
+      .i_we       (we      ),
+      .i_wdata    (wdata   ),
+      .i_rclk     (rclk    ),
+      .i_raddr    (raddr   ),
+      .i_re       (re      ),
+      .o_rdata    (rdata   )
 	);
 
 	initial begin
 		while(1) begin
-			#(CLK_PERIOD/2) clk = 0;
-			#(CLK_PERIOD/2) clk = 1;
+			#(WCLK_PERIOD/2) wclk = 0;
+			#(WCLK_PERIOD/2) wclk = 1;
 		end
 	end
 
-	initial begin
-		`ifdef POST_SYNTHESIS
-			$dumpfile("ram_syn.vcd");
-			$dumpvars(0,ram_tb);
-		`else
-			$dumpfile("ram.vcd");
-			$dumpvars(0,ram_tb);
-		`endif
-		$display("                  TIME    nRst");		$monitor("%tps       %d",$time,nRst);
+   initial begin
+		while(1) begin
+			#(RCLK_PERIOD/2) rclk = 0;
+			#(RCLK_PERIOD/2) rclk = 1;
+		end
 	end
 
+   integer i;
+
+   initial begin
+		$dumpfile("ram.vcd");
+		$dumpvars(0,ram_tb);	
+	   for(i=0;i<512;i=i+1) 
+         $dumpvars(0,ram.mem[i]); 
+   end
+
 	initial begin
-					nRst		= 1;
-					rx			= 0;
-					sw2		= 0;
-					sw1		= 0;
-					sw0		= 0;
-		#17		nRst		= 0;
-		#17		nRst		= 1;
-		#17		sw0		= 1;
-		#17		sw1		= 1;
-		#17		sw2		= 1;
-		#17		rx			= 1;
-		#17		sw1		= 0;
-		#17		sw2		= 0;
-		#17		sw0		= 0;
-		#17		rx			= 0;
-		#10
+	   repeat(1000) begin
+         #10   wdata = $random;
+         #10   waddr = $random; 
+         #10   raddr = $random;
+         #10   we    = $random;
+         #10   re    = $random;
+      end
 		$finish;
 	end
 
