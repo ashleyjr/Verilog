@@ -11,6 +11,7 @@ module resync_2_tb;
 	resync_2 resync_2(
       .i_clk   (clk  ),
       .i_nrst  (nrst ),
+      .i_rst_d (1'b0 ),
       .i_d     (d    ),
       .o_q     (q    )
 	);

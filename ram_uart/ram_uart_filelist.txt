@@ -1,0 +1,6 @@
+ram_uart.v
+../ram/ram.v
+../resync_3/resync_3.v
+../uart_tx/uart_tx.v
+../uart_rx/uart_rx.v
+ram_uart_tb.v
