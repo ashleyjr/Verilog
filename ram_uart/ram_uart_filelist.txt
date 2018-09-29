@@ -3,4 +3,5 @@ ram_uart.v
 ../resync_3/resync_3.v
 ../uart_tx/uart_tx.v
 ../uart_rx/uart_rx.v
+../pll/pll.v
 ram_uart_tb.v

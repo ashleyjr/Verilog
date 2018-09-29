@@ -2,7 +2,7 @@
 // ram_uart.v
 // Access memory through a uart
 //
-// Baudrate = 9600
+// Baudrate = 460800
 //
 //
 ///////////////////////////////////////////////////////////
@@ -20,7 +20,9 @@ module ram_uart(
 	output   wire	led0
 );
 
-   parameter   SAMPLE   = 26;   // SAMPLE = CLK_HZ / BAUDRATE
+   // CLK_MHZ = 81
+   // BAUDRATE = 921600
+   parameter   SAMPLE   = 88;   // SAMPLE = CLK_HZ / BAUDRATE
 
    wire        rx_resync;
    reg   [6:0] addr;
@@ -31,6 +33,7 @@ module ram_uart(
    wire        rx_2_ram_valid;
    wire  [7:0] rx_2_ram_data;
    wire  [7:0] ram_2_tx_data;
+   wire        clk;
 
    assign   laddr    = {1'b0, addr};
    assign   we       = rx_2_ram_valid  & rx_2_ram_data[7];
@@ -41,7 +44,7 @@ module ram_uart(
                led1,
                led0} = addr[4:0];
 
-   always@(posedge i_clk or negedge i_nrst) begin
+   always@(posedge clk or negedge i_nrst) begin
       if(!i_nrst) begin
          re1   <= 1'b0;
          re2   <= 1'b0;
@@ -57,18 +60,18 @@ module ram_uart(
 
    ram ram(
       .i_nrst     (i_nrst                    ),
-      .i_wclk     (i_clk                     ),
+      .i_wclk     (clk                     ),
       .i_waddr    (laddr                     ),
       .i_we       (we                        ),
       .i_wdata    ({1'b0,rx_2_ram_data[6:0]} ),
-      .i_rclk     (i_clk                     ),
+      .i_rclk     (clk                     ),
       .i_raddr    (laddr                     ),
       .i_re       (re1                        ),
       .o_rdata    (ram_2_tx_data             )
 	);
 
    resync_3 resync_3(
-      .i_clk      (i_clk                     ),
+      .i_clk      (clk                     ),
       .i_nrst     (i_nrst                    ),
       .i_rst_d    (1'b1                      ),
       .i_d        (i_rx                      ),
@@ -78,7 +81,7 @@ module ram_uart(
    uart_rx #(
       .SAMPLE     (SAMPLE                    )   
    ) uart_rx (
-      .i_clk      (i_clk                     ),
+      .i_clk      (clk                     ),
       .i_nrst     (i_nrst                    ),
       .o_data     (rx_2_ram_data             ),
       .i_rx       (rx_resync                 ),
@@ -89,12 +92,24 @@ module ram_uart(
    uart_tx #(
       .SAMPLE     (SAMPLE                    )
    ) uart_tx (
-	   .i_clk      (i_clk                     ),
+	   .i_clk      (clk                     ),
       .i_nrst     (i_nrst                    ),
       .i_data     ({1'b0,ram_2_tx_data[6:0]} ),
       .o_tx       (o_tx                      ),
       .i_valid    (re2                        ),
       .o_accept   (                          )
    );
+
+	pll #(
+      .p_divr     (4'd0    ),
+      .p_divf     (7'd53   ),
+      .p_divq     (3'd3    )
+   ) pll(
+	   .i_clk	   (i_clk   ),
+	   .i_nrst	   (i_nrst  ),
+	   .i_bypass   (1'b0    ),
+      .o_clk      (clk     ),
+      .o_lock     (        )	
+	);
 
 endmodule
