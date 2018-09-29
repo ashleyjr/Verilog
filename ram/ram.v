@@ -12,12 +12,12 @@ module ram (
 
    reg   [7:0] wdata1;
    reg   [8:0] waddr1;
-   reg         we1,we2;
+   reg         we1;
    reg         re1,re2;
    wire        we;
    wire        re;
 
-   assign   we = i_we | we1 | we2;
+   assign   we = i_we | we1 ;
 
    assign   re = i_re | re1;
 
@@ -25,14 +25,12 @@ module ram (
       if(!i_nrst) begin
          wdata1   <= 8'h00;
          waddr1   <= 9'h000;
-         we1      <= 1'b0;
-         we2      <= 1'b0;
+         we1      <= 1'b0; 
          re1      <= 1'b0;
       end else begin
          wdata1   <= i_wdata;
          waddr1   <= i_waddr;
-         we1      <= i_we;
-         we2      <= we1;
+         we1      <= i_we; 
          re1      <= i_re;
       end
    end 

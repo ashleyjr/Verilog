@@ -5,7 +5,7 @@ module ram_uart_tb;
 	parameter   CLK_PERIOD_NS  = 83;
 
    // BAUD = 115200
-   parameter   SAMPLE_TB      = 8680;     // SAMPLE_TB   = 1e9       / BAUDRATE
+   parameter   SAMPLE_TB      = 2170;     // SAMPLE_TB   = 1e9       / BAUDRATE
 	
 	reg	clk;
 	reg	nrst;
