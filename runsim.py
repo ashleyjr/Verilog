@@ -68,22 +68,19 @@ def main():
     if(options.sim):
         os.chdir(sim)
         print "    Info: Searching for simulation dependants"
-        #code = "code"
-        #if(os.path.isdir(code)):
-        #    os.chdir(code)
-        #    print "    Move: " + code + "/"
-        #    cmd_print("python make.py > make.txt")
-        #    os.chdir("..")
 
-        filelist = sim.split('/')[-1] + "_filelist.txt"
+        base        = sim.split('/')[-1]
+        dat         = base  + ".dat"
+        filelist    = base + "_filelist.txt"
+        runsim      = base + "_runsim.txt"
 
         print "    Info: Simulate " + str(sim)
-        cmd_print("iverilog -o " + str(sim) + ".dat -D SIM -c " + filelist)
-        cmd_print("vvp " + str(sim) + ".dat -vcd > " + temp)
+        cmd_print("iverilog -o " + dat + " -D SIM -c " + filelist)
+        cmd_print("vvp " + dat + " -vcd > " + runsim)
 
         if lines > 2:
-            print "    Info: Head of " + temp + " (Max of "+str(lines)+" lines)"
-            f = open(temp)
+            print "    Info: Head of " + runsim + " (Max of "+str(lines)+" lines)"
+            f = open(runsim)
             count = 1
             for line in f:
                 print "    Info: " + line,
@@ -91,6 +88,20 @@ def main():
                     count = count + 1
                     if(count > lines):
                         break
+
+    if(options.waves):
+        os.chdir(sim)
+        base        = sim.split('/')[-1]
+        tcl         = base  + "_tb.tcl"
+        vcd         = base  + ".vcd"
+
+        cmd_print("gtkwave -S " + tcl + " " + vcd)
+
+
+    if(options.syn_waves):
+        os.chdir(sim)
+        cmd_print("gtkwave -S" + str(sim) + "_tb.tcl " + str(sim) +"_syn.vcd ")
+
 
     if(options.synth):
         os.chdir(sim)
