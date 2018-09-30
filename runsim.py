@@ -68,15 +68,17 @@ def main():
     if(options.sim):
         os.chdir(sim)
         print "    Info: Searching for simulation dependants"
-        code = "code"
-        if(os.path.isdir(code)):
-            os.chdir(code)
-            print "    Move: " + code + "/"
-            cmd_print("python make.py > make.txt")
-            os.chdir("..")
+        #code = "code"
+        #if(os.path.isdir(code)):
+        #    os.chdir(code)
+        #    print "    Move: " + code + "/"
+        #    cmd_print("python make.py > make.txt")
+        #    os.chdir("..")
+
+        filelist = sim.split('/')[-1] + "_filelist.txt"
 
         print "    Info: Simulate " + str(sim)
-        cmd_print("iverilog -o " + str(sim) + ".dat -D SIM -c " + str(sim) +"_filelist.txt")
+        cmd_print("iverilog -o " + str(sim) + ".dat -D SIM -c " + filelist)
         cmd_print("vvp " + str(sim) + ".dat -vcd > " + temp)
 
         if lines > 2:
