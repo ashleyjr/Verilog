@@ -1,0 +1,3 @@
+ice_uart_autobaud.v
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+ice_uart_autobaud_tb.v

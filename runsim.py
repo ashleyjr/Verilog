@@ -94,7 +94,6 @@ def main():
         base        = sim.split('/')[-1]
         tcl         = base  + "_tb.tcl"
         vcd         = base  + ".vcd"
-
         cmd_print("gtkwave -S " + tcl + " " + vcd)
 
 
