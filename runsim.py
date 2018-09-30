@@ -122,29 +122,38 @@ def main():
         os.chdir(sim)
         cmd_print("gtkwave -S" + str(sim) + "_tb.tcl " + str(sim) +"_syn.vcd ")
 
-    if(options.waves):
-        os.chdir(sim)
-        cmd_print("gtkwave -S " + str(sim) + "_tb.tcl "+ str(sim) +".vcd")
-
     if(options.pnr):
         os.chdir(sim)
         cmd_print("arachne-pnr -d 1k -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc")
 
     if(options.ice):
         os.chdir(sim)
-        filelist = open(str(sim) + "_filelist.txt","r")
-        files = filelist.read()
+        base        = sim.split('/')[-1]
+        filelist    = base + "_filelist.txt"
+        blif        = base + ".blif"
+        blif_txt    = base + "_blif.txt"
+        syn         = base + "_syn.v"
+        pcf         = base + ".pcf"
+        asc         = base + ".asc"
+        binn        = base + ".bin"
+        pack        = base + "_pack.txt"
+
+        f = open(filelist,"r")
+        files = f.read()
+        f.close()
         files = files.replace("\n"," ")
-        files = files.replace(str(sim) + "_tb.v","")
+        # Remove testbench
+        files = files.replace(base + "_tb.v","")
+
         print "    Info: Synth"
-        cmd_print("yosys -p 'synth_ice40 -top " + sim + " -blif " + sim +".blif' " + files + " > " + sim + "_syn.txt")
-        cmd_print("yosys -o " + sim + "_syn.v " + sim + ".blif > " + sim + "_blif.txt")
+        cmd_print("yosys -p 'synth_ice40 -top " + base + " -blif " + blif +"' " + files + " > " + base+ "_syn.txt")
+        cmd_print("yosys -o " + syn + " " + blif + " > " + blif_txt)
         print "    Info: Place and route"
-        cmd_print("arachne-pnr -d 1k -q -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc" )
+        cmd_print("arachne-pnr -d 1k -q -p "+ pcf +" "+ blif +" -o "+ asc )
         print "    Info: Translate"
-        cmd_print("(icepack "+ str(sim) +".asc "+ str(sim) +".bin) > " + sim + "_pack.txt" )
+        cmd_print("(icepack "+ asc +" "+ binn +") > " + pack )
         print "    Info: Deploy to icestick"
-        cmd_print("sudo iceprog "+ str(sim) +".bin")
+        cmd_print("sudo iceprog "+ binn)
 
     if(options.new):
         if(os.path.isdir(sim) == False):

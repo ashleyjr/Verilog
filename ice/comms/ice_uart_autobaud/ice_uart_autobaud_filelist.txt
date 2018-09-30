@@ -1,3 +1,4 @@
 ice_uart_autobaud.v
 ../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
 ice_uart_autobaud_tb.v

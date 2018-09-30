@@ -86,7 +86,7 @@ module uart_autobaud(
          if( (delay_2 == delay_1) && (timer != 32'hFFFFFFFF)) begin
             timer    <= timer + 1'b1; 
          end else begin
-            timer    <=32'b0;
+            timer    <= 32'b0;
             if((timer < baud) && (timer > 32'd1)) begin
                baud <= timer;
                count_rx <= 1'b0;

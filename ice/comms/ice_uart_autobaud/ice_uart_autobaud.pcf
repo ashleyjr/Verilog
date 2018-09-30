@@ -5,5 +5,5 @@ set_io   o_led2   97
 set_io   o_led1   98
 set_io   o_led0   99
 set_io   i_rx     9
-set_io   i_nRst   78
+set_io   i_nrst   78
 set_io   o_tx     8
