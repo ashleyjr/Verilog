@@ -49,7 +49,7 @@ def main():
     if(options.syn_waves != None):
         no_op = False
     if(options.new != None):
-        sim = str(options.new)
+        new = str(options.new)
         no_op = False
     if(no_op):
         print "    Info: You must specify and operation"
@@ -155,16 +155,31 @@ def main():
         print "    Info: Deploy to icestick"
         cmd_print("sudo iceprog "+ binn)
 
-    if(options.new):
-        if(os.path.isdir(sim) == False):
-            os.mkdir(sim)
-            os.chdir(sim)
 
-            txt_name = sim + "_filelist.txt"
-            v_name = sim + ".v"
-            tb_name = sim + "_tb.v"
-            tcl_name = sim + "_tb.tcl"
-            pcf_name = sim + ".pcf"
+    if(options.new != None):
+
+        if '/' not in new:
+            print "Error: Malformed name"
+            sys.exit(0)
+        else:
+            module_name = new.split('/')[-1]
+            path = new[0:-len(module_name)]
+            print module_name
+            print path
+
+
+        if(os.path.isdir(new) == False):
+            os.makedirs(path)
+            os.chdir(path)
+
+            module_name = new.split('/')[-1]
+
+
+            txt_name    = module_name + "_filelist.txt"
+            v_name      = module_name + ".v"
+            tb_name     = module_name + "_tb.v"
+            tcl_name    = module_name + "_tb.tcl"
+            pcf_name    = module_name + ".pcf"
 
             txt = open(txt_name, "wb")
             txt.write(v_name + "\n")
@@ -173,36 +188,36 @@ def main():
 
             v = open(v_name, "wb")
             v.write("`timescale 1ns/1ps\n")
-            v.write("module " + sim + "(\n" )
-            v.write("\tinput\t\t\t\tclk,\n")
-            v.write("\tinput\t\t\t\tnRst,\n")
-            v.write("\tinput\t\t\t\trx,\n")
-            v.write("\tinput\t\t\t\tsw2,\n")
-            v.write("\tinput\t\t\t\tsw1,\n")
-            v.write("\tinput\t\t\t\tsw0,\n")
-            v.write("\toutput\treg\ttx,\n")
-            v.write("\toutput\treg\tled4,\n")
-            v.write("\toutput\treg\tled3,\n")
-            v.write("\toutput\treg\tled2,\n")
-            v.write("\toutput\treg\tled1,\n")
-            v.write("\toutput\treg\tled0\n")
+            v.write("module " + module_name + "(\n" )
+            v.write("\tinput\t\t\t\ti_clk,\n")
+            v.write("\tinput\t\t\t\ti_nrst,\n")
+            v.write("\tinput\t\t\t\ti_rx,\n")
+            v.write("\tinput\t\t\t\ti_sw2,\n")
+            v.write("\tinput\t\t\t\ti_sw1,\n")
+            v.write("\tinput\t\t\t\ti_sw0,\n")
+            v.write("\toutput\treg\to_tx,\n")
+            v.write("\toutput\treg\to_led4,\n")
+            v.write("\toutput\treg\to_led3,\n")
+            v.write("\toutput\treg\to_led2,\n")
+            v.write("\toutput\treg\to_led1,\n")
+            v.write("\toutput\treg\to_led0\n")
             v.write(");"+ "\n")
             v.write("\n")
-            v.write("\talways@(posedge clk or negedge nRst) begin\n")
-            v.write("\t\tif(!nRst) begin\n")
-            v.write("\t\t\ttx   <= 1'b0;\n")
-            v.write("\t\t\tled4 <= 1'b0;\n")
-            v.write("\t\t\tled3 <= 1'b0;\n")
-            v.write("\t\t\tled2 <= 1'b0;\n")
-            v.write("\t\t\tled1 <= 1'b0;\n")
-            v.write("\t\t\tled0 <= 1'b0;\n")
+            v.write("\talways@(posedge i_clk or negedge i_nrst) begin\n")
+            v.write("\t\tif(!i_nrst) begin\n")
+            v.write("\t\t\to_tx   <= 1'b0;\n")
+            v.write("\t\t\to_led4 <= 1'b0;\n")
+            v.write("\t\t\to_led3 <= 1'b0;\n")
+            v.write("\t\t\to_led2 <= 1'b0;\n")
+            v.write("\t\t\to_led1 <= 1'b0;\n")
+            v.write("\t\t\to_led0 <= 1'b0;\n")
             v.write("\t\tend else begin\n")
-            v.write("\t\t\ttx   <= rx;\n")
-            v.write("\t\t\tled4 <= sw1;\n")
-            v.write("\t\t\tled3 <= 1'b1;\n")
-            v.write("\t\t\tled2 <= sw2;\n")
-            v.write("\t\t\tled1 <= 1'b1;\n")
-            v.write("\t\t\tled0 <= sw0;\n")
+            v.write("\t\t\to_tx   <= i_rx;\n")
+            v.write("\t\t\to_led4 <= i_sw1;\n")
+            v.write("\t\t\to_led3 <= 1'b1;\n")
+            v.write("\t\t\to_led2 <= i_sw2;\n")
+            v.write("\t\t\to_led1 <= 1'b1;\n")
+            v.write("\t\t\to_led0 <= i_sw0;\n")
             v.write("\t\tend\n")
             v.write("\tend\n")
             v.write("endmodule\n")
@@ -210,12 +225,12 @@ def main():
 
             tb = open(tb_name, "wb")
             tb.write("`timescale 1ns/1ps\n")
-            tb.write("module " + sim + "_tb;\n")
+            tb.write("module " + module_name + "_tb;\n")
             tb.write("\n")
             tb.write("\tparameter CLK_PERIOD = 20;\n")
             tb.write("\n")
             tb.write("\treg\tclk;\n")
-            tb.write("\treg\tnRst;\n")
+            tb.write("\treg\tnrst;\n")
             tb.write("\treg\trx;\n")
             tb.write("\treg\tsw2;\n")
             tb.write("\treg\tsw1;\n")
@@ -227,34 +242,19 @@ def main():
             tb.write("\twire\tled1;\n")
             tb.write("\twire\tled0;\n")
             tb.write("\n")
-            tb.write("\t" + sim + " " + sim + "(\n")
-            tb.write("\t\t`ifdef POST_SYNTHESIS\n")
-            tb.write("\t\t\t.clk\t(clk),\n")
-            tb.write("\t\t\t.nRst\t(nRst),\n")
-            tb.write("\t\t\t.rx\t(rx),\n")
-            tb.write("\t\t\t.sw2\t(sw2),\n")
-            tb.write("\t\t\t.sw1\t(sw1),\n")
-            tb.write("\t\t\t.sw0\t(sw0),\n")
-            tb.write("\t\t\t.tx\t(tx),\n")
-            tb.write("\t\t\t.led4\t(led4),\n")
-            tb.write("\t\t\t.led3\t(led3),\n")
-            tb.write("\t\t\t.led2\t(led2),\n")
-            tb.write("\t\t\t.led1\t(led1),\n")
-            tb.write("\t\t\t.led0\t(led0)\n")
-            tb.write("\t\t`else\n")
-            tb.write("\t\t\t.clk\t(clk),\n")
-            tb.write("\t\t\t.nRst\t(nRst),\n")
-            tb.write("\t\t\t.rx\t(rx),\n")
-            tb.write("\t\t\t.sw2\t(sw2),\n")
-            tb.write("\t\t\t.sw1\t(sw1),\n")
-            tb.write("\t\t\t.sw0\t(sw0),\n")
-            tb.write("\t\t\t.tx\t(tx),\n")
-            tb.write("\t\t\t.led4\t(led4),\n")
-            tb.write("\t\t\t.led3\t(led3),\n")
-            tb.write("\t\t\t.led2\t(led2),\n")
-            tb.write("\t\t\t.led1\t(led1),\n")
-            tb.write("\t\t\t.led0\t(led0)\n")
-            tb.write("\t\t`endif\n")
+            tb.write("\t" + module_name + " " + module_name + "(\n")
+            tb.write("\t\t.i_clk\t(clk),\n")
+            tb.write("\t\t.i_nrst\t(nrst),\n")
+            tb.write("\t\t.i_rx\t(rx),\n")
+            tb.write("\t\t.i_sw2\t(sw2),\n")
+            tb.write("\t\t.i_sw1\t(sw1),\n")
+            tb.write("\t\t.i_sw0\t(sw0),\n")
+            tb.write("\t\t.o_tx\t(tx),\n")
+            tb.write("\t\t.o_led4\t(led4),\n")
+            tb.write("\t\t.o_led3\t(led3),\n")
+            tb.write("\t\t.o_led2\t(led2),\n")
+            tb.write("\t\t.o_led1\t(led1),\n")
+            tb.write("\t\t.o_led0\t(led0)\n")
             tb.write("\t);"+ "\n")
             tb.write("\n")
             tb.write("\tinitial begin\n")
@@ -265,24 +265,19 @@ def main():
             tb.write("\tend\n")
             tb.write("\n")
             tb.write("\tinitial begin\n")
-            tb.write("\t\t`ifdef POST_SYNTHESIS\n")
-            tb.write("\t\t\t$dumpfile(\"" + sim + "_syn.vcd\");\n")
-            tb.write("\t\t\t$dumpvars(0," + sim + "_tb);\n")
-            tb.write("\t\t`else\n")
-            tb.write("\t\t\t$dumpfile(\"" + sim + ".vcd\");\n")
-            tb.write("\t\t\t$dumpvars(0," + sim + "_tb);\n")
-            tb.write("\t\t`endif\n")
-            tb.write("\t\t$display(\"                  TIME    nRst\");")
-            tb.write("\t\t$monitor(\"%tps       %d\",$time,nRst);\n")
+            tb.write("\t\t\t$dumpfile(\"" + module_name + ".vcd\");\n")
+            tb.write("\t\t\t$dumpvars(0," + module_name + "_tb);\n")
+            tb.write("\t\t$display(\"                  TIME    nrst\");")
+            tb.write("\t\t$monitor(\"%tps       %d\",$time,nrst);\n")
             tb.write("\tend\n\n")
             tb.write("\tinitial begin\n")
-            tb.write("\t\t\t\t\tnRst\t\t= 1;\n")
+            tb.write("\t\t\t\t\tnrst\t\t= 1;\n")
             tb.write("\t\t\t\t\trx\t\t\t= 0;\n")
             tb.write("\t\t\t\t\tsw2\t\t= 0;\n")
             tb.write("\t\t\t\t\tsw1\t\t= 0;\n")
             tb.write("\t\t\t\t\tsw0\t\t= 0;\n")
-            tb.write("\t\t#17\t\tnRst\t\t= 0;\n")
-            tb.write("\t\t#17\t\tnRst\t\t= 1;\n")
+            tb.write("\t\t#17\t\tnrst\t\t= 0;\n")
+            tb.write("\t\t#17\t\tnrst\t\t= 1;\n")
             tb.write("\t\t#17\t\tsw0\t\t= 1;\n")
             tb.write("\t\t#17\t\tsw1\t\t= 1;\n")
             tb.write("\t\t#17\t\tsw2\t\t= 1;\n")
