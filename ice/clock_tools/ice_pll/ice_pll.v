@@ -1,5 +1,5 @@
 `timescale 1ps/1ps
-module pll(  
+module ice_pll(  
    input    i_clk,
    input    i_nrst,
    input    i_bypass,

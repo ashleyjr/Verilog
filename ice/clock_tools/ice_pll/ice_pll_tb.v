@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module pll_tb;
+module ice_pll_tb;
 
 	parameter CLK_PERIOD = 83; // 12Mhz
 
@@ -9,7 +9,7 @@ module pll_tb;
    wire  o_clk;
    wire  o_lock;	
 
-	pll pll(
+	ice_pll ice_pll(
 	   .i_clk	   (i_clk   ),
 	   .i_nrst	   (nrst    ),
 	   .i_bypass   (bypass  ),
@@ -25,8 +25,8 @@ module pll_tb;
 	end
 
 	initial begin
-		$dumpfile("pll.vcd");
-		$dumpvars(0,pll_tb);	
+		$dumpfile("ice_pll.vcd");
+		$dumpvars(0,ice_pll_tb);	
 		$display("                  TIME    nRst");		
       $monitor("%tps       %d",$time,nrst);
 	end
