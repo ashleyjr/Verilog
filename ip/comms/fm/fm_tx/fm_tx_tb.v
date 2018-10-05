@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 module fm_tx_tb;
 
-	parameter CLK_PERIOD = 20;
+	parameter CLK_PERIOD = 5;  // 200MHz
 
 	reg	clk;
 	reg	nrst;
