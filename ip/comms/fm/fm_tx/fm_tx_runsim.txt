@@ -1,0 +1,5 @@
+VCD info: dumpfile fm_tx.vcd opened for output.
+                  TIME    nrst
+                   0ps       1
+               17000ps       0
+               34000ps       1
