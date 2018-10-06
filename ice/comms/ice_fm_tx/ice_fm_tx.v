@@ -6,7 +6,12 @@ module ice_fm_tx(
 );
    wire clk;
    
-   ice_pll ice_pll(
+   ice_pll #(
+      .p_divr     (4'd0    ),
+      .p_divf     (7'd63   ),
+      .p_divq     (3'd2    )
+   
+   )ice_pll(
 	   .i_clk	   (i_clk   ),
 	   .i_nrst	   (i_nrst  ),
 	   .i_bypass   (1'b0    ),

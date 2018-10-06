@@ -5,15 +5,26 @@ module fm_tx(
 	output   wire  o_fm
 );
 
-   reg count;
+   parameter   p_top = 32'd2238080614; // (100.05e6 / 192e6) * 2^32 
+   parameter   p_bot = 32'd2235843652; // (99.95e6 / 192e6) * 2^32 
+   parameter   p_range = p_top - p_bot;
 
-   assign o_fm = count;
+   reg [31:0]  phase_acc, 
+               add;
+
+   assign o_fm = phase_acc[31];
 
 	always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
-			count    <= 1'b0;
-		end else begin
-         count    <= count + 'b1;	
+		   phase_acc   <= 'd0;
+		   add         <= p_bot;
+      end else begin
+         phase_acc   <= phase_acc + add; 
+         if(add == p_top) begin
+            add <= p_bot;
+         end else begin
+            add <= add + 'd1;
+         end
 		end
 	end
 endmodule

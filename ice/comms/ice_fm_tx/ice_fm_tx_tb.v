@@ -31,7 +31,7 @@ module ice_fm_tx_tb;
 					nrst		= 1;
 		#17      nrst     = 0;
       #17      nrst     = 1;
-      #100
+      #10000
 		$finish;
 	end
 
