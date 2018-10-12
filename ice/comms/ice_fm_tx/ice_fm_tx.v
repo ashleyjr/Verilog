@@ -6,6 +6,8 @@ module ice_fm_tx(
 );
    wire clk;
    
+
+   // PLL out is 192 MHz
    ice_pll #(
       .p_divr     (4'd0    ),
       .p_divf     (7'd63   ),
