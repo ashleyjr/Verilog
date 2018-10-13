@@ -1,4 +1,4 @@
-`timescale 10ns/1ps
+`timescale 1ns/1ps
 module fm_tx_tb;
 
 	parameter CLK_PERIOD = 5208;  // 192MHz
@@ -65,13 +65,20 @@ module fm_tx_tb;
    end
 
 	initial begin
-				   shift    = 0;
-               nrst		= 1;
-		#17      nrst     = 0;
-      #17      nrst     = 1;
-      #400000  shift    = 100000;
-		#400000  shift    = 200000;
-      #400000  shift    = 100000;
+				      shift       = 0;
+                  nrst		   = 1;
+		#17         nrst        = 0;
+      #17         nrst        = 1;
+      #40         shift       = 1000000;
+		            period_acc  = 0;
+                  samples     = 0;
+      #1000000    shift       = 2000000;
+      	         period_acc  = 0;
+                  samples     = 0;
+      #1000000    shift       = 1000000;
+      	         period_acc  = 0;
+                  samples     = 0;
+      #1000000    
       $finish;
 	end
 
