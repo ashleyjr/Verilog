@@ -11,24 +11,26 @@ module fm_tx(
 	output   wire                    o_fm
 ); 
    parameter   p_hz_sz  = 1;
-   parameter   p_scale  = 2 ** p_hz_sz; 
 
+   reg   [p_hz_sz-1:0]     phase_acc;
    wire  [p_hz_sz-1:0]     add;
    wire  [(2*p_hz_sz)-1:0] freq,
                            scale;
 
-   reg   [p_hz_sz-1:0]     phase_acc;
-
-   assign freq    = i_base_hz + i_shift_hz;
-   assign scale   = freq * p_scale;
-   assign add     = scale / i_clk_hz;
    assign o_fm    = phase_acc[p_hz_sz-1];
+   assign freq    = i_base_hz + i_shift_hz;
+   assign scale   = freq << p_hz_sz;
+   
+   // Hardware divide too much ?
+   // Estimate with shifter
+   // assign add = scale / i_clk_hz;
+   assign add     = scale >> (p_hz_sz-1);
 
 	always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
 		   phase_acc   <= 'd0;
       end else begin
          phase_acc   <= phase_acc + add;  
-		end
-	end
+      end
+   end
 endmodule

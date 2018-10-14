@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 module fm_tx_tb;
 
-	parameter CLK_PERIOD = 5208;  // 192MHz
+	parameter CLK_PERIOD = 14814;  // 67.5MHz
 
 	reg	         clk;
 	reg	         nrst;
@@ -13,8 +13,8 @@ module fm_tx_tb;
    ) fm_tx(
 		.i_clk	   (clk           ),
 		.i_nrst	   (nrst          ),
-	   .i_clk_hz   (32'd192000000 ),
-      .i_base_hz  (32'd090000000 ),
+	   .i_clk_hz   (32'd67500000 ),
+      .i_base_hz  (32'd30000000 ),
       .i_shift_hz (shift         ),
       .o_fm       (fm            )
    );
@@ -72,13 +72,13 @@ module fm_tx_tb;
       #40         shift       = 1000000;
 		            period_acc  = 0;
                   samples     = 0;
-      #1000000    shift       = 2000000;
+      #4000000    shift       = 2000000;
       	         period_acc  = 0;
                   samples     = 0;
-      #1000000    shift       = 1000000;
+      #4000000    shift       = 1000000;
       	         period_acc  = 0;
                   samples     = 0;
-      #1000000    
+      #4000000    
       $finish;
 	end
 
