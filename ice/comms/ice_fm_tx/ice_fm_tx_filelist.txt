@@ -1,4 +1,5 @@
 ../../../ip/comms/fm/fm_tx/fm_tx.v
 ../../clock_tools/ice_pll/ice_pll.v
+../../../ip/generators/cordic/cordic.v
 ice_fm_tx.v
 ice_fm_tx_tb.v

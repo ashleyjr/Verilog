@@ -71,12 +71,16 @@ module cordic(
                                     20'h00001   ;	// 0.000030517578	 = arctan(2^-15)	= arctan(3.0517578125e-05)
                            
    always@(posedge i_clk or negedge i_nrst) begin
-		if(!i_nrst | !i_req) begin 
+		if(!i_nrst) begin 
          beta  <= 'd0;
          count <= 'd0;
          x     <= 'h0FFFF;
          y     <= 'd0;
+         o_ack <= 1'b0;
+         o_sin <= 'd0;
+         o_cos <= 'd0;
       end else begin 
+         o_ack <= 1'b0;
          if (count < 'h10) begin  
             count <= count + 'b1; 
             beta  <= new_beta; 
@@ -86,6 +90,15 @@ module cordic(
             o_sin <= (less | more) ? -sin : sin; 
             o_cos <= (less | more) ? -cos : cos;
             o_ack <= 1'b1;
+            if(!i_req) begin
+               beta  <= 'd0;
+               count <= 'd0;
+               x     <= 'h0FFFF;
+               y     <= 'd0;
+               o_ack <= 1'b0;
+               o_sin <= 'd0;
+               o_cos <= 'd0;
+            end
          end
       end
 	end
