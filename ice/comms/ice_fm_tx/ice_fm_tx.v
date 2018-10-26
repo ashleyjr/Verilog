@@ -5,14 +5,12 @@ module ice_fm_tx(
 	output   wire  o_fm
 );
    wire clk;
- 
-   reg   signed   [19:0]      theta;
-   reg   signed   [19:0]      theta_d;
-   wire                       ack;
-   wire  signed   [19:0]      sin;
-   wire  signed   [19:0]      sin_shift;
-   reg            [27-1:0]    shift;
-
+    
+   reg            [10-0:0]    count;
+   reg            [6-1:0]     theta;
+   wire           [10-1:0]    sin;
+   reg            [10-1:0]    sin_d;
+   
    // PLL out is 67.5 MHz
    ice_pll #(
       .p_divr     (4'd0          ),
@@ -26,37 +24,40 @@ module ice_fm_tx(
       .o_clk      (clk           ),
       .o_lock     (              )	
 	);
-
-   assign sin_shift = 20'd70000 + sin;    
-      
-
+   
    always@(posedge clk or negedge i_nrst) begin
       if(!i_nrst) begin
-         theta    <= -20'd205887;
-         theta_d  <= 'd0;
-         shift    <= 'd0;
+         count    <= 10'd0;
+         theta    <= 6'd0;
       end else begin
-         if(theta == 20'd205887) 
-            theta <= -20'd205887;
-         else
-            theta <= theta + 'd1;
-         if(ack) begin  
-            theta_d  <= theta[19:0];
-            shift    <= sin_shift[19:0];
-         end
+         if(count == 'd1000) begin
+            count <= 'd0;
+            if(theta == 'd63) begin
+               theta <= 'd0;
+            end else begin
+               theta <= theta + 'd1;
+            end
+         end else begin
+            count <= count + 'd1;
+         end   
       end
    end
 
-   cordic cordic  (
-      .i_clk      (i_clk         ),
-      .i_nrst     (i_nrst        ),
-      .i_theta    (theta_d       ),
-      .i_req      (!ack          ),
-      .o_sin      (sin           ),
-      .o_cos      (              ),    // Unused
-      .o_ack      (ack           )
+   sin_lut sin_lut (
+      .i_theta    (theta         ),
+      .o_sin      (sin           )
    );
 
+   always@(posedge clk or negedge i_nrst) begin
+      if(!i_nrst) begin
+         sin_d <= 10'd0; 
+      end else begin
+         sin_d <= sin;
+      end
+   end
+
+
+   
    fm_tx #(
       .p_hz_sz    (27            )
    )fm_tx(
@@ -64,7 +65,7 @@ module ice_fm_tx(
       .i_nrst     (i_nrst        ),
       .i_clk_hz   (27'd67500000  ),
       .i_base_hz  (27'd30000000  ),
-      .i_shift_hz ({1'b0,shift[27-2:0]}         ),
+      .i_shift_hz ({{17{1'b0}},sin_d}),
       .o_fm       (o_fm          )
    );
 

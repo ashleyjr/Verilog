@@ -64,7 +64,7 @@ module ice_fm_tx_tb;
       #17         nrst        = 1;
 		            period_acc  = 0;
                   samples     = 0;
-      repeat(80) begin
+      repeat(20) begin
          #100000  period_acc  = 0;
                   samples     = 0;
       end
