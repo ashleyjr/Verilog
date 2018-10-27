@@ -1,0 +1,3 @@
+../ice_ram_DxWb/ice_ram_DxWb.v
+ice_ram_2048x8b.v
+ice_ram_2048x8b_tb.v
