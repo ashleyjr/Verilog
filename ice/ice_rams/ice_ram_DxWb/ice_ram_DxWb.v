@@ -65,7 +65,7 @@ module ice_ram_DxWb (
          // Width 16
          if (pMODE == 32'sd0) begin
             assign o_rdata = s_rdata;      
-            assign s_wdata = wdata1;         ;
+            assign s_wdata = wdata1; 
          end
          // Width 8
          else if (pMODE == 32'sd1) begin

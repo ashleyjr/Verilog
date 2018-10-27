@@ -1,0 +1,6 @@
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+../ice_ram_2048x16b/ice_ram_2048x16b.v
+../ice_ram_DxWb/ice_ram_DxWb.v
+ice_ram_uart_test.v
+ice_ram_uart_test_tb.v
