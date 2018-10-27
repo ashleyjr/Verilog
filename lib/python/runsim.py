@@ -157,8 +157,8 @@ def main():
         f=open(syn_info)
         report = f.read()
         f.close()
-        report = report.split('4.27. ')[-1].split('4.28')[0]
-        for l in report.split('\n'):
+        report = report.split('Printing statistics')[-1].split('.28')[0]
+        for l in report.split('\n')[1:-1]:
             print "    Info: "+l
             if "Number of cells:                  0" in l:
                 print "   Error: Synthesis failed"
