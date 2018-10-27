@@ -40,18 +40,22 @@ module uart_autobaud(
                TX_BUSY  = 4'hB;
 
    // Internal Regs
-   reg [3:0]      state_rx;
-   reg [31:0]     count_rx;
+   reg   [3:0]    state_rx;
+   reg   [31:0]   count_rx;
 
-   reg [3:0]      state_tx;
-   reg [31:0]     count_tx;
-   reg [7:0]      shift_tx;
+   reg   [3:0]    state_tx;
+   reg   [31:0]   count_tx;
+   reg   [7:0]    shift_tx;
  
    reg            delay_1;
    reg            delay_2;
-   reg [31:0]     timer;
-   reg [31:0]     baud;
-      
+   reg   [31:0]   timer;
+   reg   [31:0]   baud;
+
+   wire  [31:0]   timer_next;
+
+   assign timer_next = timer + 'd1;
+
    always @(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
 
@@ -76,19 +80,18 @@ module uart_autobaud(
 
       end else begin
          // Default to count
-         count_rx <= count_rx + 1'b1;
-         count_tx <= count_tx + 1'b1;
+         count_rx <= count_rx + 'd1;
+         count_tx <= count_tx + 'd1;
 
-         
          // Autobaud 
          delay_1     <= i_rx;
          delay_2     <= delay_1;
-         if( (delay_2 == delay_1) && (timer != 32'hFFFFFFFF)) begin
-            timer    <= timer + 1'b1; 
+         if( (delay_2 == delay_1) && (timer_next != 'd0)) begin
+            timer    <= timer_next; 
          end else begin
             timer    <= 32'b0;
-            if((timer < baud) && (timer > 32'd1)) begin
-               baud <= timer;
+            if((timer < baud) && (timer[31:1] != 'd0)) begin
+               baud     <= timer;
                count_rx <= 1'b0;
                count_tx <= 1'b0;
             end 
