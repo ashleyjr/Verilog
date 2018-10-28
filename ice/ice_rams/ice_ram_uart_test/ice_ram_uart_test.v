@@ -60,35 +60,46 @@ module ice_ram_uart_test(
       
 
    // Reading
-   parameter      SM_RD_IDLE  = 1'b0,
-                  SM_RD_SEND  = 1'b1;
-   reg            rd_state;
+   parameter      SM_RD_IDLE     = 2'h0,
+                  SM_RD_GET      = 2'h1,
+                  SM_RD_SEND     = 2'h2,
+                  SM_RD_SENDING  = 2'h3;
+   reg   [1:0]    rd_state;
    reg   [11:0]   rd_ptr;
-   reg            re;
+   wire  [11:0]   rd_ptr_next; 
 
-   assign data_tx = (rd_ptr[0]) ? rdata[7:0] : rdata[15:8];
+   assign data_tx = (rd_ptr[0]) ? rdata[15:8] : rdata[7:0];
+
+   assign rd_ptr_next = rd_ptr + 'd1;
 
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
-         rd_ptr   <= 'd0;
-         rd_state <= SM_RD_IDLE;
-         transmit <= 'd0;
-      end else begin 
+         rd_ptr         <= 'd0;
+         rd_state       <= SM_RD_IDLE;
+         transmit       <= 1'b0;
+      end else begin  
          case(rd_state) 
-            SM_RD_IDLE: if({recieved,data_rx[3:0]} == 5'h1F) begin
-                           rd_state <= SM_RD_SEND;
-                           re       <= 1'b1;
-                        end
-            SM_RD_SEND: begin
-                           if(!busy_tx) begin
-                              transmit <= 1'b1;
-                              rd_ptr   <= rd_ptr + 'd1; 
-                              if(rd_ptr == 12'hFFF) begin
-                                 transmit <= 1'b0;
-                                 rd_state <= SM_RD_IDLE; 
-                              end 
+            SM_RD_IDLE:    if({recieved,data_rx[3:0]} == 5'h1F) begin
+                              rd_state <= SM_RD_GET; 
                            end 
-                        end
+            SM_RD_GET:     begin
+                              transmit <= 1'b1;                
+                              rd_state <= SM_RD_SEND;
+                           end
+            
+            SM_RD_SEND:    begin
+                              transmit <= 1'b0;
+                              rd_state <= SM_RD_SENDING;
+                           end
+            SM_RD_SENDING: begin
+                              if(!busy_tx) begin
+                                 rd_ptr <= rd_ptr_next;
+                                 if(rd_ptr_next == 'd0) 
+                                    rd_state <= SM_RD_IDLE;
+                                 else
+                                    rd_state <= SM_RD_GET;
+                              end     
+                           end 
          endcase
       end
    end

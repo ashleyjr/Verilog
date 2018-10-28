@@ -72,13 +72,14 @@ module ice_ram_uart_test_tb;
       #5000    uart_send({4'hx, 4'h0});
 
       // Write address to data
-      {a,b,c,d} = 'd0;
+      //{a,b,c,d} = 'd0;
       repeat(2048) begin
+      {a,b,c,d} = $urandom;
       #100    uart_send({d, 4'h1});
       #100    uart_send({c, 4'h1});
       #100    uart_send({b, 4'h1});
       #100    uart_send({a, 4'h1});
-      {a,b,c,d} = {a,b,c,d} + 'd1;
+      //{a,b,c,d} = {a,b,c,d} + 'd1;
       end
       
       // Dump the memory
