@@ -49,10 +49,10 @@ module uart_autobaud(
  
    reg            delay_1;
    reg            delay_2;
-   reg   [31:0]   timer;
+   reg   [23:0]   timer;
    reg   [31:0]   baud;
 
-   wire  [31:0]   timer_next;
+   wire  [23:0]   timer_next;
 
    assign timer_next = timer + 'd1;
 

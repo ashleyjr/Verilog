@@ -1,6 +1,8 @@
 ../../../ip/comms/fm/fm_tx/fm_tx.v
 ../../clock_tools/ice_pll/ice_pll.v
-../../../ip/generators/cordic/cordic.v
-../../../ip/generators/sin_lut/sin_lut.v
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+../../ice_rams/ice_ram_2048x16b/ice_ram_2048x16b.v
+../../ice_rams/ice_ram_DxWb/ice_ram_DxWb.v
 ice_fm_tx.v
 ice_fm_tx_tb.v

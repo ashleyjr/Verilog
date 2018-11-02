@@ -14,6 +14,7 @@ def cmd_print(cmd):
 
 def main():
     parser = OptionParser(usage="runsim.py [-m module] [-s do a sim] [-w view waves]" )
+    parser.add_option("-d", "--deploy", action="store_true", dest="deploy")
     parser.add_option("-i", "--ice", action="store_true", dest="ice", help="translate and deploy to icestick")
     parser.add_option("-j", "--jice", action="store_true", dest="jice", help="translate to icestrick, no deplot")
     parser.add_option("-l", "--line", dest="lines", help="Number of lines of the log to print at runtime")
@@ -40,6 +41,8 @@ def main():
     if(options.ice != None):
         no_op = False
     if(options.jice != None):
+        no_op = False
+    if(options.deploy != None):
         no_op = False
     if(options.sim != None):
         no_op = False
@@ -129,7 +132,7 @@ def main():
         os.chdir(sim)
         cmd_print("arachne-pnr -d 1k -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc")
 
-    if(options.ice or options.jice):
+    if(options.deploy or options.ice or options.jice):
         os.chdir(sim)
         base        = sim.split('/')[-1]
         filelist    = base + "_filelist.txt"
@@ -143,37 +146,38 @@ def main():
         pack        = base + "_pack.txt"
         time        = base + ".time"
 
-        f = open(filelist,"r")
-        files = f.read()
-        f.close()
-        files = files.replace("\n"," ")
-        # Remove testbench
-        files = files.replace(base + "_tb.v","")
+        if(options.ice or options.jice):
+            f = open(filelist,"r")
+            files = f.read()
+            f.close()
+            files = files.replace("\n"," ")
+            # Remove testbench
+            files = files.replace(base + "_tb.v","")
 
-        print "    Info: Synth"
-        cmd_print("rm -f "+syn_info)
-        cmd_print("yosys -p 'synth_ice40 -top " + base + " -blif " + blif +"' " + files + " > " + syn_info)
-        print "    Info: Usage..."
-        f=open(syn_info)
-        report = f.read()
-        f.close()
-        report = report.split('Printing statistics')[-1].split('.28')[0]
-        for l in report.split('\n')[1:-1]:
-            print "    Info: "+l
-            if "Number of cells:                  0" in l:
-                print "   Error: Synthesis failed"
-                sys.exit()
-        cmd_print("rm -f "+blif_txt)
-        cmd_print("yosys -o " + syn + " " + blif + " > " + blif_txt)
-        print "    Info: Place and route"
-        cmd_print("arachne-pnr -d 1k -q -p "+ pcf +" "+ blif +" -o "+ asc )
-        print "    Info: Timing info"
-        cmd_print("rm -f "+time)
-        cmd_print("icetime -tmd hx1k "+asc+" > "+time)
-        print "    Info: Translate"
-        cmd_print("rm -f "+pack)
-        cmd_print("(icepack "+ asc +" "+ binn +") > " + pack )
-        if (options.ice):
+            print "    Info: Synth"
+            cmd_print("rm -f "+syn_info)
+            cmd_print("yosys -p 'synth_ice40 -top " + base + " -blif " + blif +"' " + files + " > " + syn_info)
+            print "    Info: Usage..."
+            f=open(syn_info)
+            report = f.read()
+            f.close()
+            report = report.split('Printing statistics')[-1].split('.28')[0]
+            for l in report.split('\n')[1:-1]:
+                print "    Info: "+l
+                if "Number of cells:                  0" in l:
+                    print "   Error: Synthesis failed"
+                    sys.exit()
+            cmd_print("rm -f "+blif_txt)
+            cmd_print("yosys -o " + syn + " " + blif + " > " + blif_txt)
+            print "    Info: Place and route"
+            cmd_print("arachne-pnr -d 1k -q -p "+ pcf +" "+ blif +" -o "+ asc )
+            print "    Info: Timing info"
+            cmd_print("rm -f "+time)
+            cmd_print("icetime -tmd hx1k "+asc+" > "+time)
+            print "    Info: Translate"
+            cmd_print("rm -f "+pack)
+            cmd_print("(icepack "+ asc +" "+ binn +") > " + pack )
+        if (options.ice or options.deploy):
             print "    Info: Deploy to icestick"
             cmd_print("sudo iceprog "+ binn)
 

@@ -8,7 +8,8 @@ module fm_tx(
    input    wire  [p_hz_sz-1:0]     i_clk_hz,
    input    wire  [p_hz_sz-1:0]     i_base_hz,
    input    wire  [p_hz_sz-1:0]     i_shift_hz,
-	output   wire                    o_fm
+	input    wire                    i_set,
+   output   wire                    o_fm
 ); 
    parameter   p_hz_sz  = 1;
 
@@ -30,7 +31,10 @@ module fm_tx(
 		if(!i_nrst) begin
 		   phase_acc   <= 'd0;
       end else begin
-         phase_acc   <= phase_acc + add;  
+         if(i_set)
+            phase_acc   <= 'd0;
+         else
+            phase_acc   <= phase_acc + add;  
       end
    end
 endmodule
