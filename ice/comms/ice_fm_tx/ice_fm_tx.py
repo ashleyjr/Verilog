@@ -12,7 +12,7 @@ class ice_ram_uart_test:
 
     def __init__(self):
         self.ser = serial.Serial(
-            port='/dev/ttyUSB7',
+            port='/dev/ttyUSB11',
             baudrate=self.BAUDRATE,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
@@ -102,12 +102,49 @@ def read(length=2048):
         print data
     print "...done"
 
+def uart_cmd_data(cmd, data):
+    uart.tx((data << 4) | cmd)
+
+def write_mem(addr, data):
+    # Write data
+    uart_cmd_data(0, (data & 0xF))
+    uart_cmd_data(1, ((data >> 4) & 0xF))
+    uart_cmd_data(2, ((data >> 8) & 0xF))
+    uart_cmd_data(3, ((data >> 12) & 0xF))
+    # Write address
+    uart_cmd_data(4, (addr & 0xF))
+    uart_cmd_data(5, ((addr >> 4) & 0xF))
+    uart_cmd_data(6, ((addr >> 8) & 0x7))
+    # Do a write
+    uart_cmd_data(8, 0)
+
+def read_mem(addr):
+    # Write address
+    uart_cmd_data(4, (addr & 0xF))
+    uart_cmd_data(5, ((addr >> 4) & 0xF))
+    uart_cmd_data(6, ((addr >> 8) & 0x7))
+    # Do a read
+    uart_cmd_data(7, 0)
+    #
+    uart_cmd_data(0xE,0)
+    d = uart.rx()
+    uart_cmd_data(0xF,0)
+    d = d | (uart.rx() << 8)
+    return d
+
+
 
 sync()
-sample(0xFF)
-write_sine(17)
-read(19)
-read(19)
+for i in range(2048):
+    write_mem(i, i)
+
+for i in range(100):
+    a = random.randint(0, 2048)
+    if read_mem(a) != a:
+        print "Fail"
+    print a
+
+
 uart.finish()
 
 

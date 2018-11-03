@@ -2,6 +2,7 @@
 ../../clock_tools/ice_pll/ice_pll.v
 ../../../ip/comms/uart_autobaud/uart_autobaud.v
 ../../../ip/resync_tools/resync_3/resync_3.v
+../../../ip/arbitration/arb_in_2_rr/arb_in_2_rr.v
 ../../ice_rams/ice_ram_2048x16b/ice_ram_2048x16b.v
 ../../ice_rams/ice_ram_DxWb/ice_ram_DxWb.v
 ice_fm_tx.v

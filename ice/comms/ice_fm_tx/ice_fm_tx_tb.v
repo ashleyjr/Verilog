@@ -59,51 +59,35 @@ module ice_fm_tx_tb;
       #100		nrst = 0;
 		#100		nrst = 1;
    
-      // Sync
+      //// Sync
       #5000    uart_send(8'hAA);
       #5000    uart_send(8'h55);
 
-      // Test unused
-      repeat(5) begin 	
-      #5000    uart_send({4'hx, 4'h5});
-      #5000    uart_send({4'hx, 4'h6});
-      #5000    uart_send({4'hx, 4'h7});
-      #5000    uart_send({4'hx, 4'h8});
-      #5000    uart_send({4'hx, 4'h9});
-      #5000    uart_send({4'hx, 4'hA});
-      #5000    uart_send({4'hx, 4'hB});
-      #5000    uart_send({4'hx, 4'hC});
-      #5000    uart_send({4'hx, 4'hD});
-      #5000    uart_send({4'hx, 4'hE});
-      end
 
-      // Set sample 
-      #5000    uart_send({4'hF, 4'h3});
-      #5000    uart_send({4'hF, 4'h2});
+      // Write data
+      #5000    uart_send(8'hA0);
+      #5000    uart_send(8'hA1);
+      #5000    uart_send(8'hA2);
+      #5000    uart_send(8'hA3);
+     
+      // Write address
+      #5000    uart_send(8'h14);
+      #5000    uart_send(8'h15);
+      #5000    uart_send(8'h16); 
+    
+      //// Do a write
+      #5000    uart_send(8'h08);
 
-      // Reset ptr
-      #5000    uart_send(8'h00);
+      //// Do a read
+      #5000    uart_send(8'h07);
 
-      // Write address to data
-      //{a,b,c,d} = 'd0;
-      repeat(12) begin
-      {a,b,c,d} = 16'h8000;
-      #5000    uart_send({d, 4'h1});
-      #5000    uart_send({c, 4'h1});
-      #5000    uart_send({b, 4'h1});
-      #5000    uart_send({a, 4'h1}); 
-      end
-      repeat(4) begin
-      #5000    uart_send({4'h0, 4'h1});
-      end
-      // Set the phase acc
-      #5000    uart_send({4'h0, 4'h4});
-      // Dump the memory
-      #5000    uart_send({4'hx, 4'hF});
-      #2000000
-		// Dump the memory
-      #5000    uart_send({4'hx, 4'hF});
-      #2000000
+      //// Upload
+      #5000    uart_send(8'h0E);
+      #5000    uart_send(8'h0F);
+
+
+
+      #5000 
 
       $finish;
 	end

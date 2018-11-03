@@ -13,26 +13,34 @@ module arb_in_2_rr(
    output   [p_width-1:0]  o_data
 );
 
-   parameter p_width = 1;
+   parameter p_width = 1; 
+   
+   reg   service;
+   reg   rr;
+   wire  contest;
+   
 
-   // The winner of the contest will be the loser next time 
-   wire     contest,
-            winner;
-   reg      rr;
-
-   assign contest    = i_req0 & i_req1;
-   assign winner     = (contest) ? rr : i_req1; 
-   assign o_data     = (winner) ? i_data1 : i_data0;  
-   assign o_req      = i_req0 | i_req1;
-   assign o_acc0     = ~winner & i_acc;
-   assign o_acc1     = winner & i_acc;
-   	
+   assign o_req   = i_req0 | i_req1;
+   assign o_acc0  = i_acc & ~rr;
+   assign o_acc1  = i_acc & rr;
+   
+   assign contest = i_req0 & i_req1;
+   assign o_data  =  (contest & service)  ? i_data1   :
+                     (contest & ~service) ? i_data0   :
+                     (i_req0)             ? i_data0   :
+                                            i_data1   ;
+  
    always@(posedge i_clk or negedge i_nrst) begin
-		if(!i_nrst) begin
-         rr <= 1'b0; 
-		end else begin
-         if(i_acc)
-            rr <= ~winner;
-		end
+		if(!i_nrst) begin  
+         rr       <= 1'b0;
+		   service  <= 1'b0; 
+      end else begin
+         if(i_req0 & i_req1) begin
+            service  <= ~service;
+            rr       <= service;
+         end else begin
+            rr <= i_req1;
+         end
+      end
 	end
 endmodule
