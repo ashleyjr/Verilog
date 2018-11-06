@@ -51,7 +51,7 @@ module ice_fm_tx_tb;
       end
    endtask
 
-   reg   [3:0] a,b,c,d;
+   reg   [3:0] i;
 	
    initial begin
 					nrst = 1;
@@ -64,19 +64,25 @@ module ice_fm_tx_tb;
       #5000    uart_send(8'h55);
 
 
-      // Write data
-      #5000    uart_send(8'hA0);
-      #5000    uart_send(8'hA1);
-      #5000    uart_send(8'hA2);
-      #5000    uart_send(8'hA3);
-     
-      // Write address
-      #5000    uart_send(8'h14);
-      #5000    uart_send(8'h15);
-      #5000    uart_send(8'h16); 
-    
-      //// Do a write
-      #5000    uart_send(8'h08);
+      i = 0;
+      repeat(16) begin 
+         // Write data
+         #5000    uart_send(8'hA0);
+         #5000    uart_send((i << 4) | 1);
+         #5000    uart_send(8'h02);
+         if(i == 4'hF)
+            #5000    uart_send(8'h83); 
+         else
+            #5000    uart_send(8'h13); 
+         // Write address
+         #5000    uart_send((i << 4) | 4);
+         #5000    uart_send(8'h05);
+         #5000    uart_send(8'h06);  
+         //// Do a write
+         #5000    uart_send(8'h08);
+         
+         i = i + 1;
+      end
 
       //// Do a read
       #5000    uart_send(8'h07);
@@ -85,7 +91,14 @@ module ice_fm_tx_tb;
       #5000    uart_send(8'h0E);
       #5000    uart_send(8'h0F);
 
-
+      // Set sample
+      #5000    uart_send(8'hA9);
+      #5000    uart_send(8'h0A);
+      #5000    uart_send(8'h0B);
+      #5000    uart_send(8'h0C);
+     
+      // Set the fm tx
+      #5000    uart_send(8'h0D);
 
       #5000 
 

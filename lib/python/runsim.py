@@ -22,6 +22,7 @@ def main():
     parser.add_option("-n", "--new", dest="new", help="Creates new module with a given name")
     parser.add_option("-p", "--pnr", action="store_true", dest="pnr", help="place and route")
     parser.add_option("-s", "--sim", action="store_true", dest="sim")
+    parser.add_option("-t", "--time", action="store_true", dest="time")
     parser.add_option("-a", "--all",action="store_true", dest="all")
     parser.add_option("-w", "--waves", action="store_true", dest="waves")
     parser.add_option("-x", "--synth",action="store_true", dest="synth")
@@ -45,6 +46,8 @@ def main():
     if(options.deploy != None):
         no_op = False
     if(options.sim != None):
+        no_op = False
+    if(options.time != None):
         no_op = False
     if(options.waves != None):
         no_op = False
@@ -131,6 +134,11 @@ def main():
     if(options.pnr):
         os.chdir(sim)
         cmd_print("arachne-pnr -d 1k -p "+ str(sim) +".pcf "+ str(sim) +".blif -o "+ str(sim) +".asc")
+
+    if(options.time):
+        os.chdir(sim)
+        t = sim.split('/')[-1] + ".time"
+        cmd_print("cat "+t)
 
     if(options.deploy or options.ice or options.jice):
         os.chdir(sim)

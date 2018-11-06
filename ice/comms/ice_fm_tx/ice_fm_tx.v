@@ -25,29 +25,50 @@ module ice_fm_tx(
 	); 
    ///////////////////////////////////////////////////
    // FM TX   
-   //fm_tx #(
-   //   .p_hz_sz    (27            )
-   //)fm_tx(
-   //   .i_clk      (pll_clk       ),
-   //   .i_nrst     (i_nrst        ),
-   //   .i_clk_hz   (27'd67500000  ),
-   //   .i_base_hz  (27'd30000000  ),
-   //   .i_shift_hz ({{11{1'b0}},ram_rdata}),
-   //   .i_set      (set|set1|set2 ),
-   //   .o_fm       (o_fm          )
-   //);
+   reg   fm_tx_set;
+   fm_tx #(
+      .p_hz_sz    (27            )
+   )fm_tx(
+      .i_clk      (pll_clk       ),
+      .i_nrst     (i_nrst        ),
+      .i_clk_hz   (27'd67500000  ),
+      .i_base_hz  (27'd30000000  ),
+      .i_shift_hz ({{12{1'b0}},fm_ram_data}),
+      .i_set      (fm_tx_set     ),
+      .o_fm       (o_fm          )
+   );
    ///////////////////////////////////////////////////
    // FM RAM
+   reg   [15:0]   fm_ram_counter;
+   reg   [15:0]   fm_ram_counter_top; 
    reg            fm_ram_req;
    wire           fm_ram_acc;
    reg   [10:0]   fm_ram_addr;
-    
+   reg            fm_ram_stop;
+   reg   [14:0]   fm_ram_data; 
+   wire           fm_ram_sample;
+
+   assign fm_ram_sample = (fm_ram_counter >= fm_ram_counter_top) && (fm_ram_counter_top != 'd0); 
+   
    always@(posedge pll_clk or negedge i_nrst) begin 
       if(!i_nrst) begin
-         fm_ram_addr <= 'd0;     
-         fm_ram_req  <= 1'b0;
+         fm_ram_counter    <= 'd0; 
+         fm_ram_addr       <= 'd0;
+         fm_ram_data       <= 'd0;
+         fm_ram_req        <= 1'b0;
       end else begin  
-            fm_ram_addr <= fm_ram_addr + 'd1;
+         if(fm_ram_acc)
+            {fm_ram_stop,fm_ram_data}  <= ram_rdata;
+         if(fm_ram_sample) begin
+            if(fm_ram_stop) begin
+               fm_ram_addr <= 'd0;
+            end else begin
+               fm_ram_addr <= fm_ram_addr + 'd1;
+            end
+            fm_ram_counter <= 'd0;
+         end else begin
+            fm_ram_counter <= fm_ram_counter + 'd1;
+         end 
       
       end
    end
@@ -111,9 +132,11 @@ module ice_fm_tx(
          uart_transmit           <= 1'b0;
          uart_ram_write_req      <= 1'b0;
          uart_ram_read_req_latch <= 1'b0;
+         fm_tx_set               <= 1'b0;
       end else begin 
-         uart_ram_write_req   <= 1'b0;
-         uart_transmit        <= 1'b0;
+         uart_ram_write_req      <= 1'b0;
+         uart_transmit           <= 1'b0;
+         fm_tx_set               <= 1'b0;
          if(uart_recieved)
             case(uart_data_rx[3:0])
                4'h0: uart_ram_data[3:0]         <= uart_data_rx[7:4]; 
@@ -124,7 +147,12 @@ module ice_fm_tx(
                4'h5: uart_ram_addr[7:4]         <= uart_data_rx[7:4];
                4'h6: uart_ram_addr[10:8]        <= uart_data_rx[7:4];
                4'h7: uart_ram_read_req_latch    <= 1'b1;  
-               4'h8: uart_ram_write_req         <= 1'b1;
+               4'h8: uart_ram_write_req         <= 1'b1; 
+               4'h9: fm_ram_counter_top[3:0]    <= uart_data_rx[7:4]; 
+               4'hA: fm_ram_counter_top[7:4]    <= uart_data_rx[7:4];
+               4'hB: fm_ram_counter_top[11:8]   <= uart_data_rx[7:4];
+               4'hC: fm_ram_counter_top[15:12]  <= uart_data_rx[7:4];
+               4'hD: fm_tx_set                  <= 1'b1;
                4'hE: begin
                         uart_data_tx            <= uart_ram_data[7:0];
                         uart_transmit           <= 1'b1;

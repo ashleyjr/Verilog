@@ -12,7 +12,7 @@ class ice_ram_uart_test:
 
     def __init__(self):
         self.ser = serial.Serial(
-            port='/dev/ttyUSB11',
+            port='/dev/ttyUSB13',
             baudrate=self.BAUDRATE,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
@@ -61,10 +61,19 @@ def sync():
         time.sleep(0.1)
     print "...done"
 
+def fm_tx_set():
+    uart.tx(0xD)
+
 def sample(rate):
     print "Set sample..."
-    uart.tx(((0xF & rate) << 4)| 3)
-    uart.tx((0xF0 & rate)| 2)
+    a = (0xF000 & rate) >> 12
+    b = (0xF00 & rate) >> 8
+    c = (0xF0 & rate) >> 4
+    d = (0xF & rate)
+    uart.tx((a << 4) | 0xC)
+    uart.tx((b << 4) | 0xB)
+    uart.tx((c << 4) | 0xA)
+    uart.tx((d << 4) | 0x9)
     print "...done"
 
 def write_sine(length=2047):
@@ -72,24 +81,15 @@ def write_sine(length=2047):
     s = []
     for i in range(length):
         t = (i*2*3.1415)/length
-        f = 1 + np.sin(t)
-        s .append(int(np.floor((2 ** 16)*(f/2))))
-    for i in range(length):
-        print hex(s[i])
-        if s[i] == 0:
-            uart.tx(((1 << 4) | 1))
-            uart.tx(((0 << 4) | 1))
-            uart.tx(((0 << 4) | 1))
-            uart.tx(((0 << 4) | 1))
-        else:
-            uart.tx((((s[i] & 0xF) << 4) | 1))
-            uart.tx(((((s[i] >> 4) & 0xF) << 4) | 1))
-            uart.tx(((((s[i] >> 8) & 0xF) << 4) | 1))
-            uart.tx(((((s[i] >> 12) & 0xF) << 4) | 1))
-    uart.tx(1)
-    uart.tx(1)
-    uart.tx(1)
-    uart.tx(1)
+        o = np.sin(t)
+        f = o + 1
+        s = int(np.floor(((2 ** 15)-1)*(f/2)))
+        print '{:03x}'.format(i) + " = " +'{:016b}'.format(s),
+        print " (%.4f = sin(%.4f))" % (o, t),
+        print " (int = " + str(s) + ")"
+        if(i == length-1):
+            s |= 0x8000
+        write_mem(i, s)
     print "...done"
 
 def read(length=2048):
@@ -134,15 +134,28 @@ def read_mem(addr):
 
 
 
-sync()
-for i in range(2048):
-    write_mem(i, i)
 
-for i in range(100):
-    a = random.randint(0, 2048)
-    if read_mem(a) != a:
-        print "Fail"
-    print a
+sync()
+
+write_sine(675)
+#print "Readback..."
+#for i in range(675):
+#    print read_mem(i)
+#print "...done"
+
+samples = [ 440,
+            494,
+            523,
+            587,
+            659,
+            698,
+            784,
+            880]
+
+while(1):
+    for s in samples:
+        sample(100000/s)
+        time.sleep(0.5)
 
 
 uart.finish()
