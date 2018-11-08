@@ -1,0 +1,1 @@
+exec sudo python lib/python/ice_fm_tx.py "$@"
