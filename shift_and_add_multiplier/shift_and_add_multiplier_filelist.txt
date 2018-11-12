@@ -1,2 +1,0 @@
-shift_and_add_multiplier.v
-shift_and_add_multiplier_tb.v

@@ -9,7 +9,7 @@
 
 `timescale 1ns/1ps
 
-module shift_and_add_multiplier(
+module sequential_multiplier(
 	input				                     i_clk,
 	input				                     i_nrst,
 	input		      [DATA_WIDTH_A-1:0]   i_a,

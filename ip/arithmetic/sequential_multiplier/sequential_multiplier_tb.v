@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module shift_and_add_multiplier_tb;
+module sequential_multiplier_tb;
 
 	parameter   CLK_PERIOD        = 20,
                DATA_WIDTH_A      = 64,
@@ -14,7 +14,7 @@ module shift_and_add_multiplier_tb;
    reg                           i_valid;
    wire                          o_accept;
 
-	shift_and_add_multiplier #(
+	sequential_multiplier #(
       .DATA_WIDTH_A  (DATA_WIDTH_A  ),
       .DATA_WIDTH_B  (DATA_WIDTH_B  )
    ) shift_and_add_multiplier(
@@ -35,8 +35,8 @@ module shift_and_add_multiplier_tb;
 	end
 
 	initial begin
-		$dumpfile("shift_and_add_multiplier.vcd");
-		$dumpvars(0,shift_and_add_multiplier_tb);
+		$dumpfile("sequential_multiplier.vcd");
+		$dumpvars(0,sequential_multiplier_tb);
 		$display("                  TIME");	
 	end
 
@@ -84,3 +84,4 @@ module shift_and_add_multiplier_tb;
 	end
 
 endmodule
+
