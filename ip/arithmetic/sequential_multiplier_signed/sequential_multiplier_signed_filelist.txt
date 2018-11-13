@@ -1,0 +1,3 @@
+../sequential_multiplier/sequential_multiplier.v
+sequential_multiplier_signed.v
+sequential_multiplier_signed_tb.v
