@@ -1,0 +1,6 @@
+../../../ip/arithmetic/sequential_multiplier/sequential_multiplier.v
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+../../clock_tools/ice_pll/ice_pll.v
+sequential_multiplier_test.v
+sequential_multiplier_test_tb.v
