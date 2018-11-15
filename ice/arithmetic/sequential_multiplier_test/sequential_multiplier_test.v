@@ -5,23 +5,7 @@ module sequential_multiplier_test(
 	input				i_rx,	
 	output	      o_tx
 );
-
-   wire pll_clk;
-
-   ///////////////////////////////////////////////////
-   // PLL out is 67.5 MHz
-   ice_pll #(
-      .p_divr     (4'd0          ),
-      .p_divf     (7'd44         ),
-      .p_divq     (3'd3          )
-   
-   )ice_pll(
-	   .i_clk	   (i_clk         ),
-	   .i_nrst	   (i_nrst        ),
-	   .i_bypass   (1'b0          ),
-      .o_clk      (pll_clk       ),
-      .o_lock     (              )	
-	); 
+ 
    ///////////////////////////////////////////////////
    // MUL
    parameter   DATA_IN_WIDTH  = 32;
@@ -37,7 +21,7 @@ module sequential_multiplier_test(
       .DATA_WIDTH_A  (DATA_IN_WIDTH ),
       .DATA_WIDTH_B  (DATA_IN_WIDTH )
    ) sequential_multiplier (
-      .i_clk         (pll_clk       ),
+      .i_clk         (i_clk         ),
       .i_nrst        (i_nrst        ),
       .i_a           (mul_a         ),
       .i_b           (mul_b         ),
@@ -55,7 +39,7 @@ module sequential_multiplier_test(
 
    assign mul_valid = (state == SM_MULTIPLY);
 
-	always@(posedge pll_clk or negedge i_nrst) begin
+	always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) begin
          uart_transmit  <= 1'b0; 
          c_data         <= 'd0;
@@ -89,14 +73,14 @@ module sequential_multiplier_test(
    reg         uart_transmit;
    wire        uart_recieved;
    resync_3 resync_3(
-      .i_clk         (pll_clk             ),
+      .i_clk         (i_clk               ),
       .i_nrst        (i_nrst              ),
       .i_rst_d       (1'b1                ),
       .i_d           (i_rx                ),
       .o_q           (uart_rx_sync        )
 	);
    uart_autobaud uart_autobaud(
-      .i_clk         (pll_clk             ),
+      .i_clk         (i_clk               ),
       .i_nrst        (i_nrst              ),
       .i_transmit    (uart_transmit       ),
       .i_data_tx     (c_data[8-1:0]       ),
