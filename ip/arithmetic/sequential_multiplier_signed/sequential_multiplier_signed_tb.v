@@ -76,8 +76,17 @@ module sequential_multiplier_signed_tb;
       #77   i_nrst   = 0;
       #77   i_nrst   = 1;
       #777
-
+      
+      request_multiply(0,0);
       repeat(100) begin
+         request_multiply($urandom,0);
+         request_multiply(0,$urandom);
+      end
+      repeat(100) begin
+         request_multiply($urandom,1);
+         request_multiply(1,$urandom);
+      end
+      repeat(1000) begin
          request_multiply($random+1, $random+1);
       end
 
