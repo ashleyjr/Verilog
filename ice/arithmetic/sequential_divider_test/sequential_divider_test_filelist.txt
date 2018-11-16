@@ -1,0 +1,5 @@
+../../../ip/arithmetic/sequential_divider/sequential_divider.v
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+sequential_divider_test.v
+sequential_divider_test_tb.v
