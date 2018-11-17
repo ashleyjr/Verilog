@@ -58,7 +58,24 @@ module sequential_divider_test_tb;
          end
       end
    endtask
-   
+  
+   task div;
+      input [31:0]   n;
+      input [31:0]   d;
+      begin
+         load(d,    0);   // d
+         load(n,   1);   // n
+         #5000
+         uart_send(8'h04);
+         #5000
+         repeat(8)
+            #5000
+            uart_send(8'h02);
+         repeat(8)
+            #5000
+            uart_send(8'h03);
+      end
+   endtask
 
    reg   [3:0] i;
 
@@ -73,17 +90,13 @@ module sequential_divider_test_tb;
       //// Sync
       repeat(10)
          #5000    uart_send(8'hAA); 
- 
-      repeat(5) begin
-         a = $urandom;
-         b = $urandom;
-         c = a * b;
-         load(a, 0);
-         load(b, 1);     
-         uart_send(8'h3);
-         repeat(8)
-            uart_send(8'h2);
-      end
+
+
+      div(100, 10);
+      div(77, 7);
+      div(78, 7);
+      div(77, 0);
+
       #5000 
       $finish;
 
