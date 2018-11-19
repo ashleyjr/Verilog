@@ -1,0 +1,3 @@
+../adder/adder.v
+sequential_alu.v
+sequential_alu_tb.v
