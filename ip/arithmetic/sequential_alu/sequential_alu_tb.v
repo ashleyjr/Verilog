@@ -218,7 +218,8 @@ module sequential_alu_tb;
       //div(1,1); 
       none();
       #50
-		$finish;
+		$display("PASS");
+      $finish;
 	end
 
 endmodule
