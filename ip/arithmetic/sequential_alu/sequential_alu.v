@@ -9,7 +9,7 @@ module sequential_alu(
    input    wire                             i_mul, 
    input    wire                             i_div, 
    output   reg   signed   [DATA_WIDTH-1:0]  o_q,   
-   output   wire                             o_ovf,
+   output   reg                              o_ovf,
    output   wire                             o_zero,
    output   reg                              o_accept 
 );
@@ -58,13 +58,24 @@ module sequential_alu(
          o_accept <= 1'b0;
          state    <= SM_IDLE;
       end else begin
-         o_accept <= 1'b0; 
+         o_accept <= 1'b0;
+         o_ovf    <= 1'b0;
          case(state)
             SM_IDLE:    case(1'b1)
-                           i_sub,
-                           i_add:   begin
+                           i_add:   begin     
                                        o_q      <= adder_q;
                                        o_accept <= 1'b1;
+                                       o_ovf    <= adder_ovf;
+                                    end
+                           i_sub:   begin
+                                       if((adder_b == i_b) && (i_b != 0)) begin
+                                          o_accept <= 1'b1;
+                                          o_ovf    <= 1'b1;
+                                       end else begin
+                                          o_q      <= adder_q;
+                                          o_accept <= 1'b1;
+                                          o_ovf    <= adder_ovf;
+                                       end
                                     end
                            i_mul,
                            i_div:   begin
@@ -80,12 +91,22 @@ module sequential_alu(
                                                       state <= SM_SIGN_B;
                                                    end
                                        endcase
+                                       if(adder_ovf) begin
+                                          o_accept <= 1'b1;
+                                          o_ovf    <= 1'b1;
+                                          state    <= SM_IDLE;
+                                       end
                                     end
                               
                         endcase
             SM_SIGN_B:  begin
                            b     <= adder_q;
                            state <= sm_mul_div_next;
+                           if(adder_ovf) begin
+                              o_accept <= 1'b1;
+                              o_ovf    <= 1'b1;
+                              state    <= SM_IDLE;
+                           end
                         end
             SM_SIGN_Q:  begin
                            o_q      <= adder_q;
@@ -95,16 +116,23 @@ module sequential_alu(
             SM_MUL:     begin
                            a <= a >> 1;
                            b <= b << 1;
-                           if(a[0])
-                              o_q   <= adder_q; 
-                           if(az) begin
-                              if(mul_neg) begin
-                                 state    <= SM_SIGN_Q;
-                              end else begin
-                                 o_accept <= 1'b1;
-                                 state    <= SM_IDLE;
+                           if(adder_ovf | b[DATA_WIDTH-1]) begin
+                              o_accept <= 1'b1;
+                              o_ovf    <= 1'b1;
+                              state    <= SM_IDLE;
+                           end else begin
+                              if(a[0])
+                                 o_q   <= adder_q; 
+                              if(az) begin
+                                 if(mul_neg) begin
+                                    state    <= SM_SIGN_Q;
+                                 end else begin
+                                    o_accept <= 1'b1;
+                                    state    <= SM_IDLE;
+                                 end
                               end
                            end
+                           
                         end
             SM_DIV_R:   begin
                            r     <= {r[DATA_WIDTH-2:0],a[0]};
@@ -135,6 +163,7 @@ module sequential_alu(
    wire  signed   [DATA_WIDTH-1:0]  adder_a;
    wire  signed   [DATA_WIDTH-1:0]  adder_b;
    wire  signed   [DATA_WIDTH-1:0]  adder_q; 
+   wire                             adder_ovf;
 
    assign adder_a =  (state == SM_SIGN_Q)             ?  ~o_q  :
                      (sm_idle_mul & a_top)            ?  ~i_a  : 
@@ -154,7 +183,7 @@ module sequential_alu(
       .i_a        (adder_a    ),
       .i_b        (adder_b    ),
       .o_q        (adder_q    ),
-      .o_ovf      (o_ovf      )
+      .o_ovf      (adder_ovf  )
    );
    
 endmodule

@@ -2,7 +2,7 @@
 module sequential_alu_tb;
 
 	parameter   CLK_PERIOD = 20;
-   parameter   DATA_WIDTH = 32;
+   parameter   DATA_WIDTH = 8;
 
    reg                     i_clk;
    reg                     i_nrst;
@@ -45,7 +45,7 @@ module sequential_alu_tb;
 			$dumpvars(0,sequential_alu_tb);	
 	end
 
-   reg signed [DATA_WIDTH:0]   test;
+   reg signed [(2*DATA_WIDTH):0]   test;
    reg signed [DATA_WIDTH:0]   top;
    reg signed [DATA_WIDTH:0]   bot;
 
@@ -93,7 +93,8 @@ module sequential_alu_tb;
                while(!o_accept)
                   @(negedge i_clk);    
                test = $signed(i_a) - $signed(i_b);
-               if((test > top) || (bot > test)) begin
+               if(   (test > top) || (bot > test) || 
+                     ((i_b == bot[DATA_WIDTH-1:0]) && (i_b != 0))) begin
                   if(!o_ovf) begin
                      $display("Sub overflow error"); 
                      #1
@@ -182,7 +183,7 @@ module sequential_alu_tb;
    integer sel;
 	initial begin
                top         = {(DATA_WIDTH-1){1'b1}}; 
-               bot         = -top;
+               bot         = -top-1;
                i_a         = 0;
                i_b         = 0;
                i_sub       = 0;
@@ -203,14 +204,19 @@ module sequential_alu_tb;
       mul(-7,7);
       mul(7,-7);
       mul(-7,-7);
-      sub(32'h80000000, 32'd00000001);
-      repeat(10) begin
-         sel = $urandom % 5;
+      mul(8'h10, 8'h10);
+      sub(8'h80, 8'd1);
+      repeat(1000) begin
+         sel = $urandom % 4;
          case(sel)
             0: add($urandom, $urandom);
             1: sub($urandom, $urandom);
-            2: mul($urandom, $urandom);
-            3: div($urandom, $urandom); 
+            2: mul($urandom, $urandom); 
+            3  : begin
+                  none();
+                  @(negedge i_clk);
+               end
+            5: div($urandom, $urandom); 
          endcase
       end
       
