@@ -124,7 +124,7 @@ module sequential_alu_tb;
                while(!o_accept)
                   @(negedge i_clk);    
                test = $signed(i_a) * $signed(i_b);
-               if((test > top) || (bot > test)) begin
+               if((test > top) || (bot > test) || (test == bot)) begin
                   if(!o_ovf) begin
                      $display("Mul overflow error");
                      #1
@@ -206,7 +206,7 @@ module sequential_alu_tb;
       mul(-7,-7);
       mul(8'h10, 8'h10);
       sub(8'h80, 8'd1);
-      repeat(1000) begin
+      repeat(100000) begin
          sel = $urandom % 4;
          case(sel)
             0: add($urandom, $urandom);
