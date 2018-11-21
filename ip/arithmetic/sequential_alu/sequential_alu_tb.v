@@ -2,7 +2,7 @@
 module sequential_alu_tb;
 
 	parameter   CLK_PERIOD = 20;
-   parameter   DATA_WIDTH = 8;
+   parameter   DATA_WIDTH = 4;
 
    reg                     i_clk;
    reg                     i_nrst;
@@ -206,16 +206,14 @@ module sequential_alu_tb;
       mul(7,7);
       mul(-7,7);
       mul(7,-7);
-      mul(-7,-7);
-      mul(8'h10, 8'h10);
-      sub(8'h80, 8'd1);
+      mul(-7,-7); 
       div(10,2); 
       div(10,10);  
       div(-10,10); 
       div(10,-10); 
       div(-10,-10); 
       none();
-      repeat(100000) begin
+      repeat(10000) begin
          sel = $urandom % 5;
          case(sel)
             0: add($urandom, $urandom);

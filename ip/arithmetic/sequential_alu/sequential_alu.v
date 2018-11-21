@@ -43,7 +43,12 @@ module sequential_alu(
    assign   mul_neg           = a_top ^ b_top; 
    assign   sm_mul            = (state == SM_MUL);
    assign   sm_idle           = (state == SM_IDLE);
+   assign   sm_sign_b         = (state == SM_SIGN_B);
+   assign   sm_sign_q         = (state == SM_SIGN_Q);
+   assign   sm_div_cnt        = (state == SM_DIV_CNT);
+   assign   sm_div_cmp        = (state == SM_DIV_CMP);
    assign   sm_idle_mul       = (sm_idle & i_mul);
+   assign   sm_idle_div       = (sm_idle & i_div);
    assign   sm_mul_div_next   = (i_mul)   ? SM_MUL : SM_DIV_R;
    assign   az                = (a[DATA_WIDTH-1:1] == 'd0);
    assign   o_zero            = i_div & (i_b == 'd0);
@@ -172,26 +177,26 @@ module sequential_alu(
    wire  signed   [DATA_WIDTH-1:0]  adder_q; 
    wire                             adder_ovf;
 
-   assign adder_a =  (state == SM_SIGN_B)             ? 'd1 :
-                     (state == SM_SIGN_Q)             ?  ~o_q  :
-                     (state == SM_DIV_CMP)             ?  r  :
-                     (sm_idle & i_div & a_top)        ?  ~i_a  : 
-                     (sm_idle & i_div & b_top)        ?  'd1  : 
-                     (state == SM_DIV_CNT)            ?  i   :
+   assign adder_a =  (sm_sign_b)             ? 'd1 :
+                     (sm_sign_q)             ?  ~o_q  :
+                     (sm_div_cmp)                     ?  r  :
+                     (sm_idle_div & a_top)            ?  ~i_a  : 
+                     (sm_idle_div & b_top)            ?  'd1  : 
+                     (sm_div_cnt)            ?  i   :
                      (sm_idle_mul & a_top)            ?  ~i_a  : 
                      (sm_idle_mul & b_top)            ?  'd1   :
                      (sm_idle)                        ?  i_a   :
                      (sm_mul)                         ?  o_q   :
                                                          'd1; 
    
-   assign adder_b =  (state == SM_SIGN_B)          ? ~i_b :
-                     (state == SM_DIV_CMP)             ?  -b  :
-                     (sm_idle & i_div & a_top)        ?  'd1   : 
-                     (sm_idle & i_div & b_top)        ?  ~i_b   :
-                     (state == SM_DIV_CNT)            ?  -'d1   :
+   assign adder_b =  (sm_sign_b)             ? ~i_b :
+                     (sm_div_cmp)                     ?  -b  :
+                     (sm_idle_div & a_top)            ?  'd1   : 
+                     (sm_idle_div & b_top)            ?  ~i_b   :
+                     (sm_div_cnt)            ?  -'d1   :
                      (i_add)                          ?  i_b   :
                      (i_sub)                          ?  -i_b  : 
-                     ((sm_idle_mul & a_top) || (state == SM_SIGN_Q) )            ?  'd1   :
+                     ((sm_idle_mul & a_top) || (sm_sign_q) )            ?  'd1   :
                      (sm_mul)                         ? b      :
                                                          ~i_b;
    adder #(
