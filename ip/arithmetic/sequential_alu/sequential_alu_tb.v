@@ -206,7 +206,7 @@ module sequential_alu_tb;
       mul(-7,-7);
       mul(8'h10, 8'h10);
       sub(8'h80, 8'd1);
-      repeat(100000) begin
+      repeat(10000) begin
          sel = $urandom % 4;
          case(sel)
             0: add($urandom, $urandom);
@@ -216,12 +216,11 @@ module sequential_alu_tb;
                   none();
                   @(negedge i_clk);
                end
-            5: div($urandom, $urandom); 
          endcase
-      end
-      
-      
-      //div(1,1); 
+      end 
+      div(10,2); 
+      div(10,10);  
+
       none();
       #50
 		$display("PASS");
