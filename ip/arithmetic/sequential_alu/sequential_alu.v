@@ -88,8 +88,7 @@ module sequential_alu(
                                        o_q   <= 'd0;
                                        a     <= i_a;
                                        b     <= i_b;
-                                       state <= sm_mul_div_next;
-                                       i     <= DATA_WIDTH-1;
+                                       state <= sm_mul_div_next; 
                                        case({a_top, b_top}) 
                                           2'b01:   b <= adder_q;
                                           2'b10:   a <= adder_q;    
@@ -142,18 +141,18 @@ module sequential_alu(
                            
                         end
             SM_DIV_R:   begin
-                           r     <= {r[DATA_WIDTH-2:0],a[i]}; 
+                           r     <= {r[DATA_WIDTH-2:0],a[DATA_WIDTH-1]}; 
+                           a     <= a << 1;
                            state <= SM_DIV_CMP;
                         end
             SM_DIV_CMP: begin
-                           if(n_adder_q_top) begin
-                              r        <= adder_q;
-                              o_q[i]   <= 1'b1;
-                           end
+                           if(n_adder_q_top) 
+                              r     <= adder_q; 
+                           o_q      <= {o_q[DATA_WIDTH-2:0], n_adder_q_top};
                            state    <= SM_DIV_CNT;
                         end 
-            SM_DIV_CNT: if(i == 'd0) begin
-                           i        <= 'd0; 
+            SM_DIV_CNT: if(i == DATA_WIDTH-1) begin 
+                           i <= 'd0;
                            if(mul_neg)
                               state    <= SM_SIGN_Q;
                            else begin
@@ -193,7 +192,7 @@ module sequential_alu(
                      (sm_div_cmp)                     ?  -b  :
                      (sm_idle_div & a_top)            ?  'd1   : 
                      (sm_idle_div & b_top)            ?  ~i_b   :
-                     (sm_div_cnt)            ?  -'d1   :
+                     (sm_div_cnt)            ?  'd1   :
                      (i_add)                          ?  i_b   :
                      (i_sub)                          ?  -i_b  : 
                      ((sm_idle_mul & a_top) || (sm_sign_q) )            ?  'd1   :
