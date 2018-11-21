@@ -154,7 +154,10 @@ module sequential_alu_tb;
                while(!o_accept)
                   @(negedge i_clk);    
                test = $signed(i_a) / $signed(i_b);
-               if((test > top) || (bot > test)) begin
+               if(   (test > top)                  || 
+                     (bot > test)                  || 
+                     (i_a == bot[DATA_WIDTH-1:0])  || 
+                     (i_b == bot[DATA_WIDTH-1:0])) begin
                   if(!o_ovf) begin
                      $display("Div overflow error"); 
                      #1
@@ -206,22 +209,25 @@ module sequential_alu_tb;
       mul(-7,-7);
       mul(8'h10, 8'h10);
       sub(8'h80, 8'd1);
-      repeat(10000) begin
-         sel = $urandom % 4;
+      div(10,2); 
+      div(10,10);  
+      div(-10,10); 
+      div(10,-10); 
+      div(-10,-10); 
+      none();
+      repeat(100000) begin
+         sel = $urandom % 5;
          case(sel)
             0: add($urandom, $urandom);
             1: sub($urandom, $urandom);
             2: mul($urandom, $urandom); 
-            3  : begin
+            3: div($urandom, $urandom); 
+            4  : begin
                   none();
                   @(negedge i_clk);
                end
          endcase
       end 
-      div(10,2); 
-      div(10,10);  
-
-      none();
       #50
 		$display("PASS");
       $finish;
