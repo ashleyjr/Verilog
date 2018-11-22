@@ -48,7 +48,11 @@ module sequential_alu(
    assign   sm_div_cnt        = (state == SM_DIV_CNT);
    assign   sm_div_cmp        = (state == SM_DIV_CMP);
    assign   sm_idle_mul       = (sm_idle & i_mul);
+   assign   sm_idle_mul_a     = (sm_idle_mul & a_top);
+   assign   sm_idle_mul_b     = (sm_idle_mul & b_top);
    assign   sm_idle_div       = (sm_idle & i_div);
+   assign   sm_idle_div_a     = (sm_idle_div & a_top);
+   assign   sm_idle_div_b     = (sm_idle_div & b_top);
    assign   sm_mul_div_next   = (i_mul)   ? SM_MUL : SM_DIV_R;
    assign   az                = (a[DATA_WIDTH-1:1] == 'd0);
    assign   o_zero            = i_div & (i_b == 'd0);
@@ -180,37 +184,36 @@ module sequential_alu(
    wire  signed   [DATA_WIDTH-1:0]  adder_q; 
    wire                             adder_ovf;
 
-   assign p_adder_a =  (sm_sign_b)             ? 'd1 :
-                     (sm_sign_q)             ?  o_q  :
-                     (sm_div_cmp)                     ?  r  :
-                     (sm_idle_div & a_top)            ?  ~i_a  : 
-                     (sm_idle_div & b_top)            ?  'd1  : 
-                     (sm_div_cnt)            ?  i   :
-                     (sm_idle_mul & a_top)            ?  ~i_a  : 
-                     (sm_idle_mul & b_top)            ?  'd1   :
-                     (sm_idle)                        ?  i_a   :
-                     (sm_mul)                         ?  o_q   :
-                                                         'd1; 
-   assign n_adder_a = ~p_adder_a; 
-
-   assign adder_a = (sm_sign_q) ?   n_adder_a :
-                                    p_adder_a;
-
-   assign p_adder_b =  (sm_sign_b)             ? i_b :
-                     (sm_div_cmp)                     ?  -b  :
-                     (sm_idle_div & a_top)            ?  'd1   : 
-                     (sm_idle_div & b_top)            ?  ~i_b   :
-                     (sm_div_cnt)            ?  'd1   :
-                     (i_add)                          ?  i_b   :
-                     (i_sub)                          ?  -i_b  : 
-                     ((sm_idle_mul & a_top) || (sm_sign_q) )            ?  'd1   :
-                     (sm_mul)                         ? b      :
-                                                         ~i_b;
-   
-                                                      
-   assign n_adder_b = ~p_adder_b;
-
-   assign adder_b = (sm_sign_b) ? n_adder_b : p_adder_b;
+   assign p_adder_a  =  (sm_sign_b        )  ? 'd1    :
+                        (sm_sign_q        )  ?  o_q   :
+                        (sm_div_cmp       )  ?  r     :
+                        (sm_idle_div_a    )  ?  i_a   : 
+                        (sm_idle_div_b    )  ?  'd1   : 
+                        (sm_div_cnt       )  ?  i     :
+                        (sm_idle_mul_a    )  ?  i_a   : 
+                        (sm_idle_mul_b    )  ?  'd1   :
+                        (sm_idle          )  ?  i_a   :
+                        (sm_mul           )  ?  o_q   :
+                                                'd1;  
+   assign p_adder_b  =  (  sm_sign_b      )  ? i_b    :
+                        (  sm_div_cmp     )  ?  -b    :
+                        (  sm_idle_div_a  | 
+                           sm_div_cnt     |
+                           sm_idle_mul_a  | 
+                           sm_sign_q      )  ?  'd1   : 
+                        (  sm_idle_div_b  )  ?  ~i_b  :
+                        (  i_add          )  ?  i_b   :
+                        (  i_sub          )  ?  -i_b  :  
+                        (  sm_mul         )  ?  b     :
+                                                ~i_b;
+   assign n_adder_a  = ~p_adder_a; 
+   assign n_adder_b  = ~p_adder_b;
+   assign adder_a    = (   sm_sign_q      | 
+                           sm_idle_div_a  |
+                           sm_idle_mul_a  ) ?   n_adder_a :
+                                                p_adder_a;
+   assign adder_b    = (sm_sign_b         ) ?   n_adder_b : 
+                                                p_adder_b;
 
    adder #(
       .DATA_WIDTH (DATA_WIDTH )
