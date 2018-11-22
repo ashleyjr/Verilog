@@ -212,6 +212,7 @@ module sequential_alu_tb;
       div(-10,10); 
       div(10,-10); 
       div(-10,-10); 
+      div(10,0);
       none();
       repeat(50000) begin
          sel = $urandom % 5;

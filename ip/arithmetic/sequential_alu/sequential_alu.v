@@ -10,7 +10,7 @@ module sequential_alu(
    input    wire                             i_div, 
    output   reg   signed   [DATA_WIDTH-1:0]  o_q,   
    output   reg                              o_ovf,
-   output   wire                             o_zero,
+   output   reg                              o_zero,
    output   reg                              o_accept 
 );
 
@@ -33,6 +33,7 @@ module sequential_alu(
    wire                             sm_mul;
    wire                             mul_neg;
    wire                             az;
+   wire                             zero;
    reg   [2:0]                      state;
    wire  [2:0]                      sm_mul_div_next;
 
@@ -55,7 +56,7 @@ module sequential_alu(
    assign   sm_idle_div_b     = (sm_idle_div & b_top);
    assign   sm_mul_div_next   = (i_mul)   ? SM_MUL : SM_DIV_R;
    assign   az                = (a[DATA_WIDTH-1:1] == 'd0);
-   assign   o_zero            = i_div & (i_b == 'd0);
+   assign   zero              = i_div & (i_b == 'd0);
 
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
@@ -69,6 +70,7 @@ module sequential_alu(
       end else begin
          o_accept <= 1'b0;
          o_ovf    <= 1'b0;
+         o_zero   <= 1'b0;
          case(state)
             SM_IDLE:    case(1'b1)
                            i_add:   begin     
@@ -101,11 +103,12 @@ module sequential_alu(
                                                       state <= SM_SIGN_B;
                                                    end
                                        endcase
-                                       if(adder_ovf) begin
+                                       if(adder_ovf | zero) begin
                                           o_accept <= 1'b1;
+                                          o_zero   <= 1'b1;
                                           o_ovf    <= 1'b1;
                                           state    <= SM_IDLE;
-                                       end
+                                       end 
                                     end
                               
                         endcase
