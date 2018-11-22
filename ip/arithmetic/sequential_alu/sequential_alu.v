@@ -184,25 +184,24 @@ module sequential_alu(
    wire  signed   [DATA_WIDTH-1:0]  adder_q; 
    wire                             adder_ovf;
 
-   assign p_adder_a  =  (sm_sign_b        )  ? 'd1    :
-                        (sm_sign_q        )  ?  o_q   :
-                        (sm_div_cmp       )  ?  r     :
-                        (sm_idle_div_a    )  ?  i_a   : 
-                        (sm_idle_div_b    )  ?  'd1   : 
-                        (sm_div_cnt       )  ?  i     :
-                        (sm_idle_mul_a    )  ?  i_a   : 
-                        (sm_idle_mul_b    )  ?  'd1   :
-                        (sm_idle          )  ?  i_a   :
-                        (sm_mul           )  ?  o_q   :
-                                                'd1;  
-   assign p_adder_b  =  (  sm_sign_b      )  ? i_b    :
+   assign p_adder_a  =  (  sm_sign_q      |
+                           sm_mul         )  ?  o_q   :
+                        (  sm_div_cmp     )  ?  r     : 
+                        (  sm_div_cnt     )  ?  i     :
+                        (  sm_idle_div_a  |
+                           sm_idle_mul_a  )  ?  i_a   : 
+                        (  sm_sign_b      |
+                           sm_idle_div_b  |
+                           sm_idle_mul_b  )  ?  'd1   :
+                                                i_a;  
+   assign p_adder_b  =  (  sm_sign_b      |
+                           i_add          )  ?  i_b   :
                         (  sm_div_cmp     )  ?  -b    :
                         (  sm_idle_div_a  | 
                            sm_div_cnt     |
                            sm_idle_mul_a  | 
                            sm_sign_q      )  ?  'd1   : 
-                        (  sm_idle_div_b  )  ?  ~i_b  :
-                        (  i_add          )  ?  i_b   :
+                        (  sm_idle_div_b  )  ?  ~i_b  : 
                         (  i_sub          )  ?  -i_b  :  
                         (  sm_mul         )  ?  b     :
                                                 ~i_b;
@@ -214,7 +213,6 @@ module sequential_alu(
                                                 p_adder_a;
    assign adder_b    = (sm_sign_b         ) ?   n_adder_b : 
                                                 p_adder_b;
-
    adder #(
       .DATA_WIDTH (DATA_WIDTH )
    ) adder (
