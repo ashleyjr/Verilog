@@ -178,36 +178,44 @@ module sequential_alu(
 
    /////////////////////////////////////////////////////////////////////////
    // Adder
-   wire  signed   [DATA_WIDTH-1:0]  p_adder_a;
+   reg   signed   [DATA_WIDTH-1:0]  p_adder_a;
    wire  signed   [DATA_WIDTH-1:0]  n_adder_a;
    wire  signed   [DATA_WIDTH-1:0]  adder_a;
-   wire  signed   [DATA_WIDTH-1:0]  p_adder_b;
+   reg   signed   [DATA_WIDTH-1:0]  p_adder_b;
    wire  signed   [DATA_WIDTH-1:0]  n_adder_b;
    wire  signed   [DATA_WIDTH-1:0]  adder_b;
    wire  signed   [DATA_WIDTH-1:0]  adder_q; 
    wire                             adder_ovf;
 
-   assign p_adder_a  =  (  sm_sign_q      |
-                           sm_mul         )  ?  o_q   :
-                        (  sm_div_cmp     )  ?  r     : 
-                        (  sm_div_cnt     )  ?  i     :
-                        (  sm_idle_div_a  |
-                           sm_idle_mul_a  )  ?  i_a   : 
-                        (  sm_sign_b      |
-                           sm_idle_div_b  |
-                           sm_idle_mul_b  )  ?  'd1   :
-                                                i_a;  
-   assign p_adder_b  =  (  sm_sign_b      |
-                           i_add          )  ?  i_b   :
-                        (  sm_div_cmp     )  ?  -b    :
-                        (  sm_idle_div_a  | 
-                           sm_div_cnt     |
-                           sm_idle_mul_a  | 
-                           sm_sign_q      )  ?  'd1   : 
-                        (  sm_idle_div_b  )  ?  ~i_b  : 
-                        (  i_sub          )  ?  -i_b  :  
-                        (  sm_mul         )  ?  b     :
-                                                ~i_b;
+   always@(*) begin
+      case(1'b1)
+         sm_sign_q,    
+         sm_mul:         p_adder_a = o_q;
+         sm_div_cmp:     p_adder_a = r;
+         sm_div_cnt:     p_adder_a = i;
+         sm_idle_div_a,  
+         sm_idle_mul_a:  p_adder_a = i_a;
+         sm_sign_b,    
+         sm_idle_div_b,
+         sm_idle_mul_b:  p_adder_a  = 'd1;
+         default:          p_adder_a = i_a;
+      endcase
+
+      case(1'b1)
+         sm_sign_b,
+         i_add:            p_adder_b = i_b;
+         sm_div_cmp:       p_adder_b = -b;
+         sm_idle_div_a,
+         sm_div_cnt,
+         sm_idle_mul_a,
+         sm_sign_q:        p_adder_b = 'd1;
+         sm_idle_div_b:    p_adder_b = ~i_b;
+         i_sub:            p_adder_b = -i_b;
+         sm_mul:           p_adder_b = b;
+         default:          p_adder_b = ~i_b;
+      endcase
+   end
+   
    assign n_adder_a  = ~p_adder_a; 
    assign n_adder_b  = ~p_adder_b;
    assign adder_a    = (   sm_sign_q      | 
