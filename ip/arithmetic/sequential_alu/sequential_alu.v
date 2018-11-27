@@ -50,10 +50,10 @@ module sequential_alu(
    assign   sm_div_cmp        = (state == SM_DIV_CMP);
    assign   sm_idle_mul       = (sm_idle & i_mul);
    assign   sm_idle_mul_a     = (sm_idle_mul & a_top);
-   assign   sm_idle_mul_b     = (sm_idle_mul & b_top);
+   assign   sm_idle_mul_b     = (sm_idle_mul & ~a_top & b_top);
    assign   sm_idle_div       = (sm_idle & i_div);
    assign   sm_idle_div_a     = (sm_idle_div & a_top);
-   assign   sm_idle_div_b     = (sm_idle_div & b_top);
+   assign   sm_idle_div_b     = (sm_idle_div & ~a_top & b_top);
    assign   sm_mul_div_next   = (i_mul)   ? SM_MUL : SM_DIV_R;
    assign   az                = (a[DATA_WIDTH-1:1] == 'd0);
    assign   zero              = i_div & (i_b == 'd0);
@@ -190,29 +190,35 @@ module sequential_alu(
    always@(*) begin
       case(1'b1)
          sm_sign_q,    
-         sm_mul:         p_adder_a = o_q;
-         sm_div_cmp:     p_adder_a = r;
-         sm_div_cnt:     p_adder_a = i;
-         sm_idle_div_a,  
-         sm_idle_mul_a:  p_adder_a = i_a;
+         sm_mul:           p_adder_a = o_q;
+         sm_div_cmp:       p_adder_a = r;
+         sm_div_cnt:       p_adder_a = i; 
          sm_sign_b,    
          sm_idle_div_b,
-         sm_idle_mul_b:  p_adder_a  = 'd1;
-         default:          p_adder_a = i_a;
+         sm_idle_mul_b:    p_adder_a  = 'd1;
+         sm_idle_div_a,
+         sm_idle_mul_a,
+         sm_idle_mul,
+         sm_idle_div,
+         i_add,
+         i_sub:            p_adder_a = i_a;
+         default:          p_adder_a = 'd0;
       endcase
 
-      case(1'b1)
+      case(1'b1) 
          sm_sign_b,
          i_add:            p_adder_b = i_b;
          sm_div_cmp:       p_adder_b = -b;
          sm_idle_div_a,
          sm_div_cnt,
          sm_idle_mul_a,
-         sm_sign_q:        p_adder_b = 'd1;
-         sm_idle_div_b:    p_adder_b = ~i_b;
+         sm_sign_q:        p_adder_b = 'd1; 
          i_sub:            p_adder_b = -i_b;
          sm_mul:           p_adder_b = b;
-         default:          p_adder_b = ~i_b;
+         sm_idle_div_b,
+         sm_idle_mul_b,
+         sm_idle_mul,
+         sm_idle_div:      p_adder_b = ~i_b;
       endcase
    end
    
@@ -220,9 +226,9 @@ module sequential_alu(
    assign n_adder_b  = ~p_adder_b;
    assign adder_a    = (   sm_sign_q      | 
                            sm_idle_div_a  |
-                           sm_idle_mul_a  ) ?   n_adder_a :
+                           sm_idle_mul_a  ) ?   n_adder_a:
                                                 p_adder_a;
-   assign adder_b    = (sm_sign_b         ) ?   n_adder_b : 
+   assign adder_b    = (   sm_sign_b      ) ?   n_adder_b: 
                                                 p_adder_b;
    adder #(
       .DATA_WIDTH (DATA_WIDTH )
