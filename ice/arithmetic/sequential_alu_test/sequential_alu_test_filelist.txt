@@ -1,0 +1,6 @@
+../../../ip/arithmetic/adder/adder.v
+../../../ip/arithmetic/sequential_alu/sequential_alu.v
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+sequential_alu_test.v
+sequential_alu_test_tb.v
