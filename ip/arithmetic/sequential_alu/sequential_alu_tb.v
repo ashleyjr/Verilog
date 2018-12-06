@@ -199,28 +199,28 @@ module sequential_alu_tb;
 	
      
       @(negedge i_clk);  
-      add(1,1);
-      add(2,1);
-      sub(1,1);
-      mul(1,1);
-      mul(7,7);
-      mul(-7,7);
-      mul(7,-7);
-      mul(-7,-7); 
-      div(10,2); 
-      div(10,10);  
-      div(-10,10); 
-      div(10,-10); 
-      div(-10,-10); 
-      div(10,0);
+      //add(1,1);
+      //add(2,1);
+      //sub(1,1);
+      //mul(1,1);
+      //mul(7,7);
+      //mul(-7,7);
+      //mul(7,-7);
+      //mul(-7,-7); 
+      //div(10,2); 
+      //div(10,10);  
+      //div(-10,10); 
+      //div(10,-10); 
+      //div(-10,-10); 
+      //div(10,0);
       none();
       repeat(50000) begin
          sel = $urandom % 5;
          case(sel)
             0: add($urandom, $urandom);
             1: sub($urandom, $urandom);
-            2: mul($urandom, $urandom); 
-            3: div($urandom, $urandom); 
+            2,//: mul($urandom, $urandom); 
+            3,//: div($urandom, $urandom); 
             4  : begin
                   none();
                   @(negedge i_clk);
