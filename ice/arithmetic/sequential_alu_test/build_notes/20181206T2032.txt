@@ -1,0 +1,44 @@
+- Add and Sub Only
+- Sub using flip bits + 1
+
+
+--- runsim.py ---
+  Module: ice/arithmetic/sequential_alu_test
+    Move: cd ice/arithmetic/sequential_alu_test/
+    Info: Synth
+     Cmd: rm -f sequential_alu_test_syn.txt
+     Cmd: yosys -p 'synth_ice40 -top sequential_alu_test -blif sequential_alu_test.blif' ../../../ip/arithmetic/adder/adder.v ../../../ip/arithmetic/sequential_alu/sequential_alu.v ../../../ip/comms/uart_autobaud/uart_autobaud.v ../../../ip/resync_tools/resync_3/resync_3.v sequential_alu_test.v   > sequential_alu_test_syn.txt
+    Info: Usage...
+    Info: 
+    Info: === sequential_alu_test ===
+    Info: 
+    Info:    Number of wires:                801
+    Info:    Number of wire bits:           1635
+    Info:    Number of public wires:          56
+    Info:    Number of public wire bits:     690
+    Info:    Number of memories:               0
+    Info:    Number of memory bits:            0
+    Info:    Number of processes:              0
+    Info:    Number of cells:               1350
+    Info:      SB_CARRY                      158
+    Info:      SB_DFFE                        91
+    Info:      SB_DFFER                      115
+    Info:      SB_DFFES                       33
+    Info:      SB_DFFESR                      14
+    Info:      SB_DFFR                       111
+    Info:      SB_DFFS                         4
+    Info:      SB_LUT4                       824
+    Info: 
+     Cmd: rm -f sequential_alu_test_blif.txt
+     Cmd: yosys -o sequential_alu_test_syn.v sequential_alu_test.blif > sequential_alu_test_blif.txt
+    Info: Place and route
+     Cmd: arachne-pnr -d 1k -q -p sequential_alu_test.pcf sequential_alu_test.blif -o sequential_alu_test.asc
+    Info: Timing info
+     Cmd: rm -f sequential_alu_test.time
+     Cmd: icetime -tmd hx1k sequential_alu_test.asc > sequential_alu_test.time
+    Info: Translate
+     Cmd: rm -f sequential_alu_test_pack.txt
+     Cmd: (icepack sequential_alu_test.asc sequential_alu_test.bin) > sequential_alu_test_pack.txt
+
+DONE
+
