@@ -17,18 +17,41 @@ module sequential_alu(
    parameter      DATA_WIDTH  = 0;
    parameter      SM_IDLE     = 'd0;
    parameter      SM_ADD      = 'd1; 
-   parameter      SM_SUB1     = 'd2; 
-   parameter      SM_SUB2     = 'd3;
+   parameter      SM_SUB      = 'd2; 
+   parameter      SM_DIV      = 'd3; 
+   parameter      SM_MUL      = 'd4; 
+   parameter      SM_MUL_DONE = 'd5;
 
    reg   [DATA_WIDTH-1:0]           adder_a;
    reg   [DATA_WIDTH-1:0]           adder_b;
+   reg   [DATA_WIDTH-1:0]           a;
    wire  [DATA_WIDTH-1:0]           adder_q;
    wire                             adder_ovf;
    reg   [2:0]                      state;
 
    wire                             a_top;
-   wire                             b_top; 
-   
+   wire                             b_top;
+   wire  [DATA_WIDTH-1:0]           m_i_a;
+   wire  [DATA_WIDTH-1:0]           m_i_b;
+   wire                             a_flip;
+   wire                             b_flip;
+   wire                             a_zero;
+   wire                             b_zero;
+   wire                             a_sign_ovf;
+   wire                             b_sign_ovf;
+
+   assign a_top      = i_a[DATA_WIDTH-1];
+   assign b_top      = i_b[DATA_WIDTH-1];
+   assign m_i_a      = -i_a;
+   assign m_i_b      = -i_b;
+   assign a_flip     = (i_a == m_i_a);
+   assign b_flip     = (i_b == m_i_b);
+   assign a_zero     = (i_a == 'd0);
+   assign b_zero     = (i_b == 'd0);
+   assign a_sign_ovf = a_flip & ~a_zero;
+   assign b_sign_ovf = b_flip & ~b_zero;
+
+
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
          state    <= SM_IDLE;
@@ -40,51 +63,71 @@ module sequential_alu(
       end else begin
          o_accept <= 1'b0;
          case(state)
-            SM_IDLE:    case(1'b1)
-                           i_add:   begin
-                                       adder_a  <= i_a;
-                                       adder_b  <= i_b;
-                                       state    <= SM_ADD;
-                                    end
-                           i_sub:   begin
-                                       adder_a  <= 1'b1;
-                                       adder_b  <= ~i_b;
-                                       state    <= SM_SUB1; 
-                                    end
-                           
-                        endcase
-            SM_ADD:     begin
-                           state    <= SM_IDLE;
-                           o_q      <= adder_q;
-                           o_ovf    <= adder_ovf;
-                           o_accept <= 1'b1;
-                        end 
-            SM_SUB1:    begin
-                           state    <= SM_SUB2;
-                           o_q      <= adder_q;
-                           if((i_b == adder_q) && (i_b != 0)) begin
+            SM_IDLE:       case(1'b1)
+                              i_add:   begin
+                                          adder_a  <= i_a;
+                                          adder_b  <= i_b;
+                                          state    <= SM_ADD;
+                                       end
+                              i_sub:   begin
+                                          adder_a  <= i_a;
+                                          if(b_sign_ovf) begin
+                                             o_ovf    <= 1'b1;
+                                             o_accept <= 1'b1;
+                                          end else begin
+                                             state    <= SM_SUB;
+                                             adder_b  <= m_i_b;
+                                          end                                     
+                                       end 
+                              i_mul:   begin
+                                          o_q      <= 'd0;
+                                          adder_a  <= 'd0;
+                                          state    <= SM_MUL;
+                                          if(a_top)
+                                             a        <= m_i_a;
+                                          else
+                                             a        <= i_a;
+                                          if(b_top)
+                                             adder_b  <= m_i_b;
+                                          else
+                                             adder_b  <= i_b;
+                                       end                        
+                           endcase
+            SM_ADD:        begin
                               state    <= SM_IDLE;
-                              o_ovf    <= 1'b1;
+                              o_q      <= adder_q;
+                              o_ovf    <= adder_ovf;
                               o_accept <= 1'b1;
-                           end else begin 
-                              adder_a  <= i_a;
-                              adder_b  <= adder_q;
-                              if(adder_ovf) begin
-                                 state    <= SM_IDLE;
-                                 o_ovf    <= 1'b1;
-                                 o_accept <= 1'b1;
-                              end else begin
-                                 state    <= SM_SUB2;
-                              end
+                           end 
+            SM_SUB:        begin
+                              state    <= SM_IDLE;
+                              o_q      <= adder_q;
+                              o_ovf    <= adder_ovf;
+                              o_accept <= 1'b1;
+                           end 
+            SM_MUL:        begin
+                              a              <= a >> 1;
+                              adder_b        <= adder_b << 1; 
+                              if(a[0])
+                                 adder_a     <= adder_q; 
+                              if(a == 0)
+                                 state       <= SM_MUL_DONE; 
+                              else 
+                                 if(adder_ovf | adder_b[DATA_WIDTH-1]) begin
+                                    o_accept <= 1'b1;
+                                    o_ovf    <= 1'b1;
+                                    state    <= SM_IDLE;
+                                 end
+                      
+                           end 
+            SM_MUL_DONE:   begin
+                              state <= SM_IDLE;
+                              o_accept <= 1'b1;      
+                              if(a_top ^ b_top) 
+                                 o_q   <= -adder_a;
+                              else
+                                 o_q   <= adder_a;
                            end
-                        end 
-            SM_SUB2:    begin
-                           o_q      <= adder_q;
-                           o_accept <= 1'b1;
-                           o_ovf    <= adder_ovf;
-                           state    <= SM_IDLE;
-                        end
-
          endcase
       end 
    end
