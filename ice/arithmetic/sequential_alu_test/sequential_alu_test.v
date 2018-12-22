@@ -6,7 +6,7 @@ module sequential_alu_test(
 	output	   o_tx	
 );
 
-   parameter   DATA_WIDTH = 23;
+   parameter   DATA_WIDTH = 16;
 
    reg   [DATA_WIDTH-1:0]  a;
    reg   [DATA_WIDTH-1:0]  b;
@@ -61,8 +61,8 @@ module sequential_alu_test(
          end else begin
             if(uart_recieved)
                case(uart_data_rx[3:0])
-                  4'h0: a  <= {a[31-4:0], uart_data_rx[7:4]}; 
-                  4'h1: b  <= {b[31-4:0], uart_data_rx[7:4]}; 
+                  4'h0: a  <= {a[DATA_WIDTH-1-4:0], uart_data_rx[7:4]}; 
+                  4'h1: b  <= {b[DATA_WIDTH-1-4:0], uart_data_rx[7:4]}; 
                   4'h2: begin
                            r              <= r >> 8;
                            uart_data_tx   <= r[7:0];

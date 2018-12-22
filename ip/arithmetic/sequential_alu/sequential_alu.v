@@ -1,4 +1,11 @@
 `timescale 1ns/1ps
+
+// Add, Subtract, Multiply, Divide 
+// - Raise only one request line high at a time
+// - o_accept raised high when finished
+// - if o_ovf high with except the overflow error or i_b is divide by zero
+// - Data width kept the same so multiplies restricted to half width at input
+
 module sequential_alu(
 	input    wire                             i_clk, 
    input    wire                             i_nrst,
@@ -69,6 +76,7 @@ module sequential_alu(
          o_accept <= 1'b0;
          case(state)
             SM_IDLE:       case(1'b1)
+                              // Simple signed adder for both
                               i_add,
                               i_sub:   begin 
                                           o_accept <= 1'b1;
@@ -87,36 +95,41 @@ module sequential_alu(
                                              if(i_mul)   state    <= SM_MUL;
                                              else        state    <= SM_DIV_R;
                                           end
+                                          
+                                          // Flip the signs when negative
+                                          // Flipped back when finished
                                           if(a_top)   a           <= m_i_a;
                                           else        a           <= i_a;
                                           if(b_top)   div_mul_b   <= m_i_b;
                                           else        div_mul_b   <= i_b;
                                        end                        
                            endcase 
+            // Shift and add unsigned multiplication https://en.wikipedia.org/wiki/Multiplication_algorithm
             SM_MUL:        begin
                               a           <= a >> 1;
                               div_mul_b   <= div_mul_b << 1;  
-                              if(a[0]) begin
-                                 o_q      <= mul_q; 
-                              end else begin
-                                 if(a[DATA_WIDTH-1:1] == 0) begin
-                                    state    <= SM_IDLE;
-                                    o_accept <= 1'b1;
-                                    if(neg) o_q   <= -o_q;
-                                 end  
-                              end
+                              if(a[0]) 
+                                 o_q      <= mul_q;  
+                              if(~(|a[DATA_WIDTH-1:1])) begin
+                                 state    <= SM_IDLE;
+                                 o_accept <= 1'b1; 
+                                 if(a[0] & neg) o_q <= -mul_q;
+                              end  
                               if(mul_ovf | div_mul_b[DATA_WIDTH-1]) begin
                                  o_accept <= 1'b1;
                                  o_ovf    <= 1'b1;
                                  state    <= SM_IDLE; 
                               end
                            end  
+            // Unisgned integer division  https://en.wikipedia.org/wiki/Division_algorithm
             SM_DIV_R:      begin
-                              r     <= {r[DATA_WIDTH-2:0],a[DATA_WIDTH-1]}; 
+                              r     <= r << 1;                              
+                              r[0]  <= a[DATA_WIDTH-1];
                               a     <= a << 1;
                               state <= SM_DIV_CMP;
                            end
             SM_DIV_CMP:    begin
+                              // Shift register as counts synths better 
                               i     <= i << 1;
                               o_q   <= div_next;
                               if(n_div_q_top) 
