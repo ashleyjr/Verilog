@@ -182,6 +182,11 @@ def main():
             print "    Info: Timing info"
             cmd_print("rm -f "+time)
             cmd_print("icetime -tmd hx1k "+asc+" > "+time)
+            f=open(time)
+            report = f.read()
+            f.close()
+            report = report.split('Total path delay:')[-1].split('\n')[0]
+            print "    Info: Timing = "+report
             print "    Info: Translate"
             cmd_print("rm -f "+pack)
             cmd_print("(icepack "+ asc +" "+ binn +") > " + pack )
