@@ -25,10 +25,10 @@ module sequential_alu(
    reg   [DATA_WIDTH-1:0]           r;
    reg   [$clog2(DATA_WIDTH)-1:0]   i;
    wire  [DATA_WIDTH-1:0]           mul_q;
-   wire  [DATA_WIDTH-1:0]           add_q;
-   wire  [DATA_WIDTH-1:0]           sub_q;
+   wire  [DATA_WIDTH-1:0]           add_sub_q; 
    wire  [DATA_WIDTH-1:0]           div_q;
    wire  [DATA_WIDTH-1:0]           div_next;
+   wire  [DATA_WIDTH-1:0]           add_sub_b;
    wire                             add_ovf;
    wire                             sub_ovf;
    wire                             mul_ovf;
@@ -59,6 +59,7 @@ module sequential_alu(
    assign n_div_q_top   = ~div_q[DATA_WIDTH-1];    
    assign neg           = a_top ^ b_top;
    assign div_next      = {o_q[DATA_WIDTH-2:0], n_div_q_top};
+   assign add_sub_b     = (i_add) ? i_b : m_i_b;
 
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
@@ -73,15 +74,11 @@ module sequential_alu(
          o_accept <= 1'b0;
          case(state)
             SM_IDLE:       case(1'b1)
-                              i_add:   begin
-                                          o_q      <= add_q;
-                                          o_ovf    <= add_ovf; 
-                                          o_accept <= 1'b1;   
-                                       end
+                              i_add,
                               i_sub:   begin 
                                           o_accept <= 1'b1;
-                                          o_q      <= sub_q;
-                                          o_ovf    <= b_sign_ovf | sub_ovf;                                     
+                                          o_q      <= add_sub_q;
+                                          o_ovf    <= add_sub_ovf | (b_sign_ovf & i_sub);                          
                                        end 
                               i_div,
                               i_mul:   begin
@@ -144,22 +141,13 @@ module sequential_alu(
    
    adder #(
       .DATA_WIDTH (DATA_WIDTH )
-   ) add (
+   ) add_sub (
       .i_a        (i_a        ),
-      .i_b        (i_b        ),
-      .o_q        (add_q      ),
-      .o_ovf      (add_ovf    )
+      .i_b        (add_sub_b  ),
+      .o_q        (add_sub_q  ),
+      .o_ovf      (add_sub_ovf)
    );
-
-   adder #(
-      .DATA_WIDTH (DATA_WIDTH )
-   ) sub (
-      .i_a        (i_a        ),
-      .i_b        (m_i_b      ),
-      .o_q        (sub_q      ),
-      .o_ovf      (sub_ovf    )
-   );
-
+   
    adder #(
       .DATA_WIDTH (DATA_WIDTH )
    ) mul (
