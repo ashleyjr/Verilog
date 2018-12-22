@@ -10,7 +10,6 @@ module sequential_alu(
    input    wire                             i_div, 
    output   reg   signed   [DATA_WIDTH-1:0]  o_q,   
    output   reg                              o_ovf,
-   output   reg                              o_zero,
    output   reg                              o_accept 
 );
 
@@ -23,16 +22,16 @@ module sequential_alu(
    reg   [DATA_WIDTH-1:0]           div_mul_b;
    reg   [DATA_WIDTH-1:0]           a;
    reg   [DATA_WIDTH-1:0]           r;
-   reg   [$clog2(DATA_WIDTH)-1:0]   i;
+   reg   [DATA_WIDTH-1:0]           i;
    wire  [DATA_WIDTH-1:0]           mul_q;
    wire  [DATA_WIDTH-1:0]           add_sub_q; 
    wire  [DATA_WIDTH-1:0]           div_q;
    wire  [DATA_WIDTH-1:0]           div_next;
-   wire  [DATA_WIDTH-1:0]           add_sub_b;
-   wire                             add_ovf;
-   wire                             sub_ovf;
+   wire  [DATA_WIDTH-1:0]           add_sub_b;  
    wire                             mul_ovf;
    wire                             div_ovf;
+   wire                             add_sub_ovf;
+
    reg   [1:0]                      state;
 
    wire                             a_top;
@@ -50,26 +49,22 @@ module sequential_alu(
    assign b_top         = i_b[DATA_WIDTH-1];
    assign m_i_a         = -i_a;
    assign m_i_b         = -i_b;
-   assign a_flip        = (i_a == m_i_a);
-   assign b_flip        = (i_b == m_i_b);
-   assign a_zero        = (i_a == 'd0);
-   assign b_zero        = (i_b == 'd0);
+   assign a_flip        = a_top & m_i_a[DATA_WIDTH-1];
+   assign b_flip        = b_top & m_i_b[DATA_WIDTH-1];
+   assign a_zero        = ~(|i_a);
+   assign b_zero        = ~(|i_b);
    assign a_sign_ovf    = a_flip & ~a_zero;
    assign b_sign_ovf    = b_flip & ~b_zero;
    assign n_div_q_top   = ~div_q[DATA_WIDTH-1];    
    assign neg           = a_top ^ b_top;
    assign div_next      = {o_q[DATA_WIDTH-2:0], n_div_q_top};
-   assign add_sub_b     = (i_add) ? i_b : m_i_b;
+   assign add_sub_b     = (i_add) ? i_b : m_i_b; 
 
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
-         state    <= SM_IDLE; 
-         div_mul_b  <= 'd0;
-         o_q      <= 'd0;
+         state    <= SM_IDLE;   
          o_ovf    <= 'd0;
-         o_accept <= 'd0;
-         a        <= 'd0;
-         r        <= 'd0;
+         o_accept <= 'd0; 
       end else begin
          o_accept <= 1'b0;
          case(state)
@@ -82,10 +77,10 @@ module sequential_alu(
                                        end 
                               i_div,
                               i_mul:   begin
-                                          i           <= 'd0;
+                                          i           <= 'd1;
                                           r           <= 'd0;   
                                           o_q         <= 'd0;
-                                          if(a_sign_ovf | b_sign_ovf) begin
+                                          if(a_sign_ovf | b_sign_ovf | (b_zero & i_div)) begin
                                              o_accept <= 1'b1;
                                              o_ovf    <= 1'b1; 
                                           end else begin
@@ -101,19 +96,19 @@ module sequential_alu(
             SM_MUL:        begin
                               a           <= a >> 1;
                               div_mul_b   <= div_mul_b << 1;  
-                              if(a == 0) begin
-                                 state    <= SM_IDLE;
-                                 o_accept <= 1'b1;
-                                 if(neg) 
-                                    o_q   <= -o_q;
+                              if(a[0]) begin
+                                 o_q      <= mul_q; 
                               end else begin
-                                 if(a[0])
-                                    o_q      <= mul_q; 
-                                 if(mul_ovf | div_mul_b[DATA_WIDTH-1]) begin
-                                    o_accept <= 1'b1;
-                                    o_ovf    <= 1'b1;
+                                 if(a[DATA_WIDTH-1:1] == 0) begin
                                     state    <= SM_IDLE;
-                                 end
+                                    o_accept <= 1'b1;
+                                    if(neg) o_q   <= -o_q;
+                                 end  
+                              end
+                              if(mul_ovf | div_mul_b[DATA_WIDTH-1]) begin
+                                 o_accept <= 1'b1;
+                                 o_ovf    <= 1'b1;
+                                 state    <= SM_IDLE; 
                               end
                            end  
             SM_DIV_R:      begin
@@ -122,11 +117,11 @@ module sequential_alu(
                               state <= SM_DIV_CMP;
                            end
             SM_DIV_CMP:    begin
-                              i     <= i + 1;
+                              i     <= i << 1;
                               o_q   <= div_next;
                               if(n_div_q_top) 
                                  r  <= div_q;    
-                              if(i == DATA_WIDTH-1) begin
+                              if(i[DATA_WIDTH-1]) begin
                                  o_accept <= 1'b1;
                                  state    <= SM_IDLE;
                                  if(neg) 

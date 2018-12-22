@@ -2,7 +2,7 @@
 module sequential_alu_tb;
 
 	parameter   CLK_PERIOD = 20;
-   parameter   DATA_WIDTH = 17;
+   parameter   DATA_WIDTH = 5;
 
    reg                     i_clk;
    reg                     i_nrst;
