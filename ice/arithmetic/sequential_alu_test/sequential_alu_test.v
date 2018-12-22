@@ -6,7 +6,7 @@ module sequential_alu_test(
 	output	   o_tx	
 );
 
-   parameter   DATA_WIDTH = 17;
+   parameter   DATA_WIDTH = 18;
 
    reg   [DATA_WIDTH-1:0]  a;
    reg   [DATA_WIDTH-1:0]  b;
