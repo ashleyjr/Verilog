@@ -1,0 +1,1 @@
+exec sudo python lib/python/sequential_alu_test.py "$@"

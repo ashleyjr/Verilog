@@ -1,6 +1,7 @@
 import serial
 import threading
 import subprocess
+import sys
 
 class uart:
     def __init__(self, baudrate, rx_buffer_size):
@@ -8,13 +9,19 @@ class uart:
         ''' Use dmesg find the last FTDI plugged in '''
         p = subprocess.Popen(['dmesg'], stdout=subprocess.PIPE)
         lines = p.communicate()
+        found = False
         for line in lines[0].split("\n"):
             if line is not None:
                 if  ("FTDI" in line) and\
                     ("attached" in line) and\
                     ("ttyUSB" in line):
                     port = line.split(" ")[-1].strip('\n')
-        print "Connecting to "+port
+                    found = True
+        if found:
+            print "Connecting to "+port
+        else:
+            print "No icestick found"
+            sys.exit(0)
         self.ser = serial.Serial(
             port='/dev/'+port,
             baudrate=baudrate,
