@@ -79,6 +79,7 @@ class uart_alu(uart):
             self.tx(c)
 
     def unload(self):
+        ovf = self.ovf()
         width = 16
         b = []
         r = 0
@@ -89,7 +90,7 @@ class uart_alu(uart):
             s += 8
         if r > 2 ** (width-1):
             r = r - (2 ** width)
-        return r
+        return ovf, r
 
     def ovf(self):
         self.tx(0x3)
@@ -112,7 +113,7 @@ class uart_alu(uart):
 
 def main():
     width = 16
-    u = uart_alu(   baudrate        = 256000,
+    u = uart_alu(   baudrate        = 115200,
                     rx_buffer_size  = 2048 * 3)
     u.sync()
 
@@ -125,41 +126,43 @@ def main():
             op = random.randint(0, 3)
             if op == 0:
                 u.add()
-                o = u.unload()
+                ovf, o = u.unload()
                 if o != (a + b):
                     print "Add error: " + str(a) + " + " + str(b) + " != " + str(o)
                 else:
                     print str(a) + " + " + str(b) + " = " + str(o)
             elif op == 1:
                 u.sub()
-                o = u.unload()
+                ovf, o = u.unload()
                 if o != (a - b):
                     print "Sub error: " + str(a) + " - " + str(b) + " != " + str(o)
                 else:
                     print str(a) + " - " + str(b) + " = " + str(o)
             elif op == 2:
                 u.mul()
-                o = u.unload()
+                ovf, o = u.unload()
                 e = a * b
                 if  (e > (2 ** (width-1))) or (e < -(2 ** (width-1))):
                     print str(a) + " * " + str(b) + " = " + str(e)
-                    if not u.ovf():
+                    if not ovf:
                         print "Mul ovf error"
                         print "Read " + str(o)
                         sys.exit(0)
+                    else:
+                        print "Mul ovf ok"
                 elif o != (a * b):
                     print "Mul error: " + str(a) + " * " + str(b) + " != " + str(o)
                 else:
                     print str(a) + " * " + str(b) + " = " + str(o)
             elif op == 3:
                 u.div()
+                ovf, o = u.unload()
                 if b == 0:
-                    if not u.ovf():
+                    if not ovf:
                         print "Div zero error"
                     else:
                         print "zero ok"
                 else:
-                    o = u.unload()
                     e = float(a) / float(b)
                     if e < 0:
                         e = math.ceil(e)
