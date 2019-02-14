@@ -1,16 +1,16 @@
 `timescale 1ns/1ps
 module vga(
-	input    wire                                i_clk,
-	input	   wire                                i_nrst,
+	input    wire                       i_clk,
+	input	   wire                       i_nrst,
    // Driven by fpga	
-	output   wire  [$clog2(VER_C)-1:0]           o_v_next,
-   output   wire  [$clog2(HOR_C)-1:0]           o_h_next,
-   input    wire  [R_WIDTH+G_WIDTH+B_WIDTH-1:0] i_rgb,
-	input    wire                                i_valid,
+	output   wire  [$clog2(VER_C)-1:0]  o_v_next,
+   output   wire  [$clog2(HOR_C)-1:0]  o_h_next,
+   input    wire  [RGB_WIDTH-1:0]      i_rgb,
+	input    wire                       i_valid,
    // Drive VGA
-   output	wire	                              o_hs,
-	output	wire                                o_vs,
-	output	wire  [R_WIDTH+G_WIDTH+B_WIDTH-1:0] o_rgb
+   output	wire	                     o_hs,
+	output	wire                       o_vs,
+	output	wire  [RGB_WIDTH-1:0]      o_rgb
 );
    // VGA pixel clock is half of i_clk
    // http://web.mit.edu/6.111/www/s2004/NEWKIT/vga.shtml

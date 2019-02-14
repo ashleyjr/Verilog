@@ -1,0 +1,2 @@
+vga_testgen.v
+vga_testgen_tb.v
