@@ -3,8 +3,8 @@ module vga(
 	input    wire                       i_clk,
 	input	   wire                       i_nrst,
    // Driven by fpga	
-	output   wire  [$clog2(VER_C)-1:0]  o_v_next,
-   output   wire  [$clog2(HOR_C)-1:0]  o_h_next,
+	output   wire  [VER_C_WIDTH-1:0]    o_v_next,
+   output   wire  [HOR_C_WIDTH-1:0]    o_h_next,
    input    wire  [RGB_WIDTH-1:0]      i_rgb,
 	input    wire                       i_valid,
    // Drive VGA
@@ -20,13 +20,15 @@ module vga(
    parameter   HOR_SP      = 48;
    parameter   HOR_BP      = 112;
    parameter   HOR_C       = HOR + HOR_FP + HOR_SP + HOR_BP; 
-   
+   parameter   HOR_C_WIDTH = 10; //$clog2(HOR_C);
+
    parameter   VER         = 480;
    parameter   VER_FP      = 1;
    parameter   VER_SP      = 3;
    parameter   VER_BP      = 25; 
    parameter   VER_C       = VER + VER_FP + VER_SP + VER_BP; 
-   
+   parameter   VER_C_WIDTH = 9;//$clog2(VER_C);
+
    parameter   R_WIDTH     = 5;
    parameter   G_WIDTH     = 5;
    parameter   B_WIDTH     = 5;
@@ -50,7 +52,8 @@ module vga(
    reg   [RGB_WIDTH-1:0]      pre_o_rgb;
    reg   [RGB_WIDTH-1:0]      rgb;
    reg                        rgb_upd;
-  
+   wire                       rgb_mux;
+
    // RGB
    always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst) rgb_upd <= 'd0;
@@ -67,7 +70,8 @@ module vga(
       else if(rgb_upd)  pre_o_rgb <= rgb; 
 	end
 
-   assign o_rgb = ((o_h_next == 'd0) & (o_v_next == 'd0)) ? 'd0 : rgb;
+   assign rgb_mux = ((o_h_next == 'd0) | (o_v_next == 'd0));
+   assign o_rgb   = (rgb_mux) ? 'd0 : rgb;
 
    // Horz
    assign h_next     =  (h + 'd1) % HOR_C; 
