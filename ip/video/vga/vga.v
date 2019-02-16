@@ -14,20 +14,20 @@ module vga(
 );
    // VGA pixel clock is half of i_clk
    // http://web.mit.edu/6.111/www/s2004/NEWKIT/vga.shtml
-   // Default is 640x480, 85Hz
-   parameter   HOR         = 640;
+   // Default is 800x600, 56Hz
+   parameter   HOR         = 800;
    parameter   HOR_FP      = 32;
-   parameter   HOR_SP      = 48;
-   parameter   HOR_BP      = 112;
+   parameter   HOR_SP      = 128;
+   parameter   HOR_BP      = 128;
    parameter   HOR_C       = HOR + HOR_FP + HOR_SP + HOR_BP; 
-   parameter   HOR_C_WIDTH = 10; //$clog2(HOR_C);
+   parameter   HOR_C_WIDTH = 11; //$clog2(HOR_C);
 
-   parameter   VER         = 480;
+   parameter   VER         = 600;
    parameter   VER_FP      = 1;
-   parameter   VER_SP      = 3;
-   parameter   VER_BP      = 25; 
+   parameter   VER_SP      = 4;
+   parameter   VER_BP      = 14; 
    parameter   VER_C       = VER + VER_FP + VER_SP + VER_BP; 
-   parameter   VER_C_WIDTH = 9;//$clog2(VER_C);
+   parameter   VER_C_WIDTH = 10;//$clog2(VER_C);
 
    parameter   R_WIDTH     = 5;
    parameter   G_WIDTH     = 5;

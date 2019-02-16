@@ -40,7 +40,7 @@ module vga_test_tb;
 		#17		i_nrst		= 0;
 		#17		i_nrst		= 1;
 		
-		#15000000
+		#30000000
 		$finish;
 	end
 

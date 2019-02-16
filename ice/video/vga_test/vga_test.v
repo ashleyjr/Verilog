@@ -12,10 +12,10 @@ module vga_test(
    wire pll_clk;
 
    ///////////////////////////////////////////////////
-   // PLL out is 72 MHz
+   // PLL out is 76.5 MHz
    ice_pll #(
       .p_divr     (4'd0             ),
-      .p_divf     (7'd47            ),
+      .p_divf     (7'd50            ),
       .p_divq     (3'd3             )
    
    )ice_pll(
@@ -38,7 +38,7 @@ module vga_test(
             
       .o_v_next   (),
       .o_h_next   (),
-      .i_rgb      (3'b111           ),
+      .i_rgb      (3'b101           ),
       .i_valid    (1'b1             ),
       .o_hs       (o_hs             ),
       .o_vs       (o_vs             ),
