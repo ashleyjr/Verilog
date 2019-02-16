@@ -46,8 +46,10 @@ module vga(
 
    reg   [$clog2(HOR_C)-1:0]  h;
    wire  [$clog2(HOR_C)-1:0]  h_next;
+   wire                       h_wrap;
    reg   [$clog2(VER_C)-1:0]  v;
    wire  [$clog2(VER_C)-1:0]  v_next;
+   wire                       v_wrap;
    wire                       v_upd;
    reg   [RGB_WIDTH-1:0]      pre_o_rgb;
    reg   [RGB_WIDTH-1:0]      rgb;
@@ -74,8 +76,9 @@ module vga(
    assign o_rgb   = (rgb_mux) ? 'd0 : rgb;
 
    // Horz
-   assign h_next     =  (h + 'd1) % HOR_C; 
-   assign o_h_next   =  (h_next >= HOR) ? 'd0 : h_next; 
+   assign h_wrap     = (h == (HOR_C-1));
+   assign h_next     = (h_wrap) ? 'd0 : (h + 'd1); 
+   assign o_h_next   = (h_next >= HOR) ? 'd0 : h_next; 
 
    always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst)       h  <= 'd0;
@@ -85,7 +88,8 @@ module vga(
    // Vert
    
    assign v_upd      = (h_next == 'd0) & rgb_upd;
-   assign v_next     = (v + 'd1) % VER_C; 
+   assign v_wrap     = (v == (VER_C-1)); 
+   assign v_next     = (v_wrap) ? 'd0 : (v + 'd1); 
    assign o_v_next   =  (v_next >= VER) ? 'd0 : v_next;
    
    always@(posedge i_clk or negedge i_nrst) begin
