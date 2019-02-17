@@ -9,9 +9,17 @@ module vga_test(
 	output	wire	[1:0]    o_b
 );
 
+   parameter   V_WIDTH  = 10;
+   parameter   H_WIDTH  = 11;
+
+   // PLL
    wire        pll_clk;
 
-   wire [9:0]  v_next;
+   // VGA
+   wire  [V_WIDTH-1:0]  v;
+   wire  [H_WIDTH-1:0]  h;
+   wire                 valid;
+   wire  [5:0]          rgb; 
 
 
    ///////////////////////////////////////////////////
@@ -38,13 +46,29 @@ module vga_test(
    ) vga (
       .i_clk      (pll_clk          ), 
       .i_nrst     (i_nrst           ),      
-      .o_v_next   (v_next           ),
-      .o_h_next   (),
-      .i_rgb      (6'b110101),
-      .i_valid    (1'b1             ),
+      .o_v_next   (v                ),
+      .o_h_next   (h                ),
+      .i_rgb      (rgb              ),
+      .i_valid    (valid            ),
       .o_hs       (o_hs             ),
       .o_vs       (o_vs             ),
       .o_rgb      ({o_r, o_g, o_b}  )
+   );
+   ///////////////////////////////////////////////////
+   // TESTGEN
+   vga_testgen #(
+      .V_WIDTH    (V_WIDTH          ),
+      .H_WIDTH    (H_WIDTH          ),
+      .R_WIDTH    (2                ),
+      .G_WIDTH    (2                ),
+      .B_WIDTH    (2                )
+   ) vga_testgen (
+      .i_clk      (pll_clk          ), 
+      .i_nrst     (i_nrst           ),  
+      .i_v        (v                ),
+      .i_h        (h                ),
+      .o_valid    (valid            ),
+      .o_rgb      (rgb              ) 
    );
 
 endmodule

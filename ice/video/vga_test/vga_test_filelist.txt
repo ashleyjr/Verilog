@@ -1,4 +1,5 @@
 ../../../ip/video/vga/vga.v
+../../../ip/video/vga_testgen/vga_testgen.v
 ../../clock_tools/ice_pll/ice_pll.v
 vga_test.v
 vga_test_tb.v
