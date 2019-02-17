@@ -192,7 +192,7 @@ def main():
             cmd_print("(icepack "+ asc +" "+ binn +") > " + pack )
         if (options.ice or options.deploy):
             print "    Info: Deploy to icestick"
-            cmd_print("sudo iceprog "+ binn)
+            cmd_print("sudo iceprog -S "+ binn)
 
 
     if(options.new != None):

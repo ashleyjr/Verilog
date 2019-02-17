@@ -1,15 +1,18 @@
 `timescale 1ns/1ps
 module vga_test(
-	input	   wire  i_clk,
-	input    wire  i_nrst,
-	output	wire	o_hs,
-	output	wire	o_vs,
-	output	wire	o_r,
-	output	wire	o_g,
-	output	wire	o_b
+	input	   wire           i_clk,
+   input    wire           i_nrst,	
+	output	wire	         o_hs,
+	output	wire	         o_vs,
+	output	wire  [1:0]    o_r,
+	output	wire	[1:0]    o_g,
+	output	wire	[1:0]    o_b
 );
 
-   wire pll_clk;
+   wire        pll_clk;
+
+   wire [9:0]  v_next;
+
 
    ///////////////////////////////////////////////////
    // PLL out is 76.5 MHz
@@ -27,18 +30,17 @@ module vga_test(
 	);
    
    ///////////////////////////////////////////////////
-   // PLL out is 67.5 MHz
+   // VGA
    vga #(
-      .R_WIDTH    (1                ),
-      .G_WIDTH    (1                ),
-      .B_WIDTH    (1                )
+      .R_WIDTH    (2                ),
+      .G_WIDTH    (2                ),
+      .B_WIDTH    (2                )
    ) vga (
       .i_clk      (pll_clk          ), 
-      .i_nrst     (i_nrst           ),
-            
-      .o_v_next   (),
+      .i_nrst     (i_nrst           ),      
+      .o_v_next   (v_next           ),
       .o_h_next   (),
-      .i_rgb      (3'b101           ),
+      .i_rgb      (6'b110101),
       .i_valid    (1'b1             ),
       .o_hs       (o_hs             ),
       .o_vs       (o_vs             ),
