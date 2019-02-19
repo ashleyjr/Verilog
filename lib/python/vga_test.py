@@ -27,7 +27,7 @@ def main():
     print "\tWidth:   " + str(w)
 
 
-    data = np.zeros((h, w, 3), dtype=np.uint8)
+    data = np.zeros((h, w, 1), dtype=np.uint8)
     ptr = 0
     last_h = 0
     last_v = 0
