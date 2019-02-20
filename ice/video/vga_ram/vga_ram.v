@@ -11,7 +11,7 @@ module vga_ram(
 );
 
    parameter   V_WIDTH  = 10;
-   parameter   H_WIDTH  = 11;
+   parameter   H_WIDTH  = 10;
 
    // PLL
    wire                 pll_clk;
@@ -26,8 +26,7 @@ module vga_ram(
 
    // VGA
    wire  [V_WIDTH-1:0]  v;
-   wire  [H_WIDTH-1:0]  h;
-   wire                 valid;
+   wire  [H_WIDTH-1:0]  h; 
    wire  [5:0]          rgb; 
 
    // RAM
@@ -44,11 +43,11 @@ module vga_ram(
    wire  [15:0]         re;
 
    ///////////////////////////////////////////////////
-   // PLL out is 76.5 MHz
+   // PLL out is 48 MHz
    ice_pll #(
       .p_divr     (4'd0             ),
-      .p_divf     (7'd50            ),
-      .p_divq     (3'd3             )
+      .p_divf     (7'd63            ),
+      .p_divq     (3'd4             )
    
    )ice_pll(
 	   .i_clk	   (i_clk            ),
@@ -117,21 +116,30 @@ module vga_ram(
                   (w == 2'b01) ? 6'b000001 :
                   (w == 2'b10) ? 6'b000010 :
                                  6'b000011 ; 
-   
-   vga #(
-      .R_WIDTH    (2                ),
-      .G_WIDTH    (2                ),
-      .B_WIDTH    (2                )
+   vga #(   // 640x480, 25.175Hz
+      .HOR           (640              ),
+      .HOR_FP        (16               ),
+      .HOR_SP        (96               ),
+      .HOR_BP        (48               ),
+      .HOR_C_WIDTH   (10               ),
+      .VER           (480              ),
+      .VER_FP        (11               ),
+      .VER_SP        (2                ),
+      .VER_BP        (31               ),
+      .VER_C_WIDTH   (10               ), 
+      .R_WIDTH       (2                ),
+      .G_WIDTH       (2                ),
+      .B_WIDTH       (2                )
    ) vga (
-      .i_clk      (pll_clk          ), 
-      .i_nrst     (i_nrst           ),      
-      .o_v_next   (v                ),
-      .o_h_next   (h                ),
-      .i_rgb      (rgb              ),
-      .i_valid    (valid            ),
-      .o_hs       (o_hs             ),
-      .o_vs       (o_vs             ),
-      .o_rgb      ({o_r, o_g, o_b}  )
+      .i_clk         (pll_clk          ), 
+      .i_nrst        (i_nrst           ),      
+      .o_v_next      (v                ),
+      .o_h_next      (h                ),
+      .i_rgb         (rgb              ),
+      .i_valid       (1'b1             ),
+      .o_hs          (o_hs             ),
+      .o_vs          (o_vs             ),
+      .o_rgb         ({o_r, o_g, o_b}  )
    );
 
    ///////////////////////////////////////////////////
