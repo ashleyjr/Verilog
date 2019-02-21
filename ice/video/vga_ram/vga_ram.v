@@ -7,7 +7,8 @@ module vga_ram(
 	output	wire  [1:0]    o_r,
 	output	wire	[1:0]    o_g,
 	output	wire	[1:0]    o_b,
-   input    wire           i_rx
+   input    wire           i_rx,
+   output   wire           o_tx
 );
 
    parameter   V_WIDTH  = 10;
@@ -23,6 +24,7 @@ module vga_ram(
    reg                  p1_recieved;
    reg                  p2_recieved;
    wire  [7:0]          data_rx;
+   reg                  transmit;
 
    // VGA
    wire  [V_WIDTH-1:0]  v;
@@ -30,16 +32,17 @@ module vga_ram(
    wire  [5:0]          rgb; 
 
    // RAM
-   wire  [15:0]         we;
-   wire  [1:0]          w;
+   wire  [15:0]         we; 
    reg   [7:0]          wdata;
    wire                 waddr_upd;
-   reg   [15:0]         waddr;
-   wire  [15:0]         waddr_next;
+   reg   [14:0]         waddr;
+   wire  [14:0]         waddr_next;
 
    wire  [1:0]          rdata;
-   wire  [1:0]          rdata_mux [15:0];
-   wire  [15:0]         raddr;
+   wire  [3:0]          rdata_index;  
+   wire  [31:0]         rdata_mux; 
+   wire  [14:0]         raddr;
+   reg   [14:0]         p0_raddr;
    wire  [15:0]         re;
 
    ///////////////////////////////////////////////////
@@ -60,7 +63,7 @@ module vga_ram(
    ///////////////////////////////////////////////////
    // UART
    resync_3 resync_3(
-      .i_clk   (i_clk   ),
+      .i_clk   (pll_clk ),
       .i_nrst  (i_nrst  ),
       .i_rst_d (1'b1    ),
       .i_d     (i_rx    ),
@@ -68,19 +71,24 @@ module vga_ram(
 	);
 
    uart_autobaud uart_autobaud(
-      .i_clk         (i_clk      ),
+      .i_clk         (pll_clk    ),
       .i_nrst        (i_nrst     ),
-      .i_transmit    (1'b0       ),
-      .i_data_tx     (8'h00      ),
+      .i_transmit    (transmit   ),
+      .i_data_tx     (wdata      ),
       .i_rx          (rx_s       ),
       .o_busy_rx     (           ),
       .o_busy_tx     (           ),
       .o_recieved    (recieved   ),
       .o_data_rx     (data_rx    ),
-      .o_tx          (           )
+      .o_tx          (o_tx       )
    );
 
-   always@(posedge i_clk or negedge i_nrst) begin
+   always@(posedge pll_clk or negedge i_nrst) begin
+		if(!i_nrst)       transmit <= 'd0;
+		else              transmit <= recieved; 
+	end
+
+   always@(posedge pll_clk or negedge i_nrst) begin
 		if(!i_nrst)       wdata <= 'd0;
 		else 
          if(recieved) 
@@ -92,12 +100,12 @@ module vga_ram(
    assign waddr_upd  = p0_recieved|p1_recieved|p2_recieved;
    assign waddr_next = (data_rx[7]) ? (waddr + 'd1) : 'd0;
 
-   always@(posedge i_clk or negedge i_nrst) begin
+   always@(posedge pll_clk or negedge i_nrst) begin
 		if(!i_nrst)          waddr <= 'd0;
 		else if(waddr_upd)   waddr <= waddr_next;
 	end
 
-   always@(posedge i_clk or negedge i_nrst) begin
+   always@(posedge pll_clk or negedge i_nrst) begin
       if(!i_nrst) begin
          p0_recieved <= 'd0;
          p1_recieved <= 'd0;
@@ -112,10 +120,10 @@ module vga_ram(
    ///////////////////////////////////////////////////
    // VGA
    
-   assign rgb =   (w == 2'b00) ? 6'b000000 :
-                  (w == 2'b01) ? 6'b000001 :
-                  (w == 2'b10) ? 6'b000010 :
-                                 6'b000011 ; 
+   assign rgb =   (rdata == 2'b00) ? 6'b000000 :   // Black
+                  (rdata == 2'b01) ? 6'b110000 :   // Red
+                  (rdata == 2'b10) ? 6'b111100 :   // Yellow
+                                     6'b001100 ;   // Green
    vga #(   // 640x480, 25.175Hz
       .HOR           (640              ),
       .HOR_FP        (16               ),
@@ -145,27 +153,31 @@ module vga_ram(
    ///////////////////////////////////////////////////
    // RAMS
 
-   assign we            = waddr_upd << waddr[15:11]; 
-   assign w             = wdata[1:0];
+   assign we            = waddr_upd << waddr[14:11]; 
+   assign raddr         = (640*v)+h; 
+   assign rdata_index   = p0_raddr[14:11];
+   assign rdata[1]      = rdata_mux[(rdata_index << 1) + 1];
+   assign rdata[0]      = rdata_mux[(rdata_index << 1)];
 
-   assign raddr         = (800*v) + h; 
-
-   assign rdata_index   = raddr[15:11];
-   assign rdata         = rdata_mux[rdata_index];
-
+   always@(posedge pll_clk or negedge i_nrst) begin
+		if(!i_nrst) p0_raddr <= 'd0;
+		else        p0_raddr <= raddr;
+	end
+   
    genvar i;
    generate
       for(i=0;i<16;i=i+1) begin 
          ice_ram_2048x2b  ram (
-            .i_nrst     (i_nrst        ),
-            .i_wclk     (i_clk         ),
-            .i_waddr    (waddr[10:0]   ),
-            .i_we       (we[i]         ),
-            .i_wdata    (w             ),
-            .i_rclk     (i_clk         ),
-            .i_raddr    (raddr[10:0]   ),
-            .i_re       (1'b1          ),
-            .o_rdata    (rdata_mux[i]  )
+            .i_nrst     (i_nrst                 ),
+            .i_wclk     (pll_clk                ),
+            .i_waddr    (waddr[10:0]            ),
+            .i_we       (we[i]                  ),
+            .i_wdata    (wdata[1:0]             ),
+            .i_rclk     (pll_clk                ),
+            .i_raddr    (raddr[10:0]            ),
+            .i_re       (1'b1                   ),
+            .o_rdata    ({ rdata_mux[(i*2)+1],
+                           rdata_mux[(i*2)]}    ) 
          );
       end
    endgenerate
