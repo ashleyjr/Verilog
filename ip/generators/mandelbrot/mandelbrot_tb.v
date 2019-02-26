@@ -46,8 +46,8 @@ module mandelbrot_tb;
 	end
 
    task compute;
-      input [WIDTH-1:0] re;
-      input [WIDTH-1:0] im;
+      input signed [WIDTH-1:0] re;
+      input signed [WIDTH-1:0] im;
       begin
          i_valid  = 1;
          i_c_re   = re;
@@ -66,10 +66,12 @@ module mandelbrot_tb;
 					i_nrst   = 1;	
 		#17		i_nrst	= 0;
       #17      i_nrst   = 1;
-		
-      #1000    compute(1,1);
-      #1000    compute(0,0);
-      #1000    compute(1,1);
+		 
+      #1000    compute(16'h0000, 16'h0000);  // Bounded
+      #1000    compute(16'h0200, 16'h0200);  // Bounded
+      #1000    compute(16'h0001, 16'h0001);  // Bounded
+      repeat(100)
+      #1000    compute($urandom,0);
 
 	end
 

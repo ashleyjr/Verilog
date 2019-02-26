@@ -6,32 +6,37 @@ module mandelbrot(
 	input	   wire  signed   [WIDTH-1:0]		   i_c_im,
 	input    wire				                  i_valid,
 	output   reg            [WIDTH_ITERS-1:0] o_iter,
-	output	wire	                           o_done
+   output   wire                             o_bounded, 
+   output	wire	                           o_done
 ); 
    parameter   WIDTH       = 16;
    parameter   ITERS       = 256;
    parameter   WIDTH_ITERS = $clog2(ITERS);
+   parameter   CMP         = ((2 ** WIDTH)-3);
 
    wire           [WIDTH_ITERS-1:0] iter_next;
    wire                             reset;
-   reg   signed   [WIDTH-1:0]       re;
-   wire  signed   [WIDTH-1:0]       re_sq;
-   wire  signed   [WIDTH-1:0]       re_next;
-   reg   signed   [WIDTH-1:0]       im;
-   wire  signed   [WIDTH-1:0]       im_sq;
-   wire  signed   [WIDTH-1:0]       im_next;
-   wire  signed   [WIDTH-1:0]       abs;
+   reg   signed   [(2*WIDTH):0]   re;
+   wire  signed   [(2*WIDTH):0]   re_sq;
+   wire  signed   [(2*WIDTH):0]   re_next;
+   reg   signed   [(2*WIDTH):0]   im;
+   wire  signed   [(2*WIDTH):0]   im_sq;
+   wire  signed   [(2*WIDTH):0]   im_next;
+   wire  signed   [(2*WIDTH):0]   abs;
+   wire  signed   [(2*WIDTH):0]   cmp;
 
    assign reset      = o_done | ~i_valid;
    
    assign re_sq      = re*re;
    assign im_sq      = im*im;
    
-   assign re_next    = (reset) ? 'd0 : (re_sq) - (im_sq) + i_c_re;   
-   assign im_next    = (reset) ? 'd0 : ((im*re) << 1) + i_c_im;
+   assign re_next    = (reset) ? 'd0 : re_sq - im_sq + i_c_re;   
+   assign im_next    = (reset) ? 'd0 : ((im*re) * 2) + i_c_im;
 
    assign abs        = re_sq + im_sq;
-   assign unbounded  = (abs > (2 ** (WIDTH-1)));
+   assign cmp        = 2 ** ((2*WIDTH)-1);
+   assign unbounded  = abs > cmp;   
+   assign o_bounded  = ~unbounded;
 
    always@(posedge i_clk or negedge i_nrst) begin
       if(!i_nrst) begin
