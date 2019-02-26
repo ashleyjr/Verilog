@@ -27,6 +27,10 @@ module vga_ram(
    reg                  transmit;
 
    // VGA
+   wire                 h_black;
+   wire  [H_WIDTH-1:0]  h_cap;
+   wire                 v_black;
+   wire  [V_WIDTH-1:0]  v_cap;
    wire  [V_WIDTH-1:0]  v;
    wire  [H_WIDTH-1:0]  h; 
    wire  [5:0]          rgb; 
@@ -120,7 +124,7 @@ module vga_ram(
    ///////////////////////////////////////////////////
    // VGA
    
-   assign rgb =   (rdata == 2'b00) ? 6'b000000 :   // Black
+   assign rgb =   (h_black | v_black | (rdata == 2'b00)) ? 6'b000000 :   // Black
                   (rdata == 2'b01) ? 6'b110000 :   // Red
                   (rdata == 2'b10) ? 6'b111100 :   // Yellow
                                      6'b001100 ;   // Green
@@ -154,7 +158,14 @@ module vga_ram(
    // RAMS
 
    assign we            = waddr_upd << waddr[14:11]; 
-   assign raddr         = (640*v)+h; 
+ 
+   assign h_black       = h >= 180;
+   assign h_cap         = (h_black) ? 'd0 : h; 
+   assign v_black       = v >= 180;
+   assign v_cap         = (v_black) ? 'd0 : v; 
+   
+   assign raddr         = (v_cap*180)+h_cap; 
+   
    assign rdata_index   = p0_raddr[14:11];
    assign rdata[1]      = rdata_mux[(rdata_index << 1) + 1];
    assign rdata[0]      = rdata_mux[(rdata_index << 1)];
