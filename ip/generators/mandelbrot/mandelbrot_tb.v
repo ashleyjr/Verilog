@@ -40,39 +40,64 @@ module mandelbrot_tb;
       $monitor("%tps       %d",$time,i_nrst);
 	end
 
-   initial begin
-      #100000
-		$finish;
-	end
+   //initial begin
+   //   #1000000
+	//	$finish;
+	//end
 
    task compute;
-      input signed [WIDTH-1:0] re;
-      input signed [WIDTH-1:0] im;
+      input real re;
+      input real im;
       begin
+         i_c_re = $rtoi(re*(2 ** (WIDTH-2)));
+         i_c_im = $rtoi(im*(2 ** (WIDTH-2)));
          i_valid  = 1;
-         i_c_re   = re;
-         i_c_im   = im;
          while(0 == o_done) begin 
             @(posedge i_clk);
          end
          i_valid   = 0;
       end
    endtask
-	
+
+   integer f;
+   real i,j;
+
    initial begin
+      f = $fopen("output.txt","w");
                i_c_re   = 0;
                i_c_im   = 0;
                i_valid  = 0;
 					i_nrst   = 1;	
 		#17		i_nrst	= 0;
       #17      i_nrst   = 1;
-		 
-      #1000    compute(16'h0000, 16'h0000);  // Bounded
-      #1000    compute(16'h0200, 16'h0200);  // Bounded
-      #1000    compute(16'h0001, 16'h0001);  // Bounded
-      repeat(100)
-      #1000    compute($urandom,0);
+	
+      
+      #1000    compute(0,  0);      // Bounded
+      #1000    compute(-1, 0);      // Bounded
+      #1000    compute(-0.1, 0.5);  // Bounded
+      #1000    compute(-0.1, -0.5); // Bounded
 
+      
+      #10000    
+               compute(1, 0);    // Unbounded
+      #1000    compute(2, 2);    // Unbounded
+      #1000    compute(-2, 2);   // Unbounded
+      #1000    compute(2, -2);   // Unbounded
+      #1000    compute(-2, -2);  // Unbounded
+
+      
+      i = -1;
+      repeat(50) begin 
+         j = -1;
+         repeat(50) begin 
+            #1000 compute(i,j); 
+            $fwrite(f, "%f,%f,%d\n",i,j,o_iter);
+            j = j + 0.02;
+         end
+         i = i +  0.02;
+      end
+      //#1000    compute($urandom,0);
+      $finish;
 	end
 
 endmodule

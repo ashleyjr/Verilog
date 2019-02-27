@@ -1,4 +1,9 @@
 `timescale 1ns/1ps
+
+////////////////////////////////////
+// Fixed point signed
+// 000.0000000000
+
 module mandelbrot(
 	input    wire		                        i_clk,
 	input	   wire		                        i_nrst,
@@ -16,12 +21,15 @@ module mandelbrot(
 
    wire           [WIDTH_ITERS-1:0] iter_next;
    wire                             reset;
-   reg   signed   [(2*WIDTH):0]   re;
+   reg   signed   [WIDTH-1:0]     re;
    wire  signed   [(2*WIDTH):0]   re_sq;
+   wire  signed   [(2*WIDTH):0]   re_calc;
    wire  signed   [(2*WIDTH):0]   re_next;
-   reg   signed   [(2*WIDTH):0]   im;
+   reg   signed   [WIDTH-1:0]     im;
    wire  signed   [(2*WIDTH):0]   im_sq;
+   wire  signed   [(2*WIDTH):0]   im_calc;
    wire  signed   [(2*WIDTH):0]   im_next;
+   wire  signed   [(2*WIDTH):0]   re_im;
    wire  signed   [(2*WIDTH):0]   abs;
    wire  signed   [(2*WIDTH):0]   cmp;
 
@@ -29,12 +37,20 @@ module mandelbrot(
    
    assign re_sq      = re*re;
    assign im_sq      = im*im;
-   
-   assign re_next    = (reset) ? 'd0 : re_sq - im_sq + i_c_re;   
-   assign im_next    = (reset) ? 'd0 : ((im*re) * 2) + i_c_im;
+   assign re_im      = re*im;
+
+   assign re_calc    = re_sq - im_sq + i_c_re;
+   assign im_calc    = (re_im <<< 1) + i_c_im;
+
+   assign re_next    =  (reset)           ?  'd0 :
+                        (o_iter == 'd0)   ?  i_c_re:
+                                             re_calc >>> WIDTH-2;   
+   assign im_next    =  (reset)           ?  'd0 : 
+                        (o_iter == 'd0)   ?  i_c_im:
+                                             im_calc >>> WIDTH-2;
 
    assign abs        = re_sq + im_sq;
-   assign cmp        = 2 ** ((2*WIDTH)-1);
+   assign cmp        = 2 ** ((2*WIDTH)-3);
    assign unbounded  = abs > cmp;   
    assign o_bounded  = ~unbounded;
 
