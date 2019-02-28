@@ -35,22 +35,22 @@ module mandelbrot(
 
    assign reset      = o_done | ~i_valid;
    
-   assign re_sq      = re*re;
-   assign im_sq      = im*im;
-   assign re_im      = re*im;
+   assign re_sq      = re*re >>> WIDTH-2;
+   assign im_sq      = im*im >>> WIDTH-2;
+   assign re_im      = re*im >>> WIDTH-2;
 
    assign re_calc    = re_sq - im_sq + i_c_re;
    assign im_calc    = (re_im <<< 1) + i_c_im;
 
    assign re_next    =  (reset)           ?  'd0 :
                         (o_iter == 'd0)   ?  i_c_re:
-                                             re_calc >>> WIDTH-2;   
+                                             re_calc;   
    assign im_next    =  (reset)           ?  'd0 : 
                         (o_iter == 'd0)   ?  i_c_im:
-                                             im_calc >>> WIDTH-2;
+                                             im_calc;
 
    assign abs        = re_sq + im_sq;
-   assign cmp        = 2 ** ((2*WIDTH)-3);
+   assign cmp        = 2 ** WIDTH;
    assign unbounded  = abs > cmp;   
    assign o_bounded  = ~unbounded;
 

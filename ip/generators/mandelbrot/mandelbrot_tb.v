@@ -62,6 +62,7 @@ module mandelbrot_tb;
    integer f;
    real i,j;
 
+
    initial begin
       f = $fopen("output.txt","w");
                i_c_re   = 0;
@@ -80,21 +81,24 @@ module mandelbrot_tb;
       
       #10000    
                compute(1, 0);    // Unbounded
+      #1000    compute(0, 1);    // Unbounded
+      #1000    compute(0, -1);    // Unbounded
       #1000    compute(2, 2);    // Unbounded
       #1000    compute(-2, 2);   // Unbounded
       #1000    compute(2, -2);   // Unbounded
       #1000    compute(-2, -2);  // Unbounded
+      //$finish;
 
       
-      i = -1;
-      repeat(50) begin 
-         j = -1;
-         repeat(50) begin 
-            #1000 compute(i,j); 
+      i = -2;
+      repeat(100) begin 
+         j = -2;
+         repeat(100) begin 
+            #1000 compute(j,i); 
             $fwrite(f, "%f,%f,%d\n",i,j,o_iter);
-            j = j + 0.02;
+            j = j + 0.04;
          end
-         i = i +  0.02;
+         i = i +  0.04;
       end
       //#1000    compute($urandom,0);
       $finish;
