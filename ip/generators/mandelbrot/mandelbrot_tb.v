@@ -2,7 +2,7 @@
 module mandelbrot_tb;
 
 	parameter   CLK_PERIOD  = 20;
-   parameter   WIDTH       = 16;
+   parameter   WIDTH       = 32;
    parameter   ITERS       = 256;
 	
    reg	                     i_clk;
@@ -49,8 +49,8 @@ module mandelbrot_tb;
       input real re;
       input real im;
       begin
-         i_c_re = $rtoi(re*(2 ** (WIDTH-2)));
-         i_c_im = $rtoi(im*(2 ** (WIDTH-2)));
+         i_c_re = $rtoi(re*(2 ** (WIDTH-4)));
+         i_c_im = $rtoi(im*(2 ** (WIDTH-4)));
          i_valid  = 1;
          while(0 == o_done) begin 
             @(posedge i_clk);
@@ -87,13 +87,17 @@ module mandelbrot_tb;
       #1000    compute(-2, 2);   // Unbounded
       #1000    compute(2, -2);   // Unbounded
       #1000    compute(-2, -2);  // Unbounded
+      
+      #10000    
+               compute(2, 0); 
+      
       //$finish;
 
       
-      i = -2;
-      repeat(100) begin 
-         j = -2;
-         repeat(100) begin 
+      i = -1;
+      repeat(50) begin 
+         j = -1;
+         repeat(50) begin 
             #1000 compute(j,i); 
             $fwrite(f, "%f,%f,%d\n",i,j,o_iter);
             j = j + 0.04;

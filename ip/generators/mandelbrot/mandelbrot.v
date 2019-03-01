@@ -16,8 +16,7 @@ module mandelbrot(
 ); 
    parameter   WIDTH       = 16;
    parameter   ITERS       = 256;
-   parameter   WIDTH_ITERS = $clog2(ITERS);
-   parameter   CMP         = ((2 ** WIDTH)-3);
+   parameter   WIDTH_ITERS = $clog2(ITERS); 
 
    wire           [WIDTH_ITERS-1:0] iter_next;
    wire                             reset;
@@ -35,9 +34,9 @@ module mandelbrot(
 
    assign reset      = o_done | ~i_valid;
    
-   assign re_sq      = re*re >>> WIDTH-2;
-   assign im_sq      = im*im >>> WIDTH-2;
-   assign re_im      = re*im >>> WIDTH-2;
+   assign re_sq      = re*re >>> (WIDTH-4);
+   assign im_sq      = im*im >>> (WIDTH-4);
+   assign re_im      = re*im >>> (WIDTH-4);
 
    assign re_calc    = re_sq - im_sq + i_c_re;
    assign im_calc    = (re_im <<< 1) + i_c_im;
@@ -50,7 +49,7 @@ module mandelbrot(
                                              im_calc;
 
    assign abs        = re_sq + im_sq;
-   assign cmp        = 2 ** WIDTH;
+   assign cmp        = 2 ** (WIDTH-2);
    assign unbounded  = abs > cmp;   
    assign o_bounded  = ~unbounded;
 
