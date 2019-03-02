@@ -63,10 +63,11 @@ module vga_ram_tb;
       repeat(20) 
          #2000 uart_send(8'b00000001); 
 
-      repeat(10) 
+      uart_send(8'b10000011); 
+      repeat(80) 
          #200000 uart_send(8'b10000010); 
 
-		#3000	
+		#30000	
       $finish;
 	end
 

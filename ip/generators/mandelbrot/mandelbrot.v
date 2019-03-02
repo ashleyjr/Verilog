@@ -20,17 +20,17 @@ module mandelbrot(
 
    wire           [WIDTH_ITERS-1:0] iter_next;
    wire                             reset;
-   reg   signed   [WIDTH-1:0]     re;
-   wire  signed   [(2*WIDTH):0]   re_sq;
-   wire  signed   [(2*WIDTH):0]   re_calc;
-   wire  signed   [(2*WIDTH):0]   re_next;
-   reg   signed   [WIDTH-1:0]     im;
-   wire  signed   [(2*WIDTH):0]   im_sq;
-   wire  signed   [(2*WIDTH):0]   im_calc;
-   wire  signed   [(2*WIDTH):0]   im_next;
-   wire  signed   [(2*WIDTH):0]   re_im;
-   wire  signed   [(2*WIDTH):0]   abs;
-   wire  signed   [(2*WIDTH):0]   cmp;
+   reg   signed   [WIDTH-1:0]       re;
+   wire  signed   [(2*WIDTH)-1:0]   re_sq;
+   wire  signed   [(2*WIDTH)-1:0]   re_calc;
+   wire  signed   [(2*WIDTH)-1:0]   re_next;
+   reg   signed   [WIDTH-1:0]       im;
+   wire  signed   [(2*WIDTH)-1:0]   im_sq;
+   wire  signed   [(2*WIDTH)-1:0]   im_calc;
+   wire  signed   [(2*WIDTH)-1:0]   im_next;
+   wire  signed   [(2*WIDTH)-1:0]   re_im;
+   wire  signed   [(2*WIDTH)-1:0]   abs;
+   wire  signed   [(2*WIDTH)-1:0]   cmp;
 
    assign reset      = o_done | ~i_valid;
    
@@ -41,12 +41,8 @@ module mandelbrot(
    assign re_calc    = re_sq - im_sq + i_c_re;
    assign im_calc    = (re_im <<< 1) + i_c_im;
 
-   assign re_next    =  (reset)           ?  'd0 :
-                        (o_iter == 'd0)   ?  i_c_re:
-                                             re_calc;   
-   assign im_next    =  (reset)           ?  'd0 : 
-                        (o_iter == 'd0)   ?  i_c_im:
-                                             im_calc;
+   assign re_next    =  (reset) ? i_c_re : re_calc;   
+   assign im_next    =  (reset) ? i_c_im : im_calc;
 
    assign abs        = re_sq + im_sq;
    assign cmp        = 2 ** (WIDTH-2);
