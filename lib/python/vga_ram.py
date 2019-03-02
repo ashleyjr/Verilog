@@ -35,7 +35,10 @@ def main():
 
     for a in range(0, 180):
         for b in range(0, 180):
-            im[a,b] = a % 4
+            if b == 0:
+                im[a,b] = 1
+            else:
+                im[a,b] = 2
 
     update(im)
     #plt.imshow(im, interpolation='nearest')

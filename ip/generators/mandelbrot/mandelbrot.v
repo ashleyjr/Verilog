@@ -59,9 +59,7 @@ module mandelbrot(
       end
 	end 
 
-   assign iter_next  =  (o_done)    ?  'd0:
-                        (i_valid)   ?  o_iter + 'd1:
-                                       'd0;
+   assign iter_next  =  (reset) ? 'd0 : o_iter + 'd1;
 
    always@(posedge i_clk or negedge i_nrst) begin
 		if(!i_nrst)    o_iter <= 'd0;
