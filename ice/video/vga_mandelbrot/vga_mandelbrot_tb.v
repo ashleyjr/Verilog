@@ -39,7 +39,7 @@ module vga_mandelbrot_tb;
 					nrst		= 1;	
 		#17		nrst		= 0;
 		#17		nrst		= 1;	
-		#100000
+		#1000000
 		$finish;
 	end
 

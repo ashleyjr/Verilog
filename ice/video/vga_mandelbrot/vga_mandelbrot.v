@@ -24,7 +24,7 @@ module vga_mandelbrot(
 
    // RAM
    wire  [15:0]         we;   
-   reg   [14:0]         waddr;
+   wire  [14:0]         waddr;
    wire  [1:0]          wdata;
    wire  [1:0]          rdata; 
    wire  [31:0]         rdata_mux; 
@@ -32,7 +32,18 @@ module vga_mandelbrot(
    reg   [3:0]          rdata_index;
    wire  [4:0]          rdata_index_0;
    wire  [4:0]          rdata_index_1;
-   
+  
+   // Generate
+   wire  [7:0]          iter;
+   wire                 done;
+   reg   [7:0]          a;
+   reg   [7:0]          b;
+   wire  [7:0]          a_next;
+   wire  [7:0]          b_next;
+   wire                 a_wrap;
+   wire  signed [9:0]   re;
+   wire  signed [9:0]   im;
+
    ///////////////////////////////////////////////////
    // PLL out is 48 MHz
    ice_pll #(
@@ -55,9 +66,9 @@ module vga_mandelbrot(
    assign v_black = v >= SIZE;  
    assign rgb     =  (h_black | v_black)  ?  6'b000000 : // Black
                      (rdata == 2'b00)     ?  6'b000011 : // Blue
-                     (rdata == 2'b01)     ?  6'b110000 : // Red
-                     (rdata == 2'b10)     ?  6'b111100 : // Yellow
-                                             6'b001100 ; // Green
+                     (rdata == 2'b01)     ?  6'b111100 : // Yellow
+                     (rdata == 2'b10)     ?  6'b110000 : // Red
+                                             6'b111111 ; // White
    vga #(   // 640x480, 25.175Hz
       .HOR           (640              ),
       .HOR_FP        (16               ),
@@ -122,14 +133,47 @@ module vga_mandelbrot(
    ///////////////////////////////////////////////////
    // Generate
   
-   assign wdata = waddr[14:13];
+   assign we = done << waddr[14:11];   
+  
+   assign a_wrap = (a == SIZE-1) & done;
+   assign a_next = (a_wrap) ? 'd0 : a + 'd1;
+
+   always@(posedge pll_clk or negedge i_nrst) begin
+		if(!i_nrst)    a <= 'd0;
+		else if(done)  a <= a_next;
+	end
+
+   assign b_next = (b == SIZE-1) ? 'd0 : b + 'd1;
    
    always@(posedge pll_clk or negedge i_nrst) begin
-		if(!i_nrst) waddr <= 'd0;
-		else        waddr <= waddr + 'd1;
+		if(!i_nrst)       b <= 'd0;
+		else if(a_wrap)   b <= b_next;
 	end
-   
 
-   
+   assign waddr = (b << 7) + (b << 5) + (b << 4) + a;  
+   assign we    = done << waddr[14:11];   
+ 
 
+   assign wdata = (iter < 8)   ?  2'b00 :
+                  (iter < 32)  ?  2'b01 :
+                  (iter < 64)  ?  2'b10 :
+                                  2'b11; 
+
+   assign re = -128 + a; 
+   assign im = 128 - b;
+
+   mandelbrot #(              
+      .WIDTH      (10),
+      .ITERS      (256  )
+   ) mandelbrot (
+      .i_clk      (pll_clk       ),
+      .i_nrst     (i_nrst        ),
+      .i_c_re     (re  ),
+      .i_c_im     (im  ),
+      .i_valid    (1'b1          ),
+      .o_iter     (iter          ),
+      .o_bounded  (              ),
+      .o_done     (done          )
+   );
+   
 endmodule
