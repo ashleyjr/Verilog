@@ -1,0 +1,10 @@
+../../../ip/comms/uart_autobaud/uart_autobaud.v
+../../../ip/resync_tools/resync_3/resync_3.v
+../../../ip/video/vga/vga.v
+../../../ip/video/vga_testgen/vga_testgen.v
+../../../ip/generators/mandelbrot/mandelbrot.v
+../../clock_tools/ice_pll/ice_pll.v
+../../ice_rams/ice_ram_2048x2b/ice_ram_2048x2b.v
+../../ice_rams/ice_ram_DxWb/ice_ram_DxWb.v
+vga_mandelbrot.v
+vga_mandelbrot_tb.v
