@@ -8,7 +8,7 @@ module vga_mandelbrot(
 	output	wire	[1:0]    o_g,
 	output	wire	[1:0]    o_b
 );
-   parameter   SIZE     = 180;
+   parameter   SIZE     = 176;
    parameter   V_WIDTH  = 10;
    parameter   H_WIDTH  = 10;
 
@@ -29,8 +29,10 @@ module vga_mandelbrot(
    wire  [1:0]          rdata; 
    wire  [31:0]         rdata_mux; 
    wire  [14:0]         raddr; 
-   wire  [3:0]          rdata_index;
-
+   reg   [3:0]          rdata_index;
+   wire  [4:0]          rdata_index_0;
+   wire  [4:0]          rdata_index_1;
+   
    ///////////////////////////////////////////////////
    // PLL out is 48 MHz
    ice_pll #(
@@ -85,10 +87,14 @@ module vga_mandelbrot(
    ///////////////////////////////////////////////////
    // RAMS
 
-   assign we       = recieved << waddr[14:11];  
-   assign raddr    = (v*SIZE)+h;  
-   assign rdata[0] = rdata_mux[{rdata_index,1'b0}];
-   assign rdata[1] = rdata_mux[{rdata_index,1'b1}];
+   assign we       = 1'b1 << waddr[14:11];  
+   assign raddr    = (v << 7) + (v << 5) + (v << 4) + h;  
+  
+   assign rdata_index_0 = {rdata_index,1'b0};
+   assign rdata_index_1 = {rdata_index,1'b1};
+   
+   assign rdata[0] = rdata_mux[rdata_index_0];
+   assign rdata[1] = rdata_mux[rdata_index_1];
 
    always@(posedge pll_clk or negedge i_nrst) begin
 		if(!i_nrst) rdata_index <= 'd0;
@@ -116,7 +122,7 @@ module vga_mandelbrot(
    ///////////////////////////////////////////////////
    // Generate
   
-   assign wdata = waddr[14:12];
+   assign wdata = waddr[14:13];
    
    always@(posedge pll_clk or negedge i_nrst) begin
 		if(!i_nrst) waddr <= 'd0;
