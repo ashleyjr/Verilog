@@ -1,2 +1,4 @@
+../../arithmetic/sequential_multiplier/sequential_multiplier.v
+../../arithmetic/sequential_multiplier_signed/sequential_multiplier_signed.v
 mandelbrot.v
 mandelbrot_tb.v
