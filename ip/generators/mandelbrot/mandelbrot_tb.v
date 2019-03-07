@@ -73,36 +73,35 @@ module mandelbrot_tb;
       #17      i_nrst   = 1;
 	
       
-  //    #10000    compute(0,  0);      // Bounded
-  //    #10000    compute(-1, 0);      // Bounded
-  //    #10000    compute(-0.1, 0.5);  // Bounded
-  //    #10000    compute(-0.1, -0.5); // Bounded
-
-  //    
-  //    #100000    
-  //             compute(1, 0);    // Unbounded
-  //    #10000    compute(0, 1);    // Unbounded
-  //    #10000    compute(0, -1);    // Unbounded
-  //    #10000    compute(2, 2);    // Unbounded
-  //    #10000    compute(-2, 2);   // Unbounded
-  //    #10000    compute(2, -2);   // Unbounded
-  //    #10000    compute(-2, -2);  // Unbounded
-  //    
-  //    #100000    
-  //             compute(2, 0); 
+      #10000    compute(0,  0);        // Bounded
+      #10000    compute(-1, 0);        // Bounded
+      #10000    compute(-0.1, 0.5);    // Bounded
+      #10000    compute(-0.1, -0.5);   // Bounded
+      #10000    compute(0.24, 0);      // Bounded
       
+      #100000    
+      #10000    compute(1, 0);         // Unbounded 
+      #10000    compute(0, -1);        // Unbounded
+      #10000    compute(2, 2);         // Unbounded
+      #10000    compute(-2, 2);        // Unbounded
+      #10000    compute(2, -2);        // Unbounded
+      #10000    compute(-2, -2);       // Unbounded
+      #10000    compute(-1.4, 0.015);  // Unbounded
+      #10000    compute(-1.4, -0.015); // Unbounded
+      #10000    compute(0.27, 0);      // Unbounded
+
       //$finish;
 
       
       i = -1;
-      repeat(10) begin 
+      repeat(20) begin 
          j = -1;
-         repeat(10) begin 
+         repeat(20) begin 
             #1000 compute(j,i); 
             $fwrite(f, "%f,%f,%d\n",i,j,o_iter);
-            j = j + 0.2;
+            j = j + 0.1;
          end
-         i = i +  0.2;
+         i = i +  0.1;
       end
       //#1000    compute($urandom,0);
       $finish;

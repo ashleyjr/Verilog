@@ -13,11 +13,10 @@ def main():
     w = 90
     data = np.zeros((w, h, 3), dtype=np.uint8)
 
-    base_w = -1.55
-    top_w  = -1.3
-
-    base_h = -0.1
-    top_h  = 0.1
+    base_w = -1
+    top_w  = 1
+    base_h = -1
+    top_h  = 1
     step_w = (top_w-base_w)/float(w)
     step_h = (top_h-base_h)/float(h)
 
@@ -32,7 +31,7 @@ def main():
             data[j,i] = 255
             for k in range(0, 256):
                 a,b = update(a,b,s_a,s_b)
-                if ((a*a)+(b*b) > 2):
+                if ((a*a)+(b*b) > 4):
                     data[j,i] = k
 
     plt.imshow(data,extent=[base_w,top_w,base_h,top_h])
