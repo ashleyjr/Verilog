@@ -41,8 +41,8 @@ module vga_mandelbrot(
    wire  [7:0]          a_next;
    wire  [7:0]          b_next;
    wire                 a_wrap;
-   wire  signed [9:0]   re;
-   wire  signed [9:0]   im;
+   wire  signed [15:0]   re;
+   wire  signed [15:0]   im;
 
    ///////////////////////////////////////////////////
    // PLL out is 48 MHz
@@ -154,17 +154,17 @@ module vga_mandelbrot(
    assign we    = done << waddr[14:11];   
  
 
-   assign wdata = (iter < 8)   ?  2'b00 :
-                  (iter < 32)  ?  2'b01 :
-                  (iter < 64)  ?  2'b10 :
+   assign wdata = (iter < 8)   ?  2'b00:
+                  (iter < 16)  ?  2'b01:
+                  (iter < 32)  ?  2'b10:
                                   2'b11; 
 
-   assign re = -128 + a; 
-   assign im = 128 - b;
+   assign re = -(2 ** 15) + (a << 8); 
+   assign im = (2 ** 15) - (b << 8);
 
    mandelbrot #(              
-      .WIDTH      (10),
-      .ITERS      (256  )
+      .WIDTH      (16            ),
+      .ITERS      (256           )
    ) mandelbrot (
       .i_clk      (pll_clk       ),
       .i_nrst     (i_nrst        ),

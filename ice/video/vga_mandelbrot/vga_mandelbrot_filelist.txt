@@ -2,6 +2,8 @@
 ../../../ip/resync_tools/resync_3/resync_3.v
 ../../../ip/video/vga/vga.v
 ../../../ip/video/vga_testgen/vga_testgen.v
+../../../ip/arithmetic/sequential_multiplier/sequential_multiplier.v
+../../../ip/arithmetic/sequential_multiplier_signed/sequential_multiplier_signed.v
 ../../../ip/generators/mandelbrot/mandelbrot.v
 ../../clock_tools/ice_pll/ice_pll.v
 ../../ice_rams/ice_ram_2048x2b/ice_ram_2048x2b.v
